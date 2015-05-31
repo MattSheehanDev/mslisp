@@ -63,7 +63,7 @@ namespace mslisp
 
             if("(" == token)
             {
-                var list = new List<dynamic>();
+                var list = new ListStack();
                 while (tokens[0] != ")")
                 {
                     list.Add(_ReadTokens(tokens));
@@ -103,4 +103,16 @@ namespace mslisp
         }
 
     }
+
+
+    class ListStack : List<dynamic>
+    {
+        public dynamic Shift ()
+        {
+            var item = this.First();
+            this.RemoveAt(0);
+            return item;
+        }
+    }
+
 }

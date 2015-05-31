@@ -11,6 +11,7 @@ namespace mslisp
     {
         public static EntryEnvironment env = new EntryEnvironment();
         public static Parser parser = new Parser();
+        public static Evaluator evaluator = new Evaluator();
 
         static void Main(string[] args)
         {
@@ -24,8 +25,11 @@ namespace mslisp
                 {
                     var expr = Console.ReadLine();
                     var parsed = parser.Parse(expr);
-                    var str = parser.Stringify(parsed);
+                    var eval = evaluator.Eval(parsed, env);
+
+                    var str = parser.Stringify(eval);
                     Console.WriteLine(str);
+                    
                     // parse, eval, print value
                     // if value console writeline
                 }
