@@ -4,13 +4,14 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace mslisp
 {
     class Program
     {
         public static EntryEnvironment env = new EntryEnvironment();
-        public static Parser parser = new Parser();
+        //public static Parser parser = new Parser();
         public static Evaluator evaluator = new Evaluator();
 
         static void Main(string[] args)
@@ -23,12 +24,26 @@ namespace mslisp
             {
                 try
                 {
-                    var expr = Console.ReadLine();
-                    var parsed = parser.Parse(expr);
-                    var eval = evaluator.Eval(parsed, env);
+                    Console.Write(string.Format("{0}> ", env["*prompt*"]));
 
-                    var str = parser.Stringify(eval);
-                    Console.WriteLine(str);
+                    var expr = Console.ReadLine();
+
+                    var reader = new StringReader(expr);
+                    var parser = new Parser(reader);
+                    var tokens = parser.Parse();
+
+                    //var parsed = parser.Parse(expr);
+                    tokens.ForEach((list) =>
+                    {
+                        var eval = evaluator.Eval(list, env);
+
+                        var str = parser.Stringify(eval);
+                        Console.WriteLine(str);
+                    });
+                    //var eval = evaluator.Eval(parsed, env);
+
+                    //var str = parser.Stringify(eval);
+                    //Console.WriteLine(str);
                     
                     // parse, eval, print value
                     // if value console writeline

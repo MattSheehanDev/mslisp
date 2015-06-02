@@ -2,29 +2,142 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace mslisp
 {
-
+    enum CharType
+    {
+        OPENPARENS,
+        CLOSEPARENS,
+        STRING,
+        SPACE,
+        SYMBOL
+    }
+    
     
     class Parser
     {
 
-        public Parser()
+        public readonly TokenList tokens;
+        private readonly TextReader reader;
+        
+
+        public Parser(TextReader read)
         {
+            this.reader = read;
+            this.tokens = new TokenList();
         }
 
-        public dynamic Parse(string expr)
+        public TokenList Parse()
         {
-            var tokens = this._Tokenize(expr);
-            var list = _ReadTokens(tokens);
-            return list;
+            this.readText();
+            return this.tokens;
+        }
+
+        private void readText()
+        {
+            //var root = new ListStack();
+            var curr = this.tokens;
+
+            var stack = new Stack<TokenList>();
+
+            char peek;
+            while(reader.Peek() != -1)
+            {
+                peek = (char)reader.Read();
+                var type = this.readChar(peek);
+
+                if (CharType.OPENPARENS == type)     // begin list
+                {
+                    stack.Push(curr);
+
+                    var list = new TokenList();
+                    curr.Add(list);
+                    
+                    curr = list;
+                }
+                else if (CharType.CLOSEPARENS == type) // end list
+                {
+                    if (stack.Peek() != null)
+                        curr = stack.Pop();
+                    else
+                        throw new SyntaxException("Unexpected ) delimeter.");
+                }
+                else if (CharType.STRING == type)       // string
+                {
+                    var str = "";
+                    while(reader.Peek() != -1)
+                    {
+                        peek = (char)reader.Read();
+
+                        if (CharType.STRING == this.readChar(peek))
+                            break;
+
+                        str += peek;
+                    }
+
+                    var token = new Token(TokenType.STRING, str);
+                    curr.Add(token);
+                }
+                else if (CharType.SYMBOL == type)        // number or symbol
+                {
+                    string sym = (peek).ToString();
+                    while(reader.Peek() != -1)
+                    {
+                        peek = (char)reader.Peek();
+                        if (CharType.SYMBOL != this.readChar(peek))
+                            break;
+
+                        peek = (char)reader.Read();
+                        sym += peek;
+                    }
+
+                    var atom = this.isNumber(sym);
+
+                    curr.Add(atom);
+                }
+            }
+        }
+
+        private Token isNumber(dynamic token)
+        {
+            // try integer
+            int intres;
+            bool success = int.TryParse(token, out intres);
+            if (success) return new Token(TokenType.INT, intres);
+
+            // try double
+            double doubleres;
+            success = double.TryParse(token, out doubleres);
+            if (success) return new Token(TokenType.DOUBLE, doubleres);
+
+            // must be a symbol
+            return new Token(TokenType.SYMBOL, token);
+        }
+
+        public CharType readChar(char c)
+        {
+            if (char.IsWhiteSpace(c))
+                return CharType.SPACE;
+
+            switch(c)
+            {
+                case '(':
+                    return CharType.OPENPARENS;
+                case ')':
+                    return CharType.CLOSEPARENS;
+                case '\"':
+                    return CharType.STRING;
+                default:
+                    return CharType.SYMBOL;
+            }
         }
 
         public string Stringify(dynamic parsed)
         {
-            if((parsed is List<dynamic>) == false)
+            if ((parsed is List<dynamic>) == false)
             {
                 return Convert.ToString(parsed);
             }
@@ -44,75 +157,45 @@ namespace mslisp
             }
         }
 
-        private List<string> _Tokenize(string expr)
-        {
-            expr = expr.Replace("(", " ( ");
-            expr = expr.Replace(")", " ) ");
-            string[] arr = expr.Split(' ');
-            var list = arr.Where((str) => { return str != ""; }).ToList<string>();
-            return list;
-        }
-
-        private dynamic _ReadTokens(List<string> tokens)
-        {
-            if (tokens.Count <= 0)
-                throw new SyntaxException("Invalid input.");
-
-            var token = tokens[0];
-            tokens.Remove(token);
-
-            if("(" == token)
-            {
-                var list = new ListStack();
-                while (tokens[0] != ")")
-                {
-                    list.Add(_ReadTokens(tokens));
-                }
-                tokens.Remove(tokens[0]);
-                return list;
-            }
-            else if (")" == token)
-            {
-                throw new SyntaxException("Unexpected close delimeter )");
-            }
-            else
-            {
-                return _IsAtom(token);
-            }
-        }
-
-        private dynamic _IsAtom(dynamic token)
-        {
-            // try unsigned integer
-            uint uintres;
-            bool success = uint.TryParse(token, out uintres);
-            if (success) return uintres;
-
-            // try integer
-            int intres;
-            success = int.TryParse(token, out intres);
-            if (success) return intres;
-
-            // try float
-            float floatres;
-            success = float.TryParse(token, out floatres);
-            if (success) return floatres;
-
-            // must be string
-            return token;
-        }
-
-    }
 
 
-    class ListStack : List<dynamic>
-    {
-        public dynamic Shift ()
-        {
-            var item = this.First();
-            this.RemoveAt(0);
-            return item;
-        }
+        //private List<string> _Tokenize(string expr)
+        //{
+        //    expr = expr.Replace("(", " ( ");
+        //    expr = expr.Replace(")", " ) ");
+        //    string[] arr = expr.Split(' ');
+        //    var list = arr.Where((str) => { return str != ""; }).ToList<string>();
+        //    return list;
+        //}
+
+        //private dynamic _ReadTokens(List<string> tokens)
+        //{
+        //    if (tokens.Count <= 0)
+        //        throw new SyntaxException("Invalid input.");
+
+        //    var token = tokens[0];
+        //    tokens.Remove(token);
+
+        //    if("(" == token)
+        //    {
+        //        var list = new TokenList();
+        //        while (tokens[0] != ")")
+        //        {
+        //            list.Add(_ReadTokens(tokens));
+        //        }
+        //        tokens.Remove(tokens[0]);
+        //        return list;
+        //    }
+        //    else if (")" == token)
+        //    {
+        //        throw new SyntaxException("Unexpected close delimeter )");
+        //    }
+        //    else
+        //    {
+        //        return isNumber(token);
+        //    }
+        //}
+
     }
 
 }

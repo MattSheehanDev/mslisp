@@ -13,19 +13,22 @@ namespace mslisp
         {
         }
 
-        public dynamic Eval(dynamic x, Environment env)
+        public dynamic Eval(IToken x, Environment env)
         {
-            if(!(x is ListStack))
+            if (x.isAtom())
             {
-                if (x is string)                // variable reference
-                    return env.find(x)[x];
-                else                            // constant literal
-                    return x;
+                return x;
+            }
+            else if (x.type == TokenType.SYMBOL)
+            {
+                return env.find((string)x.value)[x.value];
             }
             else
             {
-                var list = (ListStack)x;
-                var first = list.Shift();
+                var list = (TokenList)x.value;
+
+                var token = list.Shift();
+                var first = (string)token.value;
 
                 if (first == "quote")            // (quote exp)
                 {
@@ -52,8 +55,8 @@ namespace mslisp
                     var exp = list.Shift();
                     var val = this.Eval(exp, env);
 
-                    if (val is ListStack)
-                        return ((ListStack)val)[0];
+                    if (val is TokenList)
+                        return ((TokenList)val)[0];
 
                     //Todo: stringify val1
                     throw new SyntaxException(string.Format("Expression {0} is not a valid list.", exp));
@@ -63,8 +66,8 @@ namespace mslisp
                     var exp = list.Shift();
                     var val = this.Eval(exp, env);
 
-                    if (val is ListStack)
-                        return ((ListStack)val).Skip(1);
+                    if (val is TokenList)
+                        return ((TokenList)val).Skip(1);
 
                     throw new SyntaxException(string.Format("Expression {0} is not a valid list", exp));
                 }
@@ -76,12 +79,12 @@ namespace mslisp
                     var val1 = this.Eval(exp1, env);
                     var val2 = this.Eval(exp2, env);
 
-                    if (val1 is ListStack && val2 is ListStack)
-                        ((ListStack)val2).InsertRange(0, val2);
-                    else if (val2 is ListStack)
-                        return ((ListStack)val2).Insert(0, val1);
-                    else if (val2 is ListStack)
-                        return ((ListStack)val1).Add(val2);
+                    if (val1 is TokenList && val2 is TokenList)
+                        ((TokenList)val2).InsertRange(0, val2);
+                    else if (val2 is TokenList)
+                        return ((TokenList)val2).Insert(0, val1);
+                    else if (val2 is TokenList)
+                        return ((TokenList)val1).Add(val2);
 
                     throw new SyntaxException(string.Format("Expression {0} or {1} must contain a list.", exp1, exp2));
                 }
@@ -89,25 +92,28 @@ namespace mslisp
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
-                        ListStack cond = list[i];
+                        TokenList cond = (TokenList)list[i];
 
-                        if (!(cond is ListStack))
+                        if (!(cond is TokenList))
                             throw new SyntaxException(string.Format("Conditional {0} is not a conditional clause.", cond));
 
                         if (this.Eval(cond.Shift(), env))
                             return this.Eval(cond.Shift(), env);
+                        else
+                            // return new nil
+                            return new TokenList();
                     }
                 }
                 else if (first == "null?")          // (null? exp)
                 {
                     var exp = list.Shift();
-                    ListStack val = this.Eval(exp, env);
+                    TokenList val = this.Eval(exp, env);
 
                     // The only null is lisp is the empty list.
                     // So if it's not a list, then it's an atom which is not
                     // null.
                     // if it's not an atom, then it's an exception
-                    if (val is ListStack)
+                    if (val is TokenList)
                         return val.Count > 0 ? false : true;
                     else
                         return false;
@@ -122,10 +128,77 @@ namespace mslisp
 
                     return val ? this.Eval(exp1, env) : this.Eval(exp2, env);
                 }
+                else if (first == "set!")                // (set! var exp)
+                {
+                    var variable = list.Shift();
+                    var exp = list.Shift();
 
+                    var venv = env.find((string)variable.value);
+                    venv[variable.value] = this.Eval(exp, env);
+
+                    // set! returns nil
+                    return new TokenList();
+                }
+                else if(first == "define")           // (define var exp)
+                {
+                    var variable = list.Shift();
+                    var exp = list.Shift();
+
+                    env.Add((string)variable.value, this.Eval(exp, env));
+
+                    // define procedure returns nil
+                    return new TokenList();
+                }
+                else if(first == "lambda")           // (lambda (params*) exp)
+                {
+                    lambdatype l = (values) => {
+                        TokenList paramlist = (TokenList)list.Shift();
+                        var exp = list.Shift();
+
+                        // Create a new environment.
+                        var lenv = new Environment(env);
+
+                        // Add each parameter to the new environment
+                        // and bind each argument
+                        for (var i = 0; i < paramlist.Count; i++)
+                        {
+                            lenv[(string)paramlist[i].value] = values[i];
+                        }
+
+                        // Evaluate the expression.
+                        return this.Eval(exp, lenv);
+                    };
+                    
+                    return l;
+                }
+                else if (first == "begin")           // (begin exp*)
+                {
+                    dynamic val = null;
+                    list.ForEach((exp) =>
+                    {
+                        val = this.Eval(exp, env);
+                    });
+                    return val;
+                }
+                else                                  // (proc exp*)
+                {
+                    lambdatype proc = this.Eval(token, env);
+
+                    dynamic[] exprs = new dynamic[list.Count];
+                    for (var i = 0; i < list.Count; i++)
+                    {
+                        var expr = list[i];
+                        var val = this.Eval(expr, env);
+                        exprs[i] = val;
+                    }
+
+                    return proc.Invoke(exprs);
+                }
             }
 
-            return "";
+            // If nothing else is returned,
+            // return nil.
+            return new TokenList();
         }
 
     }

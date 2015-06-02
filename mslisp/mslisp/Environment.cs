@@ -15,6 +15,12 @@ namespace mslisp
             this.outerenv = env;
         }
 
+
+        public void define(string key, Array code)
+        {
+
+        }
+
         public dynamic find(string variable)
         {
             if (base.ContainsKey(variable))
@@ -27,24 +33,71 @@ namespace mslisp
     }
 
 
+    public delegate dynamic lambdatype(params dynamic[] args);
+
     class EntryEnvironment : Environment
     {
+
         public EntryEnvironment()
         {
-            var addition = new AddDelegate(this.addition);
-            this.Add("+", addition);
+            
+            this.Add("*prompt*", "mslisp");
+            this.Add("+", new lambdatype(this.addition));
+            this.Add("-", new lambdatype(this.subtraction));
+            this.Add("/", new lambdatype(this.division));
+            this.Add("*", new lambdatype(this.multiplication));
         }
+        
 
-        private int addition(params int[] values)
+        public dynamic addition(params dynamic[] nums)
         {
-            var sum = 0;
-            for (var i = 0; i < values.Length; i++)
+            dynamic sum = 0;
+            for (var i = 0; i < nums.Length; i++)
             {
-                sum += values[i];
+                sum += nums[i];
             }
             return sum;
         }
+
+        public dynamic subtraction(params dynamic[] nums)
+        {
+            dynamic diff = null;
+            for (var i = 0; i < nums.Length; i++)
+            {
+                if (diff != null)
+                    diff -= nums[i];
+                else
+                    diff = nums[i];
+            }
+            return diff;
+        }
+
+        public dynamic division(params dynamic[] nums)
+        {
+            dynamic quotient = null;
+            for (var i = 0; i < nums.Length; i++)
+            {
+                if (quotient != null)
+                    quotient /= nums[i];
+                else
+                    quotient = nums[i];
+            }
+            return quotient;
+        }
+
+        public dynamic multiplication(params dynamic[] nums)
+        {
+            dynamic times = null;
+            for (var i = 0; i < nums.Length; i++)
+            {
+                if (times != null)
+                    times *= nums[i];
+                else
+                    times = nums[i];
+            }
+            return times;
+        }
+
     }
 
-    public delegate int AddDelegate(params int[] values);
 }
