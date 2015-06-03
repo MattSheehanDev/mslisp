@@ -13,14 +13,15 @@ namespace mslisp
         INT,
         DOUBLE,
         BOOLEAN,
-        EXPRESSION
+        EXPRESSION,
+        QUOTE
     }
 
 
     interface IToken
     {
-        TokenType type { get; }
-        object value { get; }
+        TokenType Type { get; }
+        object Value { get; }
         bool isAtom();
     }
 
@@ -30,8 +31,8 @@ namespace mslisp
         private readonly object value;
 
 
-        TokenType IToken.type { get { return this.type; } }
-        object IToken.value { get { return this.value; } }
+        public TokenType Type { get { return this.type; } }
+        public object Value { get { return this.value; } }
 
 
         public Token(TokenType type, object value)
@@ -58,15 +59,14 @@ namespace mslisp
         private readonly TokenType type;
         private readonly object value;
 
-
-        TokenType IToken.type { get { return this.type; } }
-        object IToken.value { get { return this.value; } }
+        public TokenType Type { get { return this.type; } }
+        public object Value { get { return this.value; } }
 
 
         public TokenList()
         {
             this.type = TokenType.EXPRESSION;
-            this.value = null;
+            this.value = this;
         }
 
         public IToken Shift()

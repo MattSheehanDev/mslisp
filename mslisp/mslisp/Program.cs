@@ -40,13 +40,6 @@ namespace mslisp
                         var str = parser.Stringify(eval);
                         Console.WriteLine(str);
                     });
-                    //var eval = evaluator.Eval(parsed, env);
-
-                    //var str = parser.Stringify(eval);
-                    //Console.WriteLine(str);
-                    
-                    // parse, eval, print value
-                    // if value console writeline
                 }
                 catch (Exception ex)
                 {
@@ -55,26 +48,6 @@ namespace mslisp
             }
         }
 
-
-        static dynamic Eval(dynamic x, Environment e = null)
-        {
-            if (e == null) e = env;
-
-            if(typeof(string) == x)                 // variable reference
-            {
-                return e.find(x)[x];
-            }
-            else if (x[0] == "quote")               // (quote exp)
-            {
-                
-            }
-
-            return null;
-        }
-        static dynamic Eval(int x, Environment e = null)
-        {
-            return null;
-        }
 
         static void CancelKeyPress(Object sender, ConsoleCancelEventArgs args)
         {

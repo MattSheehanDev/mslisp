@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using mslisp.env;
 
 namespace mslisp
 {
@@ -35,17 +36,23 @@ namespace mslisp
 
     public delegate dynamic lambdatype(params dynamic[] args);
 
+
     class EntryEnvironment : Environment
     {
 
         public EntryEnvironment()
         {
-            
+            // global variables
             this.Add("*prompt*", "mslisp");
+
+            // global operators
             this.Add("+", new lambdatype(this.addition));
             this.Add("-", new lambdatype(this.subtraction));
             this.Add("/", new lambdatype(this.division));
             this.Add("*", new lambdatype(this.multiplication));
+
+            // global procedures
+            this.Add("quote", new Func<Token, Token>(Globals.Quote));
         }
         
 

@@ -17,24 +17,24 @@ namespace mslisp
         {
             if (x.isAtom())
             {
-                return x;
+                return x.Value;
             }
-            else if (x.type == TokenType.SYMBOL)
+            else if (x.Type == TokenType.SYMBOL)
             {
-                return env.find((string)x.value)[x.value];
+                return env.find((string)x.Value)[(string)x.Value];
             }
             else
             {
-                var list = (TokenList)x.value;
+                var list = (TokenList)x.Value;
 
                 var token = list.Shift();
-                var first = (string)token.value;
+                var first = (string)token.Value;
 
-                if (first == "quote")            // (quote exp)
-                {
-                    return list.Shift();
-                }
-                else if (first == "atom?")       // (atom? exp)
+                //if (first == "quote")            // (quote exp)
+                //{
+                //    return list.Shift();
+                //}
+                if (first == "atom?")       // (atom? exp)
                 {
                     var val = this.Eval(list.Shift(), env);
                     return val is List<dynamic>;
@@ -133,8 +133,8 @@ namespace mslisp
                     var variable = list.Shift();
                     var exp = list.Shift();
 
-                    var venv = env.find((string)variable.value);
-                    venv[variable.value] = this.Eval(exp, env);
+                    var venv = env.find((string)variable.Value);
+                    venv[variable.Value] = this.Eval(exp, env);
 
                     // set! returns nil
                     return new TokenList();
@@ -144,7 +144,7 @@ namespace mslisp
                     var variable = list.Shift();
                     var exp = list.Shift();
 
-                    env.Add((string)variable.value, this.Eval(exp, env));
+                    env.Add((string)variable.Value, this.Eval(exp, env));
 
                     // define procedure returns nil
                     return new TokenList();
@@ -162,7 +162,7 @@ namespace mslisp
                         // and bind each argument
                         for (var i = 0; i < paramlist.Count; i++)
                         {
-                            lenv[(string)paramlist[i].value] = values[i];
+                            lenv[(string)paramlist[i].Value] = values[i];
                         }
 
                         // Evaluate the expression.
@@ -182,14 +182,18 @@ namespace mslisp
                 }
                 else                                  // (proc exp*)
                 {
-                    lambdatype proc = this.Eval(token, env);
+                    var proc = this.Eval(token, env);
 
                     dynamic[] exprs = new dynamic[list.Count];
                     for (var i = 0; i < list.Count; i++)
                     {
                         var expr = list[i];
                         var val = this.Eval(expr, env);
-                        exprs[i] = val;
+
+                        if (val is Token)
+                            exprs[i] = val.Value;
+                        else
+                            exprs[i] = val;
                     }
 
                     return proc.Invoke(exprs);

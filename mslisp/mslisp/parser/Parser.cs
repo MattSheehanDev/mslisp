@@ -11,6 +11,7 @@ namespace mslisp
     {
         OPENPARENS,
         CLOSEPARENS,
+        QUOTE,
         STRING,
         SPACE,
         SYMBOL
@@ -40,7 +41,7 @@ namespace mslisp
         {
             //var root = new ListStack();
             var curr = this.tokens;
-
+            
             var stack = new Stack<TokenList>();
 
             char peek;
@@ -80,6 +81,15 @@ namespace mslisp
 
                     var token = new Token(TokenType.STRING, str);
                     curr.Add(token);
+                }
+                else if (CharType.QUOTE == type)        // '(1 2 3)
+                {
+                    peek = (char)reader.Peek();
+                    type = this.readChar(peek);
+                    if(CharType.OPENPARENS == type)
+                    {
+
+                    }
                 }
                 else if (CharType.SYMBOL == type)        // number or symbol
                 {
@@ -130,6 +140,8 @@ namespace mslisp
                     return CharType.CLOSEPARENS;
                 case '\"':
                     return CharType.STRING;
+                case '\'':
+                    return CharType.QUOTE;
                 default:
                     return CharType.SYMBOL;
             }

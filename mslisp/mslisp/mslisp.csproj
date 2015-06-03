@@ -43,12 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Environment.cs" />
+    <Compile Include="env\Environment.cs" />
+    <Compile Include="env\Globals.cs" />
     <Compile Include="Evaluator.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="parser\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Token.cs" />
+    <Compile Include="parser\Token.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
