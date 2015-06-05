@@ -43,9 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="env\Environment.cs" />
-    <Compile Include="env\Globals.cs" />
+    <Compile Include="Environment\GlobalEnvironment.cs" />
+    <Compile Include="Environment\ScopedEnvironment.cs" />
     <Compile Include="Evaluator.cs" />
+    <Compile Include="Functions\Arithmetic.cs" />
+    <Compile Include="Functions\Begin.cs" />
+    <Compile Include="Functions\Conditional.cs" />
+    <Compile Include="Functions\Define.cs" />
+    <Compile Include="Functions\List.cs" />
+    <Compile Include="Functions\Quote.cs" />
+    <Compile Include="Functions\Set.cs" />
     <Compile Include="parser\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Functions\Lambda.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,7 +14,7 @@ namespace mslisp
         QUOTE,
         STRING,
         SPACE,
-        SYMBOL
+        SYMBOL,
     }
     
     
@@ -39,7 +39,6 @@ namespace mslisp
 
         private void readText()
         {
-            //var root = new ListStack();
             var curr = this.tokens;
             
             var stack = new Stack<TokenList>();
@@ -147,15 +146,15 @@ namespace mslisp
             }
         }
 
-        public string Stringify(dynamic parsed)
+        public string Stringify(IToken parsed)
         {
-            if ((parsed is List<dynamic>) == false)
+            if ((parsed is TokenList) == false)
             {
-                return Convert.ToString(parsed);
+                return Convert.ToString(parsed.Value);
             }
             else
             {
-                var list = (List<dynamic>)parsed;
+                TokenList list = (TokenList)parsed;
 
                 var str = "(";
                 var strlist = list.Select((atom) =>

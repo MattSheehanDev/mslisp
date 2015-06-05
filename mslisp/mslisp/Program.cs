@@ -5,14 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using mslisp.Environment;
 
 namespace mslisp
 {
     class Program
     {
-        public static EntryEnvironment env = new EntryEnvironment();
-        //public static Parser parser = new Parser();
-        public static Evaluator evaluator = new Evaluator();
+        public static GlobalEnvironment env = new GlobalEnvironment();
+
 
         static void Main(string[] args)
         {
@@ -24,7 +24,8 @@ namespace mslisp
             {
                 try
                 {
-                    Console.Write(string.Format("{0}> ", env["*prompt*"]));
+                    IToken prompt = env["*prompt*"];
+                    Console.Write(string.Format("{0}> ", (string)prompt.Value));
 
                     var expr = Console.ReadLine();
 
@@ -35,7 +36,7 @@ namespace mslisp
                     //var parsed = parser.Parse(expr);
                     tokens.ForEach((list) =>
                     {
-                        var eval = evaluator.Eval(list, env);
+                        var eval = Evaluator.Eval(list, env);
 
                         var str = parser.Stringify(eval);
                         Console.WriteLine(str);
@@ -69,7 +70,14 @@ namespace mslisp
 
     class SyntaxException : Exception
     {
-        public SyntaxException(String msg) : base(msg)
+        public SyntaxException(string msg) : base(msg)
+        {
+        }
+    }
+
+    class ArgumentException: Exception
+    {
+        public ArgumentException(string msg): base(msg)
         {
         }
     }

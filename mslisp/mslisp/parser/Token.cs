@@ -13,7 +13,8 @@ namespace mslisp
         INT,
         DOUBLE,
         BOOLEAN,
-        EXPRESSION,
+        LIST,
+        LAMBDA,
         QUOTE
     }
 
@@ -54,6 +55,7 @@ namespace mslisp
         }
     }
 
+
     class TokenList : List<IToken>, IToken
     {
         private readonly TokenType type;
@@ -65,7 +67,7 @@ namespace mslisp
 
         public TokenList()
         {
-            this.type = TokenType.EXPRESSION;
+            this.type = TokenType.LIST;
             this.value = this;
         }
 
@@ -74,6 +76,27 @@ namespace mslisp
             var item = this.First();
             this.RemoveAt(0);
             return item;
+        }
+
+        public IToken CAR()
+        {
+            if (this.Count == 0)
+                return null;
+
+            return this[0];
+        }
+
+        public TokenList CDR()
+        {
+            if (this.Count <= 1)
+                return null;
+
+            var rest = new TokenList();
+            for (var i = 1; i < this.Count; i++)
+            {
+                rest.Add(this[i]);
+            }
+            return rest;
         }
 
         public bool isAtom()
