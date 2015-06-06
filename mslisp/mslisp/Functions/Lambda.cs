@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
+using mslisp.Tokens;
 
 namespace mslisp.Functions
 {
@@ -12,7 +13,7 @@ namespace mslisp.Functions
      * LAMBDA
      * (lambda (params*) exp) => anonymous function
      */
-    class Lambda : TokenFunction
+    class Lambda : FuncToken
     {
 		public Lambda()
         {
@@ -20,23 +21,23 @@ namespace mslisp.Functions
         }
 
 
-		private IToken CreateScope(TokenList list, ScopedEnvironment env)
+		private IToken CreateScope(ListToken list, ScopedEnvironment env)
         {
             if (list.Count != 3)
                 throw new ArgumentException("LAMBDA definition is missing arguments.");
 
-            if (!(list[1] is TokenList))
+            if (!(list[1] is ListToken))
                 throw new SyntaxException("LAMBDA does not have a parameter list.");
 			
-            Func<TokenList, ScopedEnvironment, IToken> func = (largs, lenv) =>
+            Func<ListToken, ScopedEnvironment, IToken> func = (largs, lenv) =>
             {
                 if (largs.Count < 2)
                     throw new ArgumentException(string.Format("{0} does not have enough arguments.", largs[0]));
 
-                TokenList paramslist = list.CDR();
-                TokenList argslist = largs.CDR();
+                ListToken paramslist = list.CDR();
+                ListToken argslist = largs.CDR();
 
-                TokenList parameters = (TokenList)paramslist[0];
+                ListToken parameters = (ListToken)paramslist[0];
                 IToken expr = paramslist[1];
 				
 
@@ -57,7 +58,7 @@ namespace mslisp.Functions
                 return result;
             };
 
-            return new TokenFunction(func);
+            return new FuncToken(func);
         }
 
     }

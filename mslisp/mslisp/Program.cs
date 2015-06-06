@@ -42,6 +42,14 @@ namespace mslisp
                         Console.WriteLine(str);
                     });
                 }
+                catch(ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch(SyntaxException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 catch (Exception ex)
                 {
                     ReplError(ex);
@@ -64,21 +72,6 @@ namespace mslisp
                 var frame = trace.GetFrame(i);
                 Console.WriteLine("Line {0}: {1}", frame.GetFileLineNumber(), frame.GetMethod());
             }
-        }
-    }
-
-
-    class SyntaxException : Exception
-    {
-        public SyntaxException(string msg) : base(msg)
-        {
-        }
-    }
-
-    class ArgumentException: Exception
-    {
-        public ArgumentException(string msg): base(msg)
-        {
         }
     }
 

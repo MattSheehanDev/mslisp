@@ -4,47 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
+using mslisp.Tokens;
 
 namespace mslisp.Functions
 {
-
-    class TokenFunction : IToken
-    {
-        protected TokenType type;
-        protected Func<TokenList, ScopedEnvironment, IToken> value;
-
-        public TokenType Type { get { return this.type; } }
-        public object Value { get { return this.value; } }
-
-        
-        public TokenFunction(Func<TokenList, ScopedEnvironment, IToken> func)
-        {
-            this.type = TokenType.LAMBDA;
-            this.value = func;
-        }
-        public TokenFunction()
-        {
-            this.type = TokenType.LAMBDA;
-        }
-
-
-        public IToken Invoke(TokenList list, ScopedEnvironment env)
-        {
-            return this.value.Invoke(list, env);
-        }
-
-        public bool isAtom()
-        {
-            return false;
-        }
-    }
-
-
     /*
      * ADDITION
      * (+ 1 2 ...)
      */
-    class Addition : TokenFunction
+    class Addition : FuncToken
     {
         public Addition()
         {
@@ -55,7 +23,7 @@ namespace mslisp.Functions
         // 1. (+) => 0
         // 2. (+ number) => number
         // 3. (+ number...) => number1 + ... + numberN
-        private IToken Add(TokenList list, ScopedEnvironment env)
+        private IToken Add(ListToken list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 return this._Add();
@@ -75,7 +43,7 @@ namespace mslisp.Functions
             return Evaluator.Eval(token, env);
         }
 
-        private IToken _Add(TokenList list, ScopedEnvironment env)
+        private IToken _Add(ListToken list, ScopedEnvironment env)
         {
             dynamic sum = null;
             TokenType type = TokenType.INT;
@@ -102,7 +70,7 @@ namespace mslisp.Functions
      * MULTIPLICATION
      * (* 10 7 ...)
      */
-    class Multiplication : TokenFunction
+    class Multiplication : FuncToken
     {
         public Multiplication()
         {
@@ -114,7 +82,7 @@ namespace mslisp.Functions
         // 1. (*) => 1
         // 2. (* number) => number
         // 3. (* number...) => number1 * ... * numberN
-        private IToken Multiply(TokenList list, ScopedEnvironment env)
+        private IToken Multiply(ListToken list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 return _Multiply();
@@ -134,7 +102,7 @@ namespace mslisp.Functions
             return Evaluator.Eval(token, env);
         }
 
-        private IToken _Multiply(TokenList list, ScopedEnvironment env)
+        private IToken _Multiply(ListToken list, ScopedEnvironment env)
         {
             dynamic times = null;
             TokenType type = TokenType.INT;
@@ -162,7 +130,7 @@ namespace mslisp.Functions
      * SUBTRACTION
      * (- 10 7)
      */
-    class Subtraction : TokenFunction
+    class Subtraction : FuncToken
     {
 
         public Subtraction()
@@ -175,7 +143,7 @@ namespace mslisp.Functions
         // 1. (-) => error
         // 2. (- number) => 0 - number
         // 3. (- number...) => number1 - ... - numberN
-        private IToken Subtract(TokenList list, ScopedEnvironment env)
+        private IToken Subtract(ListToken list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("- is missing argument(s).");
@@ -193,7 +161,7 @@ namespace mslisp.Functions
             return new Token(TokenType.DOUBLE, 0 - (float)num.Value);
         }
 
-        private IToken _Subtract(TokenList list, ScopedEnvironment env)
+        private IToken _Subtract(ListToken list, ScopedEnvironment env)
         {
             dynamic diff = null;
             TokenType type = TokenType.INT;
@@ -221,7 +189,7 @@ namespace mslisp.Functions
      * DIVISION
      * (/ 21 7)
      */
-    class Division : TokenFunction
+    class Division : FuncToken
     {
         public Division()
         {
@@ -232,7 +200,7 @@ namespace mslisp.Functions
         // 1. (/) => error
         // 2. (/ number) => 1 / number
         // 3. (/ number...) => number1 / ... / numberN
-        private IToken Divide(TokenList list, ScopedEnvironment env)
+        private IToken Divide(ListToken list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("/ is missing argument(s)");
@@ -248,7 +216,7 @@ namespace mslisp.Functions
             return new Token(TokenType.DOUBLE, 1 / (float)num.Value);
         }
 
-        private IToken _Divide(TokenList list, ScopedEnvironment env)
+        private IToken _Divide(ListToken list, ScopedEnvironment env)
         {
             dynamic quotient = null;
             TokenType type = TokenType.INT;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using mslisp.Tokens;
 
 namespace mslisp
 {
@@ -21,17 +22,17 @@ namespace mslisp
     class Parser
     {
 
-        public readonly TokenList tokens;
+        public readonly ListToken tokens;
         private readonly TextReader reader;
         
 
         public Parser(TextReader read)
         {
             this.reader = read;
-            this.tokens = new TokenList();
+            this.tokens = new ListToken();
         }
 
-        public TokenList Parse()
+        public ListToken Parse()
         {
             this.readText();
             return this.tokens;
@@ -41,7 +42,7 @@ namespace mslisp
         {
             var curr = this.tokens;
             
-            var stack = new Stack<TokenList>();
+            var stack = new Stack<ListToken>();
 
             char peek;
             while(reader.Peek() != -1)
@@ -53,7 +54,7 @@ namespace mslisp
                 {
                     stack.Push(curr);
 
-                    var list = new TokenList();
+                    var list = new ListToken();
                     curr.Add(list);
                     
                     curr = list;
@@ -148,13 +149,13 @@ namespace mslisp
 
         public string Stringify(IToken parsed)
         {
-            if ((parsed is TokenList) == false)
+            if ((parsed is ListToken) == false)
             {
                 return Convert.ToString(parsed.Value);
             }
             else
             {
-                TokenList list = (TokenList)parsed;
+                ListToken list = (ListToken)parsed;
 
                 var str = "(";
                 var strlist = list.Select((atom) =>

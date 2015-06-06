@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-
+using mslisp.Tokens;
 
 namespace mslisp
 {
@@ -37,12 +37,12 @@ namespace mslisp
             }
             else
             {
-                var list = (TokenList)x;
+                var list = (ListToken)x;
 
                 IToken first = list.CAR();
                 IToken procedure = Evaluator.Eval(first, env);
 
-                var func = (Func<TokenList, ScopedEnvironment, IToken>)procedure.Value;
+                var func = (Func<ListToken, ScopedEnvironment, IToken>)procedure.Value;
                 //var args = list.CDR();
 
                 IToken token = func.Invoke(list, env);

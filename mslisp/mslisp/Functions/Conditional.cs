@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
+using mslisp.Tokens;
 
 namespace mslisp.Functions
 {
@@ -12,7 +13,7 @@ namespace mslisp.Functions
      * IF
      * (if condition exp1 exp2) => val1 || val2
      */
-    class IfElse : TokenFunction
+    class IfElse : FuncToken
     {
         public IfElse()
         {
@@ -20,12 +21,12 @@ namespace mslisp.Functions
         }
 
 
-        private IToken CheckIfElse(TokenList list, ScopedEnvironment env)
+        private IToken CheckIfElse(ListToken list, ScopedEnvironment env)
         {
             if (list.Count != 4)
                 throw new ArgumentException("IF has wrong number of arguments.");
 
-            TokenList args = list.CDR();
+            ListToken args = list.CDR();
             IToken condition = args[0];
             IToken expr1 = args[1];
             IToken expr2 = args[2];
@@ -44,7 +45,7 @@ namespace mslisp.Functions
      * COND
      * (cond (c1 e1) ... (cn en)) => value(en) || nil
      */
-     class Conditions : TokenFunction
+     class Conditions : FuncToken
     {
         public Conditions()
         {
@@ -52,7 +53,7 @@ namespace mslisp.Functions
         }
 
 
-        public IToken CheckConditions(TokenList list, ScopedEnvironment env)
+        public IToken CheckConditions(ListToken list, ScopedEnvironment env)
         {
             if (list.Count < 2)
                 throw new ArgumentException("COND is missing arguments.");
@@ -64,10 +65,10 @@ namespace mslisp.Functions
             {
                 IToken item = conditions[i];
 
-                if (!(item is TokenList))
+                if (!(item is ListToken))
                     throw new SyntaxException(string.Format("Conditional pair {0} is missing an expresion.", item.Value));
 
-                TokenList pair = (TokenList)item;
+                ListToken pair = (ListToken)item;
 
                 if (pair.Count != 2)
                     throw new ArgumentException("Conditional has wrong number of arguments");
@@ -83,7 +84,7 @@ namespace mslisp.Functions
                 }
             }
 
-            return new TokenList();
+            return new ListToken();
         }
 
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-
+using mslisp.Tokens;
 
 namespace mslisp.Functions
 {
@@ -13,7 +13,7 @@ namespace mslisp.Functions
      * BEGIN
      * (begin exp*) => last valueof(exp)
      */
-    class Begin : TokenFunction
+    class Begin : FuncToken
     {
         public Begin()
         {
@@ -21,7 +21,7 @@ namespace mslisp.Functions
         }
 
 
-        private IToken Evaluate(TokenList list, ScopedEnvironment env)
+        private IToken Evaluate(ListToken list, ScopedEnvironment env)
         {
             if (list.Count < 2)
                 throw new ArgumentException("BEGIN is missing arguments.");

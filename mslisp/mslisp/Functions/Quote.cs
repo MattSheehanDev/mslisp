@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
+using mslisp.Tokens;
 
 namespace mslisp.Functions
 {
-
     /*
      * QUOTE
      * (quote exp) => exp
      */
-    class Quote : TokenFunction
+    class Quote : FuncToken
     {
         public Quote()
         {
@@ -20,7 +20,7 @@ namespace mslisp.Functions
         }
 
 
-        private IToken AsData(TokenList list, ScopedEnvironment env)
+        private IToken AsData(ListToken list, ScopedEnvironment env)
         {
             if (list.Count != 2)
                 throw new ArgumentException("QUOTE is missing arguments.");
