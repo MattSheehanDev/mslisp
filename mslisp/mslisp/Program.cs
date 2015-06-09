@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using mslisp.Environment;
+using mslisp.Lexical;
+using mslisp.Tokens;
 
 namespace mslisp
 {
+    // todo: convert all input to uppercase
+    // todo: global T and ()
+    // todo: load multiline files
+    // todo: run sqrt.lisp
     class Program
     {
-        public static GlobalEnvironment env = new GlobalEnvironment();
-
-
         static void Main(string[] args)
         {
+            GlobalEnvironment env = new GlobalEnvironment();
+
             // add C-c keyboard event listener
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
@@ -30,10 +35,15 @@ namespace mslisp
                     var expr = Console.ReadLine();
 
                     var reader = new StringReader(expr);
-                    var parser = new Parser(reader);
-                    var tokens = parser.Parse();
+                    var scanner = new Scanner(reader);
+                    var parser = new Parser(scanner);
 
-                    //var parsed = parser.Parse(expr);
+                    bool needMore = parser.Parse();
+                    if (needMore)
+                        continue;
+
+                    var tokens = parser.tokens;
+                    
                     tokens.ForEach((list) =>
                     {
                         var eval = Evaluator.Eval(list, env);

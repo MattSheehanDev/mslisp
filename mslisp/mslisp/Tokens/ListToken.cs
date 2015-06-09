@@ -49,9 +49,6 @@ namespace mslisp.Tokens
             return rest;
         }
 
-        public bool isAtom()
-        {
-            return false;
-        }
     }
+
 }

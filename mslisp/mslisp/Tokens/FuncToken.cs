@@ -32,10 +32,6 @@ namespace mslisp.Tokens
             return this.value.Invoke(list, env);
         }
 
-        public bool isAtom()
-        {
-            return false;
-        }
-
     }
+
 }

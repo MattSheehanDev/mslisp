@@ -65,7 +65,7 @@ namespace mslisp.Functions
         }
     }
 
-
+    
     /*
      * MULTIPLICATION
      * (* 10 7 ...)

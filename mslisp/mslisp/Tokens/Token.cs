@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using mslisp.Tokens;
 
-namespace mslisp
+namespace mslisp.Tokens
 {
     interface IToken
     {
         TokenType Type { get; }
         object Value { get; }
-        bool isAtom();
     }
 
     class Token : IToken
@@ -31,14 +30,21 @@ namespace mslisp
         }
 
 
-        public bool isAtom()
+        public static bool isAtom(IToken token)
         {
-            if (this.type == TokenType.INT ||
-                this.type == TokenType.DOUBLE ||
-                this.type == TokenType.STRING ||
-                this.type == TokenType.BOOLEAN)
+            if (token.Type == TokenType.INT ||
+                token.Type == TokenType.DOUBLE ||
+                token.Type == TokenType.STRING ||
+                token.Type == TokenType.BOOLEAN)
                 return true;
 
+            return false;
+        }
+
+        public static bool isNumber(IToken token)
+        {
+            if (TokenType.INT == token.Type || TokenType.DOUBLE == token.Type)
+                return true;
             return false;
         }
     }
