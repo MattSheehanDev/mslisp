@@ -15,7 +15,8 @@ namespace mslisp.Lexical
         QUOTATION,
         ESCAPE,
         SPACE,
-        SYMBOL
+        SYMBOL,
+        COMMENT
     }
 
     class CharValue
@@ -92,6 +93,8 @@ namespace mslisp.Lexical
 
             switch (value)
             {
+                case ';':
+                    return CharType.COMMENT;
                 case '(':
                     return CharType.OPENPARENS;
                 case ')':

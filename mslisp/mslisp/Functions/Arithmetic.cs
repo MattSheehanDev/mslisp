@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
 using mslisp.Tokens;
+using mslisp.Lexical;
 
 namespace mslisp.Functions
 {
@@ -45,23 +46,25 @@ namespace mslisp.Functions
 
         private IToken _Add(ListToken list, ScopedEnvironment env)
         {
-            dynamic sum = null;
-            TokenType type = TokenType.INT;
-
+            double sum = 0;
+            bool init = true;
+            
             for (var i = 0; i < list.Count; i++)
             {
                 IToken num = Evaluator.Eval(list[i], env);
 
-                if (sum != null)
-                    sum += (dynamic)num.Value;
+                if (init)
+                {
+                    sum = Convert.ToDouble(num.Value);
+                    init = false;
+                }
                 else
-                    sum = (dynamic)num.Value;
+                {
+                    sum += Convert.ToDouble(num.Value);
+                }
             }
 
-            if (sum is float || sum is double)
-                type = TokenType.DOUBLE;
-
-            return new Token(type, sum);
+            return Parser.toNumber(sum);
         }
     }
 
@@ -104,23 +107,25 @@ namespace mslisp.Functions
 
         private IToken _Multiply(ListToken list, ScopedEnvironment env)
         {
-            dynamic times = null;
-            TokenType type = TokenType.INT;
+            double times = 0;
+            bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
                 IToken num = Evaluator.Eval(list[i], env);
 
-                if (times != null)
-                    times *= (dynamic)num.Value;
+                if(init)
+                {
+                    times = Convert.ToDouble(num.Value);
+                    init = false;
+                }
                 else
-                    times = (dynamic)num.Value;
+                {
+                    times *= Convert.ToDouble(num.Value);
+                }
             }
 
-            if (times is float || times is double)
-                type = TokenType.DOUBLE;
-
-            return new Token(type, times);
+            return Parser.toNumber(times);
         }
 
     }
@@ -156,30 +161,30 @@ namespace mslisp.Functions
         private IToken _Subtract(IToken token, ScopedEnvironment env)
         {
             IToken num = Evaluator.Eval(token, env);
-            if (num.Type == TokenType.INT)
-                return new Token(TokenType.INT, 0 - (int)num.Value);
-            return new Token(TokenType.DOUBLE, 0 - (float)num.Value);
+            return Parser.toNumber(0 - Convert.ToDouble(num.Value));
         }
 
         private IToken _Subtract(ListToken list, ScopedEnvironment env)
         {
-            dynamic diff = null;
-            TokenType type = TokenType.INT;
+            double diff = 0;
+            bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
                 IToken num = Evaluator.Eval(list[i], env);
 
-                if (diff != null)
-                    diff -= (dynamic)num.Value;
+                if (init)
+                {
+                    diff = Convert.ToDouble(num.Value);
+                    init = false;
+                }
                 else
-                    diff = (dynamic)num.Value;
+                {
+                    diff -= Convert.ToDouble(num.Value);
+                }
             }
 
-            if (diff is float || diff is double)
-                type = TokenType.DOUBLE;
-
-            return new Token(type, diff);
+            return Parser.toNumber(diff);
         }
 
     }
@@ -213,28 +218,33 @@ namespace mslisp.Functions
         private IToken _Divide(IToken token, ScopedEnvironment env)
         {
             IToken num = Evaluator.Eval(token, env);
-            return new Token(TokenType.DOUBLE, 1 / (float)num.Value);
+            return Parser.toNumber(1 / Convert.ToDouble(num.Value));
         }
 
         private IToken _Divide(ListToken list, ScopedEnvironment env)
         {
-            dynamic quotient = null;
-            TokenType type = TokenType.INT;
+            double quotient = 0;
+            bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
                 IToken num = Evaluator.Eval(list[i], env);
 
-                if (quotient != null)
-                    quotient /= (dynamic)num.Value;
+                if (num.Type == TokenType.DOUBLE)
+                    type = TokenType.DOUBLE;
+                
+                if (init)
+                {
+                    quotient = Convert.ToDouble(num.Value);
+                    init = false;
+                }
                 else
-                    quotient = (dynamic)num.Value;
+                {
+                    quotient /= Convert.ToDouble(num.Value);
+                }
             }
 
-            if (quotient is float || quotient is double)
-                type = TokenType.DOUBLE;
-
-            return new Token(type, quotient);
+            return Parser.toNumber(quotient);
         }
     }
 

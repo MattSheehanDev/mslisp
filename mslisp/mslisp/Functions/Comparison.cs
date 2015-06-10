@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using mslisp.Tokens;
 using mslisp.Environment;
+using mslisp.Lexical;
 
 namespace mslisp.Functions
 {
@@ -56,9 +57,9 @@ namespace mslisp.Functions
 
                 if (!Token.isNumber(curr) || !Token.isNumber(next))
                     throw new TypeException("> cannot compare non-numerical types.");
-
-                var currValue = curr.Type == TokenType.INT ? (int)curr.Value : (double)curr.Value;
-                var nextValue = next.Type == TokenType.INT ? (int)next.Value : (double)next.Value;
+                
+                var currValue = Convert.ToDouble(curr.Value);
+                var nextValue = Convert.ToDouble(next.Value);
 
                 if (currValue <= nextValue)
                 {
@@ -121,8 +122,8 @@ namespace mslisp.Functions
                 if (!Token.isNumber(curr) || !Token.isNumber(next))
                     throw new TypeException("< cannot compare non-numerical types.");
 
-                var currValue = curr.Type == TokenType.INT ? (int)curr.Value : (double)curr.Value;
-                var nextValue = next.Type == TokenType.INT ? (int)next.Value : (double)next.Value;
+                var currValue = Convert.ToDouble(curr.Value);
+                var nextValue = Convert.ToDouble(next.Value);
 
                 if (currValue >= nextValue)
                 {
@@ -186,8 +187,8 @@ namespace mslisp.Functions
                 if (!Token.isNumber(curr) || !Token.isNumber(next))
                     throw new TypeException(">= cannot compare non-numerical types.");
 
-                var currValue = TokenType.INT == curr.Type ? (int)curr.Value : (double)curr.Value;
-                var nextValue = TokenType.INT == curr.Type ? (int)next.Value : (double)next.Value;
+                var currValue = Convert.ToDouble(curr.Value);
+                var nextValue = Convert.ToDouble(next.Value);
 
                 if (currValue < nextValue)
                 {
@@ -251,8 +252,8 @@ namespace mslisp.Functions
                 if (!Token.isNumber(curr) || !Token.isNumber(next))
                     throw new TypeException("<= cannot compare non-numerical types.");
 
-                var currValue = TokenType.INT == curr.Type ? (int)curr.Value : (double)curr.Value;
-                var nextValue = TokenType.INT == curr.Type ? (int)next.Value : (double)next.Value;
+                var currValue = Convert.ToDouble(curr.Value);
+                var nextValue = Convert.ToDouble(next.Value);
 
                 if(currValue > nextValue)
                 {
@@ -316,8 +317,8 @@ namespace mslisp.Functions
                 if (!Token.isNumber(curr) || !Token.isNumber(next))
                     throw new TypeException("= cannot compare non-numerical types.");
 
-                var currValue = TokenType.INT == curr.Type ? (int)curr.Value : (double)curr.Value;
-                var nextValue = TokenType.INT == curr.Type ? (int)next.Value : (double)next.Value;
+                var currValue = Convert.ToDouble(curr.Value);
+                var nextValue = Convert.ToDouble(curr.Value);
 
                 if(currValue != nextValue)
                 {

@@ -8,6 +8,7 @@ namespace mslisp.Tokens
 {
     enum TokenType
     {
+        COMMENT,
         SYMBOL,
         STRING,
         INT,

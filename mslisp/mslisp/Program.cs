@@ -14,6 +14,7 @@ namespace mslisp
     // todo: convert all input to uppercase
     // todo: global T and ()
     // todo: load multiline files
+    // todo: consolidate load and repl
     // todo: run sqrt.lisp
     class Program
     {
@@ -23,7 +24,7 @@ namespace mslisp
 
             // add C-c keyboard event listener
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
-
+            
             // repl
             while(true)
             {
@@ -32,7 +33,7 @@ namespace mslisp
                     IToken prompt = env["*prompt*"];
                     Console.Write(string.Format("{0}> ", (string)prompt.Value));
 
-                    var expr = Console.ReadLine();
+                    string expr = Console.ReadLine();
 
                     var reader = new StringReader(expr);
                     var scanner = new Scanner(reader);

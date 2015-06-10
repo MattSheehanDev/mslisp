@@ -40,6 +40,8 @@ namespace mslisp.Environment
             this.Add("quote", new Quote());
             this.Add("lambda", new Lambda());
 
+            this.Add("load", new Load());
+
             // these can be implemented in lisp.
             // also to be implemented in lisp
             // => cadr

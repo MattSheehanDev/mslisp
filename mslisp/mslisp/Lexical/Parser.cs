@@ -38,7 +38,23 @@ namespace mslisp.Lexical
                 scanner.Next();
                 var type = scanner.IsType(scanner.Current);
 
-                if (CharType.OPENPARENS == type)        // begin list
+                if(CharType.COMMENT == type)
+                {
+                    while (scanner.IsMore())
+                    {
+                        char ret = scanner.Current;
+                        char newline = scanner.Peek;
+
+                        // comments go until the next new line
+                        if(ret == '\r' && newline == '\n')
+                        {
+                            break;
+                        }
+
+                        scanner.Next();
+                    }
+                }
+                else if (CharType.OPENPARENS == type)        // begin list
                 {
                     this.stack.Push(curr);
 
@@ -94,7 +110,7 @@ namespace mslisp.Lexical
                         sym += scanner.Next();
                     }
 
-                    var atom = this.isNumber(sym);
+                    var atom = Parser.toNumber(sym);
 
                     curr.Add(atom);
                 }
@@ -106,20 +122,23 @@ namespace mslisp.Lexical
             return true;
         }
 
-        private Token isNumber(dynamic token)
+        public static Token toNumber(object num)
         {
             // try integer
             int intres;
-            bool success = int.TryParse(token, out intres);
+            bool success = int.TryParse(Convert.ToString(num), out intres);
             if (success) return new Token(TokenType.INT, intres);
 
             // try double
             double doubleres;
-            success = double.TryParse(token, out doubleres);
-            if (success) return new Token(TokenType.DOUBLE, doubleres);
+            success = double.TryParse(Convert.ToString(num), out doubleres);
+            if (success)
+            {
+                return new Token(TokenType.DOUBLE, doubleres);
+            }
 
             // must be a symbol
-            return new Token(TokenType.SYMBOL, token);
+            return new Token(TokenType.SYMBOL, num);
         }
 
 

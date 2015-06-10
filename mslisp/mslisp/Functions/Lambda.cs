@@ -43,13 +43,13 @@ namespace mslisp.Functions
 
                 // create new environment
 				// not sure if i'm using the right environment???
-                var scopedenv = new ScopedEnvironment(lenv);
+                var scopedenv = new ScopedEnvironment(env);
 
                 // bind parameter list with argument list
                 for (var i = 0; i < parameters.Count; i++)
                 {
                     IToken param = parameters[i];
-                    IToken arg = Evaluator.Eval(argslist[i], env);
+                    IToken arg = Evaluator.Eval(argslist[i], lenv);
 
                     scopedenv.Add((string)param.Value, arg);
                 }

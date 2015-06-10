@@ -43,7 +43,6 @@ namespace mslisp
                 IToken procedure = Evaluator.Eval(first, env);
 
                 var func = (Func<ListToken, ScopedEnvironment, IToken>)procedure.Value;
-                //var args = list.CDR();
 
                 IToken token = func.Invoke(list, env);
                 return token;

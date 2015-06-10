@@ -22,6 +22,13 @@ namespace mslisp.Environment
 
         }
 
+
+        public new void Add(string str, IToken token)
+        {
+            // wraps base Add, but makes sure str is upper
+            base.Add(str, token);
+        }
+
         public dynamic find(string variable)
         {
             if (base.ContainsKey(variable))
@@ -29,7 +36,7 @@ namespace mslisp.Environment
             else if (this.outerenv != null)
                 return this.outerenv.find(variable);
 
-            throw new SyntaxException(String.Format("Symbol {} not found.", variable));
+            throw new SyntaxException(String.Format("Symbol {0} not found.", variable));
         }
     }
 }

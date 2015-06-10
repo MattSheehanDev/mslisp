@@ -29,7 +29,7 @@ namespace mslisp.Functions
             IToken variable = args[0];
             IToken expression = args[1];
 
-            env[(string)variable.Value] = Evaluator.Eval(expression, env);
+            env.Add((string)variable.Value, Evaluator.Eval(expression, env));
 
             // the empty list is nil
             return new ListToken();

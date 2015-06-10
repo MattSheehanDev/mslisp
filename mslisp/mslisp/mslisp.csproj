@@ -56,6 +56,7 @@
     <Compile Include="Functions\IsEqual.cs" />
     <Compile Include="Functions\List.cs" />
     <Compile Include="Functions\IsNull.cs" />
+    <Compile Include="Functions\Load.cs" />
     <Compile Include="Functions\Quote.cs" />
     <Compile Include="Functions\Set.cs" />
     <Compile Include="Lexical\Parser.cs" />
