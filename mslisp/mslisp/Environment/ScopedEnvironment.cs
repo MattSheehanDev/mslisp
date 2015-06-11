@@ -29,12 +29,23 @@ namespace mslisp.Environment
             base.Add(str, token);
         }
 
-        public dynamic find(string variable)
+        // returns environment that variable can be found.
+        public ScopedEnvironment Find(string variable)
         {
             if (base.ContainsKey(variable))
                 return this;
             else if (this.outerenv != null)
-                return this.outerenv.find(variable);
+                return this.outerenv.Find(variable);
+            
+            throw new SyntaxException(String.Format("Symbol {0} not found.", variable));
+        }
+
+        public IToken Fetch(string variable)
+        {
+            if (base.ContainsKey(variable))
+                return this[variable];
+            else if (this.outerenv != null)
+                return this.outerenv.Fetch(variable);
 
             throw new SyntaxException(String.Format("Symbol {0} not found.", variable));
         }

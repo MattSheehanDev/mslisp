@@ -32,7 +32,9 @@ namespace mslisp.Functions
             IToken expr2 = args[2];
 
             IToken value = Evaluator.Eval(condition, env);
-            if ((bool)value.Value)
+
+            // anything thats not nil is true.
+            if (value != env.Fetch("nil"))
                 return Evaluator.Eval(expr1, env);
             else
                 return Evaluator.Eval(expr2, env);
@@ -84,7 +86,8 @@ namespace mslisp.Functions
                 }
             }
 
-            return new ListToken();
+            // no conditional executed, return false.
+            return env.Fetch("nil");
         }
 
     }

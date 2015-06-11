@@ -146,6 +146,10 @@ namespace mslisp.Lexical
         {
             if ((parsed is ListToken) == false)
             {
+                if (parsed.Value == null)
+                    return "NIL";
+                else if (parsed.Type == TokenType.BOOLEAN && (bool)parsed.Value == true)
+                    return "T";
                 return Convert.ToString(parsed.Value);
             }
             else

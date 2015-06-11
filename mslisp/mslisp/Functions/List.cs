@@ -30,7 +30,7 @@ namespace mslisp.Functions
             ListToken listvalue = (ListToken)value;
 
             if (listvalue.Count == 0)
-                return null;
+                return env.Fetch("nil");
 
             return listvalue[0];
         }
@@ -49,7 +49,7 @@ namespace mslisp.Functions
         }
 
 
-        private ListToken Rest(ListToken list, ScopedEnvironment env)
+        private IToken Rest(ListToken list, ScopedEnvironment env)
         {
             IToken value = Evaluator.Eval(list[1], env);
 
@@ -59,7 +59,7 @@ namespace mslisp.Functions
             ListToken listvalue = (ListToken)value;
 
             if (listvalue.Count <= 1)
-                return null;
+                return env.Fetch("nil");
 
             var rest = new ListToken();
             for (var i = 1; i < listvalue.Count; i++)
@@ -94,15 +94,15 @@ namespace mslisp.Functions
             IToken value1 = Evaluator.Eval(expr1, env);
             IToken value2 = Evaluator.Eval(expr2, env);
 
-            if (value1 is ListToken && value2 is ListToken)
-            {
-                ListToken list1 = (ListToken)value1;
-                ListToken list2 = (ListToken)value2;
+            //if (value1 is ListToken && value2 is ListToken)
+            //{
+            //    ListToken list1 = (ListToken)value1;
+            //    ListToken list2 = (ListToken)value2;
 
-                list2.InsertRange(0, list2);
-                return list2;
-            }
-            else if (value2 is ListToken)
+            //    list2.InsertRange(0, list2);
+            //    return list2;
+            //}
+            if (value2 is ListToken)
             {
                 ListToken list2 = (ListToken)value2;
                 list2.Insert(0, value1);

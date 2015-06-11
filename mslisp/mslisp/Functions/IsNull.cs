@@ -39,25 +39,39 @@ namespace mslisp.Functions
         private IToken _checkIfNull(IToken token, ScopedEnvironment env)
         {
             IToken value = Evaluator.Eval(token, env);
-            return new Token(TokenType.BOOLEAN, (value.Value == null));
+
+            // Check if empty list or nil.
+            // if not either, then it's not null
+            if(value.Type == TokenType.LIST)
+            {
+                ListToken list = (ListToken)value;
+
+                // empty list is nil
+                if (list.Count == 0)
+                    return env.Fetch("#t");
+            }
+            else if (value == env.Fetch("nil"))
+            {
+                return env.Fetch("#t");
+            }
+
+            // return false
+            return env.Fetch("nil");
         }
 
         private IToken _checkIfNull(ListToken list, ScopedEnvironment env)
         {
-            bool nil = true;
-
             for (var i = 0; i < list.Count; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
+                IToken value = this._checkIfNull(list[i], env);
 
-                if(curr.Value != null)
-                {
-                    nil = false;
-                    break;
-                }
+                // check if true, otherwise return false
+                if (value != env.Fetch("#t"))
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, nil);
+            // return true
+            return env.Fetch("#t");
         }
 
     }

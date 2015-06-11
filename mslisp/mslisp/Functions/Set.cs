@@ -30,9 +30,9 @@ namespace mslisp.Functions
             IToken variable = args[0];
             IToken expr = args[1];
 
-            var envscope = env.find((string)variable.Value);
             IToken value = Evaluator.Eval(expr, env);
 
+            ScopedEnvironment envscope = env.Find((string)variable.Value);
             envscope[(string)variable.Value] = value;
 
             // empty list is nil

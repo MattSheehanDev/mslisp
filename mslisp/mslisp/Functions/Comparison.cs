@@ -41,15 +41,13 @@ namespace mslisp.Functions
 
             // single argument always returns true
             if (Token.isNumber(token))
-                return new Token(TokenType.BOOLEAN, true);
+                return env.Fetch("#t");
 
             throw new TypeException("> cannot compare non-numerical types.");
         }
 
         private IToken _Greater(ListToken list, ScopedEnvironment env)
         {
-            bool greater = true;
-
             for (var i = 0; i < list.Count - 1; i++)
             {
                 IToken curr = Evaluator.Eval(list[i], env);
@@ -62,13 +60,10 @@ namespace mslisp.Functions
                 var nextValue = Convert.ToDouble(next.Value);
 
                 if (currValue <= nextValue)
-                {
-                    greater = false;
-                    break;
-                }
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, greater);
+            return env.Fetch("#t");
         }
 
     }
@@ -105,15 +100,13 @@ namespace mslisp.Functions
             IToken value = Evaluator.Eval(token, env);
 
             if (Token.isNumber(token))
-                return new Token(TokenType.BOOLEAN, true);
+                return env.Fetch("#t");
 
             throw new TypeException("< cannot compare non-numerical types.");
         }
 
         private IToken _Less(ListToken list, ScopedEnvironment env)
         {
-            bool less = true;
-
             for (var i = 0; i < list.Count - 1; i++)
             {
                 IToken curr = Evaluator.Eval(list[i], env);
@@ -125,14 +118,13 @@ namespace mslisp.Functions
                 var currValue = Convert.ToDouble(curr.Value);
                 var nextValue = Convert.ToDouble(next.Value);
 
+                // not less than, return false.
                 if (currValue >= nextValue)
-                {
-                    less = false;
-                    break;
-                }
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, less);
+            // return true;
+            return env.Fetch("#t");
         }
 
     }
@@ -170,15 +162,13 @@ namespace mslisp.Functions
             IToken value = Evaluator.Eval(token, env);
 
             if (Token.isNumber(token))
-                return new Token(TokenType.BOOLEAN, true);
+                return env.Fetch("#t");
 
             throw new TypeException(">= cannot compare non-numerical types.");
         }
 
         private IToken _Greater(ListToken list, ScopedEnvironment env)
         {
-            bool less = true;
-
             for (var i = 0; i < list.Count - 1; i++)
             {
                 IToken curr = Evaluator.Eval(list[i], env);
@@ -191,13 +181,10 @@ namespace mslisp.Functions
                 var nextValue = Convert.ToDouble(next.Value);
 
                 if (currValue < nextValue)
-                {
-                    less = false;
-                    break;
-                }
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, less);
+            return env.Fetch("#t");
         }
 
     }
@@ -234,16 +221,15 @@ namespace mslisp.Functions
         {
             IToken value = Evaluator.Eval(token, env);
 
+            // a comparison of one number always returns true.
             if (Token.isNumber(token))
-                return new Token(TokenType.BOOLEAN, true);
+                return env.Fetch("#t");
 
             throw new TypeException("<= cannot compare non-numerical types.");
         }
 
         private IToken _Less(ListToken list, ScopedEnvironment env)
         {
-            bool greater = true;
-
             for (var i = 0; i < list.Count - 1; i++)
             {
                 IToken curr = Evaluator.Eval(list[i], env);
@@ -255,14 +241,11 @@ namespace mslisp.Functions
                 var currValue = Convert.ToDouble(curr.Value);
                 var nextValue = Convert.ToDouble(next.Value);
 
-                if(currValue > nextValue)
-                {
-                    greater = false;
-                    break;
-                }
+                if (currValue > nextValue)
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, greater);
+            return env.Fetch("#t");
         }
 
     }
@@ -300,15 +283,13 @@ namespace mslisp.Functions
             IToken value = Evaluator.Eval(token, env);
 
             if (Token.isNumber(token))
-                return new Token(TokenType.BOOLEAN, true);
+                return env.Fetch("#t");
 
             throw new TypeException("= cannot compare non-numerical types.");
         }
 
         private IToken _IsEquals(ListToken list, ScopedEnvironment env)
         {
-            var equals = true;
-
             for (var i = 0; i < list.Count - 1; i++)
             {
                 IToken curr = Evaluator.Eval(list[i], env);
@@ -320,14 +301,11 @@ namespace mslisp.Functions
                 var currValue = Convert.ToDouble(curr.Value);
                 var nextValue = Convert.ToDouble(curr.Value);
 
-                if(currValue != nextValue)
-                {
-                    equals = false;
-                    break;
-                }
+                if (currValue != nextValue)
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, equals);
+            return env.Fetch("#t");
         }
 
     }

@@ -12,7 +12,6 @@ using mslisp.Tokens;
 namespace mslisp
 {
     // todo: convert all input to uppercase
-    // todo: global T and ()
     // todo: load multiline files
     // todo: consolidate load and repl
     // todo: run sqrt.lisp

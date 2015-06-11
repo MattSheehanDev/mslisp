@@ -38,7 +38,11 @@ namespace mslisp.Functions
             IToken second = Evaluator.Eval(list[1], env);
 
             // todo: check if list?
-            return new Token(TokenType.BOOLEAN, (first.Value == second.Value));
+            // todo: compare token values or tokens?
+            if (first == second)
+                return env.Fetch("#t");
+
+            return env.Fetch("nil");
         }
     }
 }

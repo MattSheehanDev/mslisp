@@ -17,6 +17,10 @@ namespace mslisp.Environment
             // global variables
             this.Add("*prompt*", new Token(TokenType.STRING, "mslisp"));
 
+            this.Add("#t", new Token(TokenType.BOOLEAN, true));
+            this.Add("nil", new Token(TokenType.NULL, null));
+            //this.Add("#f", new Token(TokenType.BOOLEAN, false));
+
             // global procedures
             this.Add("+", new Addition());
             this.Add("*", new Multiplication());

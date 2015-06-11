@@ -38,25 +38,22 @@ namespace mslisp.Functions
         private IToken _checkIfAtom(IToken token, ScopedEnvironment env)
         {
             IToken value = Evaluator.Eval(token, env);
-            return new Token(TokenType.BOOLEAN, Token.isAtom(value));    
+            if (Token.isAtom(value))
+                return env.Fetch("#t");
+            return env.Fetch("nil");
         }
 
         private IToken _checkIfAtom(ListToken list, ScopedEnvironment env)
         {
-            bool atom = true;
-
             for (var i = 0; i < list.Count; i++)
             {
                 IToken token = Evaluator.Eval(list[i], env);
 
                 if (!Token.isAtom(token))
-                {
-                    atom = false;
-                    break;
-                }
+                    return env.Fetch("nil");
             }
 
-            return new Token(TokenType.BOOLEAN, atom);
+            return env.Fetch("#t");
         }
 
     }

@@ -14,6 +14,7 @@ namespace mslisp.Tokens
         INT,
         DOUBLE,
         BOOLEAN,
+        NULL,
         LIST,
         LAMBDA,
         QUOTE

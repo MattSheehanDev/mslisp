@@ -23,7 +23,7 @@ namespace mslisp
             }
             else if (x.Type == TokenType.SYMBOL)
             {
-                var sym = env.find((string)x.Value)[(string)x.Value];
+                var sym = env.Fetch((string)x.Value);
 
                 if (sym is IToken)
                 {

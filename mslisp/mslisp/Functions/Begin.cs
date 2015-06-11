@@ -31,7 +31,7 @@ namespace mslisp.Functions
 
             for (var i = 0; i < args.Count; i++)
             {
-                value = args[i];
+                value = Evaluator.Eval(args[i], env);
             }
 
             return value;

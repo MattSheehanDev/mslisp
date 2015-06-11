@@ -2,7 +2,9 @@
 
 (define sqrt
     (lambda (y)
-      (sqrt-iter y 1)))
+      (if (> y 0)
+	  (sqrt-iter y 1)
+	  nil)))
 
 (define sqrt-iter
     (lambda (y guess)
