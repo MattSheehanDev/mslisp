@@ -38,7 +38,7 @@ namespace mslisp.Lexical
                 scanner.Next();
                 var type = scanner.IsType(scanner.Current);
 
-                if(CharType.COMMENT == type)
+                if(LexType.COMMENT == type)
                 {
                     while (scanner.IsMore())
                     {
@@ -54,7 +54,7 @@ namespace mslisp.Lexical
                         scanner.Next();
                     }
                 }
-                else if (CharType.OPENPARENS == type)        // begin list
+                else if (LexType.LISTOPEN == type)    // begin list
                 {
                     this.stack.Push(curr);
 
@@ -63,25 +63,25 @@ namespace mslisp.Lexical
                     
                     curr = list;
                 }
-                else if (CharType.CLOSEPARENS == type)    // end list
+                else if (LexType.LISTCLOSE == type)    // end list
                 {
                     if (this.stack.Peek() != null)
                         curr = this.stack.Pop();
                     else
                         throw new SyntaxException("Unexpected ) delimeter.");
                 }
-                else if (CharType.QUOTATION == type)       // string
+                else if (LexType.QUOTATION == type)       // string
                 {
                     var str = "";
                     while(scanner.IsMore())
                     {
                         scanner.Next();
                         
-                        if(CharType.ESCAPE == scanner.IsType(scanner.Current))
+                        if(LexType.ESCAPE == scanner.IsType(scanner.Current))
                         {
                             scanner.Next();
                         }
-                        else if (CharType.QUOTATION == scanner.IsType(scanner.Current))
+                        else if (LexType.QUOTATION == scanner.IsType(scanner.Current))
                         {
                             break;
                         }
@@ -92,19 +92,19 @@ namespace mslisp.Lexical
                     var token = new Token(TokenType.STRING, str);
                     curr.Add(token);
                 }
-                else if (CharType.APOSTRAPHE == type)        // '(1 2 3)
+                else if (LexType.TICK == type)        // '(1 2 3)
                 {
-                    if(CharType.OPENPARENS == scanner.IsType(scanner.Peek))
+                    if(LexType.LISTOPEN == scanner.IsType(scanner.Peek))
                     {
                         
                     }
                 }
-                else if (CharType.SYMBOL == type)        // number or symbol
+                else if (LexType.SYMBOL == type)        // number or symbol
                 {
                     string sym = scanner.Current.ToString();
                     while(scanner.IsMore())
                     {
-                        if (CharType.SYMBOL != scanner.IsType(scanner.Peek))
+                        if (LexType.SYMBOL != scanner.IsType(scanner.Peek))
                             break;
                         
                         sym += scanner.Next();

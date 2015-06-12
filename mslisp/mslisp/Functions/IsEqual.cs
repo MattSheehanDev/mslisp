@@ -38,9 +38,33 @@ namespace mslisp.Functions
             IToken second = Evaluator.Eval(list[1], env);
 
             // todo: check if list?
-            // todo: compare token values or tokens?
+            // todo: my compare values doesn't work
+            
+            // compare tokens first, same tokens are equal
             if (first == second)
+            {
                 return env.Fetch("#t");
+            }
+            // then compare values
+            else if(first.Type == second.Type)
+            {
+                if(first.Type == TokenType.DOUBLE)
+                {
+                    if ((double)first.Value == (double)second.Value)
+                        return env.Fetch("#t");
+                }
+                else if (first.Type == TokenType.INT)
+                {
+                    if ((int)first.Value == (int)second.Value)
+                        return env.Fetch("#t");
+                }
+                else if (first.Type == TokenType.STRING)
+                {
+                    if ((string)first.Value == (string)second.Value)
+                        return env.Fetch("#t");
+                }
+
+            }
 
             return env.Fetch("nil");
         }

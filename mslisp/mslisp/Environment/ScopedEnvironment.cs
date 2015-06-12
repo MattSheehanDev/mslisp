@@ -36,8 +36,8 @@ namespace mslisp.Environment
                 return this;
             else if (this.outerenv != null)
                 return this.outerenv.Find(variable);
-            
-            throw new SyntaxException(String.Format("Symbol {0} not found.", variable));
+
+            throw new SyntaxException("Symbol {0} not found.", variable);
         }
 
         public IToken Fetch(string variable)
@@ -47,7 +47,7 @@ namespace mslisp.Environment
             else if (this.outerenv != null)
                 return this.outerenv.Fetch(variable);
 
-            throw new SyntaxException(String.Format("Symbol {0} not found.", variable));
+            throw new SyntaxException("Symbol {0} not found.", variable);
         }
     }
 }

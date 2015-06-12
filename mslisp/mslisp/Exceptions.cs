@@ -8,14 +8,14 @@ namespace mslisp
 {
     class SyntaxException : Exception
     {
-        public SyntaxException(string msg) : base(msg)
+        public SyntaxException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {
         }
     }
 
     class ArgumentException : Exception
     {
-        public ArgumentException(string msg) : base(msg)
+        public ArgumentException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {
         }
     }
@@ -23,7 +23,7 @@ namespace mslisp
 
     class TypeException : Exception
     {
-        public TypeException(string msg) : base(msg)
+        public TypeException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {
         }
     }

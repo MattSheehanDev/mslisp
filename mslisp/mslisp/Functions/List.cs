@@ -25,7 +25,7 @@ namespace mslisp.Functions
             IToken value = Evaluator.Eval(list[1], env);
 
             if (!(value is ListToken))
-                throw new SyntaxException(string.Format("{0} is not a valid list.", value.Value));
+                throw new SyntaxException("{0} is not a valid list.", value.Value);
 
             ListToken listvalue = (ListToken)value;
 
@@ -54,7 +54,7 @@ namespace mslisp.Functions
             IToken value = Evaluator.Eval(list[1], env);
 
             if (!(value is ListToken))
-                throw new SyntaxException(string.Format("{0} is not a valid list.", value.Value));
+                throw new SyntaxException("{0} is not a valid list.", value.Value);
 
             ListToken listvalue = (ListToken)value;
 
@@ -104,19 +104,35 @@ namespace mslisp.Functions
             //}
             if (value2 is ListToken)
             {
+                var cons = new ListToken();
+                
+                cons.Add(value1);
+
                 ListToken list2 = (ListToken)value2;
-                list2.Insert(0, value1);
-                return list2;
+                list2.ForEach((v) =>
+                {
+                    cons.Add(v);
+                });
+
+                return cons;
             }
             else if (value1 is ListToken)
             {
+                var cons = new ListToken();
+
+                cons.Add(value2);
+
                 ListToken list1 = (ListToken)value1;
-                list1.Add(value2);
-                return list1;
+                list1.ForEach((v) =>
+                {
+                    cons.Add(v);
+                });
+
+                return cons;
             }
             else
             {
-                throw new ArgumentException(string.Format("CONS problem with {0} or {1}.", value1.Value, value2.Value));
+                throw new ArgumentException("CONS problem with {0} or {1}.", value1.Value, value2.Value);
             }
         }
 

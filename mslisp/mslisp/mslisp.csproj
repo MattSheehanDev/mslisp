@@ -59,6 +59,7 @@
     <Compile Include="Functions\Load.cs" />
     <Compile Include="Functions\Quote.cs" />
     <Compile Include="Functions\Set.cs" />
+    <Compile Include="Lexical\Lexer.cs" />
     <Compile Include="Lexical\Parser.cs" />
     <Compile Include="Lexical\Scanner.cs" />
     <Compile Include="Program.cs" />

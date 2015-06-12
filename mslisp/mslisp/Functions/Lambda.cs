@@ -32,7 +32,7 @@ namespace mslisp.Functions
             Func<ListToken, ScopedEnvironment, IToken> func = (largs, lenv) =>
             {
                 if (largs.Count < 2)
-                    throw new ArgumentException(string.Format("{0} does not have enough arguments.", largs[0]));
+                    throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
 
                 ListToken paramslist = list.CDR();
                 ListToken argslist = largs.CDR();

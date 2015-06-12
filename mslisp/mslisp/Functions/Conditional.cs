@@ -68,7 +68,7 @@ namespace mslisp.Functions
                 IToken item = conditions[i];
 
                 if (!(item is ListToken))
-                    throw new SyntaxException(string.Format("Conditional pair {0} is missing an expresion.", item.Value));
+                    throw new SyntaxException("Conditional pair {0} is missing an expresion.", item.Value);
 
                 ListToken pair = (ListToken)item;
 

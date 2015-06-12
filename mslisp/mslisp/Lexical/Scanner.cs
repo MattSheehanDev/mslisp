@@ -7,34 +7,6 @@ using System.IO;
 
 namespace mslisp.Lexical
 {
-    enum CharType
-    {
-        OPENPARENS,
-        CLOSEPARENS,
-        APOSTRAPHE,
-        QUOTATION,
-        ESCAPE,
-        SPACE,
-        SYMBOL,
-        COMMENT
-    }
-
-    class CharValue
-    {
-        private char value;
-        private CharType type;
-
-        public char Value { get { return this.value; } }
-        public CharType Type { get { return this.type; } }
-
-
-        public CharValue(char value, CharType type)
-        {
-            this.value = value;
-            this.type = type;
-        }
-    }
-
     class Scanner
     {
         private readonly TextReader reader;
@@ -86,27 +58,27 @@ namespace mslisp.Lexical
             return this.current;
         }
         
-        public CharType IsType(char value)
+        public LexType IsType(char value)
         {
             if (char.IsWhiteSpace(value))
-                return CharType.SPACE;
+                return LexType.WHITESPACE;
 
             switch (value)
             {
                 case ';':
-                    return CharType.COMMENT;
+                    return LexType.COMMENT;
                 case '(':
-                    return CharType.OPENPARENS;
+                    return LexType.LISTOPEN;
                 case ')':
-                    return CharType.CLOSEPARENS;
+                    return LexType.LISTCLOSE;
                 case '\"':
-                    return CharType.QUOTATION;
+                    return LexType.QUOTATION;
                 case '\'':
-                    return CharType.APOSTRAPHE;
+                    return LexType.TICK;
                 case '\\':
-                    return CharType.ESCAPE;
+                    return LexType.ESCAPE;
                 default:
-                    return CharType.SYMBOL;
+                    return LexType.SYMBOL;
             }
         }
 
