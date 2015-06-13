@@ -13,7 +13,7 @@ namespace mslisp.Functions
      * BEGIN
      * (begin exp*) => last valueof(exp)
      */
-    class Begin : FuncToken
+    class Begin : SExpression
     {
         public Begin()
         {
@@ -21,13 +21,13 @@ namespace mslisp.Functions
         }
 
 
-        private IToken Evaluate(ListToken list, ScopedEnvironment env)
+        private IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Count < 2)
                 throw new ArgumentException("BEGIN is missing arguments.");
 
             var args = list.CDR();
-            IToken value = null;
+            IDatum value = null;
 
             for (var i = 0; i < args.Count; i++)
             {

@@ -12,7 +12,7 @@ namespace mslisp.Functions
      * QUOTE
      * (quote exp) => exp
      */
-    class Quote : FuncToken
+    class Quote : SExpression
     {
         public Quote()
         {
@@ -20,7 +20,7 @@ namespace mslisp.Functions
         }
 
 
-        private IToken AsData(ListToken list, ScopedEnvironment env)
+        private IDatum AsData(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 2)
                 throw new ArgumentException("QUOTE is missing arguments.");

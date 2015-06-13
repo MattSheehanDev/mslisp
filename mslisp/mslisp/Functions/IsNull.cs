@@ -12,7 +12,7 @@ namespace mslisp.Functions
      * ISNULL
      * (null? args)
      */
-    class IsNull : FuncToken
+    class IsNull : SExpression
     {
         // todo: don't actually check if 'null', check if empty list '()'
         public IsNull()
@@ -25,10 +25,10 @@ namespace mslisp.Functions
         // 1. (null?) => T
         // 2. (null? arg) => T if null
         // 3. (null? args...) => T if all are null
-        private IToken checkIfNull(ListToken list, ScopedEnvironment env)
+        private IDatum checkIfNull(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
-                return new Token(TokenType.BOOLEAN, true);
+                return new Datum(DatumType.BOOLEAN, true);
             else if (list.Count == 2)
                 return this._checkIfNull(list[1], env);
             else
@@ -36,15 +36,15 @@ namespace mslisp.Functions
         }
 
 
-        private IToken _checkIfNull(IToken token, ScopedEnvironment env)
+        private IDatum _checkIfNull(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
             // Check if empty list or nil.
             // if not either, then it's not null
-            if(value.Type == TokenType.LIST)
+            if(value.Type == DatumType.LIST)
             {
-                ListToken list = (ListToken)value;
+                Vector list = (Vector)value;
 
                 // empty list is nil
                 if (list.Count == 0)
@@ -59,11 +59,11 @@ namespace mslisp.Functions
             return env.Fetch("nil");
         }
 
-        private IToken _checkIfNull(ListToken list, ScopedEnvironment env)
+        private IDatum _checkIfNull(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count; i++)
             {
-                IToken value = this._checkIfNull(list[i], env);
+                IDatum value = this._checkIfNull(list[i], env);
 
                 // check if true, otherwise return false
                 if (value != env.Fetch("#t"))

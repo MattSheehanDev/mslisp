@@ -13,26 +13,26 @@ namespace mslisp.Functions
      * DEFINE
      * (define var exp) => nil
      */
-    class Define : FuncToken
+    class Define : SExpression
     {
         public Define()
         {
             this.value = this.Def;
         }
 
-        private IToken Def(ListToken list, ScopedEnvironment env)
+        private IDatum Def(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 3)
                 throw new ArgumentException("DEFINE has wrong number of arguments.");
 
-            ListToken args = list.CDR();
-            IToken variable = args[0];
-            IToken expression = args[1];
+            Vector args = list.CDR();
+            IDatum variable = args[0];
+            IDatum expression = args[1];
 
             env.Add((string)variable.Value, Evaluator.Eval(expression, env));
 
             // the empty list is nil
-            return new ListToken();
+            return new Vector();
         }
 
     }

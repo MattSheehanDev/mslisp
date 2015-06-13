@@ -37,9 +37,9 @@ namespace mslisp.Lexical
         }
 
 
-        public Scanner(TextReader reader)
+        public Scanner(string expr)
         {
-            this.reader = reader;
+            this.reader = new StringReader(expr);
 
             this.inited = false;
             this.updatePeek = true;
@@ -58,29 +58,29 @@ namespace mslisp.Lexical
             return this.current;
         }
         
-        public LexType IsType(char value)
-        {
-            if (char.IsWhiteSpace(value))
-                return LexType.WHITESPACE;
+        //public TokenType IsType(char value)
+        //{
+        //    if (char.IsWhiteSpace(value))
+        //        return TokenType.WHITESPACE;
 
-            switch (value)
-            {
-                case ';':
-                    return LexType.COMMENT;
-                case '(':
-                    return LexType.LISTOPEN;
-                case ')':
-                    return LexType.LISTCLOSE;
-                case '\"':
-                    return LexType.QUOTATION;
-                case '\'':
-                    return LexType.TICK;
-                case '\\':
-                    return LexType.ESCAPE;
-                default:
-                    return LexType.SYMBOL;
-            }
-        }
+        //    switch (value)
+        //    {
+        //        case ';':
+        //            return TokenType.COMMENT;
+        //        case '(':
+        //            return TokenType.LISTOPEN;
+        //        case ')':
+        //            return TokenType.LISTCLOSE;
+        //        case '\"':
+        //            return TokenType.QUOTATION;
+        //        case '\'':
+        //            return TokenType.TICK;
+        //        case '\\':
+        //            return TokenType.ESCAPE;
+        //        default:
+        //            return TokenType.SYMBOL;
+        //    }
+        //}
 
         public bool IsMore()
         {

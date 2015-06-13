@@ -12,7 +12,7 @@ namespace mslisp.Functions
      * CAR
      * (car expression) => first
      */
-    class CAR : FuncToken
+    class CAR : SExpression
     {
         public CAR()
         {
@@ -20,14 +20,14 @@ namespace mslisp.Functions
         }
 
 
-        private IToken First(ListToken list, ScopedEnvironment env)
+        private IDatum First(Vector list, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(list[1], env);
+            IDatum value = Evaluator.Eval(list[1], env);
 
-            if (!(value is ListToken))
+            if (!(value is Vector))
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
 
-            ListToken listvalue = (ListToken)value;
+            Vector listvalue = (Vector)value;
 
             if (listvalue.Count == 0)
                 return env.Fetch("nil");
@@ -41,7 +41,7 @@ namespace mslisp.Functions
      * CDR
      * (cdr expression) => rest of list
      */
-    class CDR : FuncToken
+    class CDR : SExpression
     {
         public CDR()
         {
@@ -49,19 +49,19 @@ namespace mslisp.Functions
         }
 
 
-        private IToken Rest(ListToken list, ScopedEnvironment env)
+        private IDatum Rest(Vector list, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(list[1], env);
+            IDatum value = Evaluator.Eval(list[1], env);
 
-            if (!(value is ListToken))
+            if (!(value is Vector))
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
 
-            ListToken listvalue = (ListToken)value;
+            Vector listvalue = (Vector)value;
 
             if (listvalue.Count <= 1)
                 return env.Fetch("nil");
 
-            var rest = new ListToken();
+            var rest = new Vector();
             for (var i = 1; i < listvalue.Count; i++)
             {
                 rest.Add(listvalue[i]);
@@ -74,7 +74,7 @@ namespace mslisp.Functions
      * CONS
      * (cons exp1 exp2) => list
      */
-    class CONS : FuncToken
+    class CONS : SExpression
     {
         public CONS()
         {
@@ -82,17 +82,17 @@ namespace mslisp.Functions
         }
 
 
-        private IToken Append(ListToken list, ScopedEnvironment env)
+        private IDatum Append(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 3)
                 throw new ArgumentException("CONS has wrong number of arguments.");
 
-            ListToken exprs = list.CDR();
-            IToken expr1 = exprs[0];
-            IToken expr2 = exprs[1];
+            Vector exprs = list.CDR();
+            IDatum expr1 = exprs[0];
+            IDatum expr2 = exprs[1];
 
-            IToken value1 = Evaluator.Eval(expr1, env);
-            IToken value2 = Evaluator.Eval(expr2, env);
+            IDatum value1 = Evaluator.Eval(expr1, env);
+            IDatum value2 = Evaluator.Eval(expr2, env);
 
             //if (value1 is ListToken && value2 is ListToken)
             //{
@@ -102,13 +102,13 @@ namespace mslisp.Functions
             //    list2.InsertRange(0, list2);
             //    return list2;
             //}
-            if (value2 is ListToken)
+            if (value2 is Vector)
             {
-                var cons = new ListToken();
+                var cons = new Vector();
                 
                 cons.Add(value1);
 
-                ListToken list2 = (ListToken)value2;
+                Vector list2 = (Vector)value2;
                 list2.ForEach((v) =>
                 {
                     cons.Add(v);
@@ -116,13 +116,13 @@ namespace mslisp.Functions
 
                 return cons;
             }
-            else if (value1 is ListToken)
+            else if (value1 is Vector)
             {
-                var cons = new ListToken();
+                var cons = new Vector();
 
                 cons.Add(value2);
 
-                ListToken list1 = (ListToken)value1;
+                Vector list1 = (Vector)value1;
                 list1.ForEach((v) =>
                 {
                     cons.Add(v);

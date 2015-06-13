@@ -13,7 +13,7 @@ namespace mslisp.Functions
      * ADDITION
      * (+ 1 2 ...)
      */
-    class Addition : FuncToken
+    class Addition : SExpression
     {
         public Addition()
         {
@@ -24,7 +24,7 @@ namespace mslisp.Functions
         // 1. (+) => 0
         // 2. (+ number) => number
         // 3. (+ number...) => number1 + ... + numberN
-        private IToken Add(ListToken list, ScopedEnvironment env)
+        private IDatum Add(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 return this._Add();
@@ -34,24 +34,24 @@ namespace mslisp.Functions
                 return _Add(list.CDR(), env);
         }
 
-        private IToken _Add()
+        private IDatum _Add()
         {
-            return new Token(TokenType.INT, 0);
+            return new Datum(DatumType.INT, 0);
         }
 
-        private IToken _Add(IToken token, ScopedEnvironment env)
+        private IDatum _Add(IDatum token, ScopedEnvironment env)
         {
             return Evaluator.Eval(token, env);
         }
 
-        private IToken _Add(ListToken list, ScopedEnvironment env)
+        private IDatum _Add(Vector list, ScopedEnvironment env)
         {
             double sum = 0;
             bool init = true;
             
             for (var i = 0; i < list.Count; i++)
             {
-                IToken num = Evaluator.Eval(list[i], env);
+                IDatum num = Evaluator.Eval(list[i], env);
 
                 if (init)
                 {
@@ -73,7 +73,7 @@ namespace mslisp.Functions
      * MULTIPLICATION
      * (* 10 7 ...)
      */
-    class Multiplication : FuncToken
+    class Multiplication : SExpression
     {
         public Multiplication()
         {
@@ -85,7 +85,7 @@ namespace mslisp.Functions
         // 1. (*) => 1
         // 2. (* number) => number
         // 3. (* number...) => number1 * ... * numberN
-        private IToken Multiply(ListToken list, ScopedEnvironment env)
+        private IDatum Multiply(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 return _Multiply();
@@ -95,24 +95,24 @@ namespace mslisp.Functions
                 return _Multiply(list.CDR(), env);
         }
 
-        private IToken _Multiply()
+        private IDatum _Multiply()
         {
-            return new Token(TokenType.INT, 1);
+            return new Datum(DatumType.INT, 1);
         }
 
-        private IToken _Multiply(IToken token, ScopedEnvironment env)
+        private IDatum _Multiply(IDatum token, ScopedEnvironment env)
         {
             return Evaluator.Eval(token, env);
         }
 
-        private IToken _Multiply(ListToken list, ScopedEnvironment env)
+        private IDatum _Multiply(Vector list, ScopedEnvironment env)
         {
             double times = 0;
             bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
-                IToken num = Evaluator.Eval(list[i], env);
+                IDatum num = Evaluator.Eval(list[i], env);
 
                 if(init)
                 {
@@ -135,7 +135,7 @@ namespace mslisp.Functions
      * SUBTRACTION
      * (- 10 7)
      */
-    class Subtraction : FuncToken
+    class Subtraction : SExpression
     {
 
         public Subtraction()
@@ -148,7 +148,7 @@ namespace mslisp.Functions
         // 1. (-) => error
         // 2. (- number) => 0 - number
         // 3. (- number...) => number1 - ... - numberN
-        private IToken Subtract(ListToken list, ScopedEnvironment env)
+        private IDatum Subtract(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("- is missing argument(s).");
@@ -158,20 +158,20 @@ namespace mslisp.Functions
                 return _Subtract(list.CDR(), env);
         }
 
-        private IToken _Subtract(IToken token, ScopedEnvironment env)
+        private IDatum _Subtract(IDatum token, ScopedEnvironment env)
         {
-            IToken num = Evaluator.Eval(token, env);
+            IDatum num = Evaluator.Eval(token, env);
             return Parser.toNumber(0 - Convert.ToDouble(num.Value));
         }
 
-        private IToken _Subtract(ListToken list, ScopedEnvironment env)
+        private IDatum _Subtract(Vector list, ScopedEnvironment env)
         {
             double diff = 0;
             bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
-                IToken num = Evaluator.Eval(list[i], env);
+                IDatum num = Evaluator.Eval(list[i], env);
 
                 if (init)
                 {
@@ -194,7 +194,7 @@ namespace mslisp.Functions
      * DIVISION
      * (/ 21 7)
      */
-    class Division : FuncToken
+    class Division : SExpression
     {
         public Division()
         {
@@ -205,7 +205,7 @@ namespace mslisp.Functions
         // 1. (/) => error
         // 2. (/ number) => 1 / number
         // 3. (/ number...) => number1 / ... / numberN
-        private IToken Divide(ListToken list, ScopedEnvironment env)
+        private IDatum Divide(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("/ is missing argument(s)");
@@ -215,23 +215,23 @@ namespace mslisp.Functions
                 return _Divide(list.CDR(), env);
         }
 
-        private IToken _Divide(IToken token, ScopedEnvironment env)
+        private IDatum _Divide(IDatum token, ScopedEnvironment env)
         {
-            IToken num = Evaluator.Eval(token, env);
+            IDatum num = Evaluator.Eval(token, env);
             return Parser.toNumber(1 / Convert.ToDouble(num.Value));
         }
 
-        private IToken _Divide(ListToken list, ScopedEnvironment env)
+        private IDatum _Divide(Vector list, ScopedEnvironment env)
         {
             double quotient = 0;
             bool init = true;
 
             for (var i = 0; i < list.Count; i++)
             {
-                IToken num = Evaluator.Eval(list[i], env);
+                IDatum num = Evaluator.Eval(list[i], env);
 
-                if (num.Type == TokenType.DOUBLE)
-                    type = TokenType.DOUBLE;
+                if (num.Type == DatumType.DOUBLE)
+                    type = DatumType.DOUBLE;
                 
                 if (init)
                 {

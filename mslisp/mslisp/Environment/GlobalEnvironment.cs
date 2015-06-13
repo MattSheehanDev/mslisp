@@ -15,11 +15,10 @@ namespace mslisp.Environment
         public GlobalEnvironment()
         {
             // global variables
-            this.Add("*prompt*", new Token(TokenType.STRING, "mslisp"));
+            this.Add("*prompt*", new Datum(DatumType.STRING, "mslisp"));
 
-            this.Add("#t", new Token(TokenType.BOOLEAN, true));
-            this.Add("nil", new Token(TokenType.NULL, null));
-            //this.Add("#f", new Token(TokenType.BOOLEAN, false));
+            this.Add("#t", new Datum(DatumType.BOOLEAN, true));
+            this.Add("nil", new Datum(DatumType.NULL, null));
 
             // global procedures
             this.Add("+", new Addition());
@@ -41,6 +40,7 @@ namespace mslisp.Environment
             this.Add("if", new IfElse());
             this.Add("cond", new Conditions());
             this.Add("begin", new Begin());
+            
             this.Add("quote", new Quote());
             this.Add("lambda", new Lambda());
 

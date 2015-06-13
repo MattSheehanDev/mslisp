@@ -12,7 +12,7 @@ namespace mslisp.Functions
      * ISATOM
      * (atom? args)
      */
-    class IsAtom : FuncToken
+    class IsAtom : SExpression
     {
         // todo: check atoms by !list
         public IsAtom()
@@ -25,31 +25,31 @@ namespace mslisp.Functions
         // 1. (atom?) => false
         // 2. (atom? arg) => T if atom
         // 3. (atom? args...) => T if all atoms
-        private IToken checkIfAtom(ListToken list, ScopedEnvironment env)
+        private IDatum checkIfAtom(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
-                return new Token(TokenType.BOOLEAN, false);
+                return new Datum(DatumType.BOOLEAN, false);
             else if (list.Count == 2)
                 return this._checkIfAtom(list[1], env);
             else
                 return this._checkIfAtom(list.CDR(), env);
         }
 
-        private IToken _checkIfAtom(IToken token, ScopedEnvironment env)
+        private IDatum _checkIfAtom(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
-            if (Token.isAtom(value))
+            IDatum value = Evaluator.Eval(token, env);
+            if (Datum.isAtom(value))
                 return env.Fetch("#t");
             return env.Fetch("nil");
         }
 
-        private IToken _checkIfAtom(ListToken list, ScopedEnvironment env)
+        private IDatum _checkIfAtom(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count; i++)
             {
-                IToken token = Evaluator.Eval(list[i], env);
+                IDatum token = Evaluator.Eval(list[i], env);
 
-                if (!Token.isAtom(token))
+                if (!Datum.isAtom(token))
                     return env.Fetch("nil");
             }
 

@@ -13,7 +13,7 @@ namespace mslisp.Functions
      * GREATER THAN
      * (> 1 2 ...)
      */
-    class GreaterThan : FuncToken
+    class GreaterThan : SExpression
     {
         public GreaterThan()
         {
@@ -24,7 +24,7 @@ namespace mslisp.Functions
         // 1. (>) => error
         // 2. (> number) => T
         // 3. (> number...) => T if all pair comparisons, from left to right, are T
-        private IToken Greater(ListToken list, ScopedEnvironment env)
+        private IDatum Greater(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("> is missing some arguments.");
@@ -35,25 +35,25 @@ namespace mslisp.Functions
         }
 
 
-        private IToken _Greater(IToken token, ScopedEnvironment env)
+        private IDatum _Greater(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
             // single argument always returns true
-            if (Token.isNumber(token))
+            if (Datum.isNumber(token))
                 return env.Fetch("#t");
 
             throw new TypeException("> cannot compare non-numerical types.");
         }
 
-        private IToken _Greater(ListToken list, ScopedEnvironment env)
+        private IDatum _Greater(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count - 1; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
-                IToken next = Evaluator.Eval(list[i + 1], env);
+                IDatum curr = Evaluator.Eval(list[i], env);
+                IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Token.isNumber(curr) || !Token.isNumber(next))
+                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
                     throw new TypeException("> cannot compare non-numerical types.");
                 
                 var currValue = Convert.ToDouble(curr.Value);
@@ -73,7 +73,7 @@ namespace mslisp.Functions
      * LESS THAN
      * (< 1 2 ...)
      */
-    class LessThan : FuncToken
+    class LessThan : SExpression
     {
         public LessThan()
         {
@@ -85,7 +85,7 @@ namespace mslisp.Functions
         // 1. (<) => error
         // 2. (< number) => T
         // 3. (< numbers...) => T if all pair comparisons, from left to right, are T
-        private IToken Less(ListToken list, ScopedEnvironment env)
+        private IDatum Less(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("< is missing some arguments.");
@@ -95,24 +95,24 @@ namespace mslisp.Functions
                 return this._Less(list.CDR(), env);
         }
 
-        private IToken _Less(IToken token, ScopedEnvironment env)
+        private IDatum _Less(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
-            if (Token.isNumber(token))
+            if (Datum.isNumber(token))
                 return env.Fetch("#t");
 
             throw new TypeException("< cannot compare non-numerical types.");
         }
 
-        private IToken _Less(ListToken list, ScopedEnvironment env)
+        private IDatum _Less(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count - 1; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
-                IToken next = Evaluator.Eval(list[i + 1], env);
+                IDatum curr = Evaluator.Eval(list[i], env);
+                IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Token.isNumber(curr) || !Token.isNumber(next))
+                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
                     throw new TypeException("< cannot compare non-numerical types.");
 
                 var currValue = Convert.ToDouble(curr.Value);
@@ -134,7 +134,7 @@ namespace mslisp.Functions
      * GREATER THAN OR EQUAL TO
      * (>= 1 2 ...)
      */
-    class NotLessThan : FuncToken
+    class NotLessThan : SExpression
     {
         // class is called NotLessThan because it's shorter than GreaterThanOrEqualTo
         public NotLessThan()
@@ -146,7 +146,7 @@ namespace mslisp.Functions
         // >= can go one of three ways.
         // 1. (>=) => error
         // 2. (>= number) => T
-        private IToken Greater(ListToken list, ScopedEnvironment env)
+        private IDatum Greater(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException(">= is missing some arguments.");
@@ -157,24 +157,24 @@ namespace mslisp.Functions
         }
 
 
-        private IToken _Greater(IToken token, ScopedEnvironment env)
+        private IDatum _Greater(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
-            if (Token.isNumber(token))
+            if (Datum.isNumber(token))
                 return env.Fetch("#t");
 
             throw new TypeException(">= cannot compare non-numerical types.");
         }
 
-        private IToken _Greater(ListToken list, ScopedEnvironment env)
+        private IDatum _Greater(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count - 1; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
-                IToken next = Evaluator.Eval(list[i + 1], env);
+                IDatum curr = Evaluator.Eval(list[i], env);
+                IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Token.isNumber(curr) || !Token.isNumber(next))
+                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
                     throw new TypeException(">= cannot compare non-numerical types.");
 
                 var currValue = Convert.ToDouble(curr.Value);
@@ -194,7 +194,7 @@ namespace mslisp.Functions
      * LESS THAN OR EQUAL TO
      * (<= 1 2 ...)
      */
-     class NotGreaterThan : FuncToken
+     class NotGreaterThan : SExpression
     {
         public NotGreaterThan()
         {
@@ -206,7 +206,7 @@ namespace mslisp.Functions
         // 1. (<=) => error
         // 2. (<= number) => T
         // 3. (<= numbers...) => T if all pairs, from left to right, are T
-        private IToken Less(ListToken list, ScopedEnvironment env)
+        private IDatum Less(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("<= is missing some arguments.");
@@ -217,25 +217,25 @@ namespace mslisp.Functions
         }
 
 
-        private IToken _Less(IToken token, ScopedEnvironment env)
+        private IDatum _Less(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
             // a comparison of one number always returns true.
-            if (Token.isNumber(token))
+            if (Datum.isNumber(token))
                 return env.Fetch("#t");
 
             throw new TypeException("<= cannot compare non-numerical types.");
         }
 
-        private IToken _Less(ListToken list, ScopedEnvironment env)
+        private IDatum _Less(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count - 1; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
-                IToken next = Evaluator.Eval(list[i + 1], env);
+                IDatum curr = Evaluator.Eval(list[i], env);
+                IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Token.isNumber(curr) || !Token.isNumber(next))
+                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
                     throw new TypeException("<= cannot compare non-numerical types.");
 
                 var currValue = Convert.ToDouble(curr.Value);
@@ -255,7 +255,7 @@ namespace mslisp.Functions
      * EQUALS
      * (= 2 2 ...)
      */
-    class Equals : FuncToken
+    class Equals : SExpression
     {
         public Equals()
         {
@@ -267,7 +267,7 @@ namespace mslisp.Functions
         // 1. (=) => error
         // 2. (= number) => T
         // 3. (= number...) => T if all pairs, from left to right, are T
-        public IToken IsEquals(ListToken list, ScopedEnvironment env)
+        public IDatum IsEquals(Vector list, ScopedEnvironment env)
         {
             if (list.Count == 1)
                 throw new ArgumentException("= is missing some arguments.");
@@ -278,24 +278,24 @@ namespace mslisp.Functions
         }
 
 
-        private IToken _IsEquals(IToken token, ScopedEnvironment env)
+        private IDatum _IsEquals(IDatum token, ScopedEnvironment env)
         {
-            IToken value = Evaluator.Eval(token, env);
+            IDatum value = Evaluator.Eval(token, env);
 
-            if (Token.isNumber(token))
+            if (Datum.isNumber(token))
                 return env.Fetch("#t");
 
             throw new TypeException("= cannot compare non-numerical types.");
         }
 
-        private IToken _IsEquals(ListToken list, ScopedEnvironment env)
+        private IDatum _IsEquals(Vector list, ScopedEnvironment env)
         {
             for (var i = 0; i < list.Count - 1; i++)
             {
-                IToken curr = Evaluator.Eval(list[i], env);
-                IToken next = Evaluator.Eval(list[i + 1], env);
+                IDatum curr = Evaluator.Eval(list[i], env);
+                IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Token.isNumber(curr) || !Token.isNumber(next))
+                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
                     throw new TypeException("= cannot compare non-numerical types.");
 
                 var currValue = Convert.ToDouble(curr.Value);

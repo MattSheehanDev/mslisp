@@ -15,36 +15,36 @@ namespace mslisp
         {
         }
 
-        public static IToken Eval(IToken x, ScopedEnvironment env)
+        public static IDatum Eval(IDatum x, ScopedEnvironment env)
         {
-            if (Token.isAtom(x))
+            if (Datum.isAtom(x))
             {
                 return x;
             }
-            else if (x.Type == TokenType.SYMBOL)
+            else if (x.Type == DatumType.SYMBOL)
             {
                 var sym = env.Fetch((string)x.Value);
-
-                if (sym is IToken)
+                
+                if (sym is IDatum)
                 {
-                    return (IToken)sym;
+                    return (IDatum)sym;
                 }
                 else
                 {
-                    IToken token = new Token(TokenType.LAMBDA, sym);
+                    IDatum token = new Datum(DatumType.LAMBDA, sym);
                     return token;
                 }
             }
             else
             {
-                var list = (ListToken)x;
+                var list = (Vector)x;
 
-                IToken first = list.CAR();
-                IToken procedure = Evaluator.Eval(first, env);
+                IDatum first = list.CAR();
+                IDatum procedure = Evaluator.Eval(first, env);
 
-                var func = (Func<ListToken, ScopedEnvironment, IToken>)procedure.Value;
+                var func = (SExpression)procedure;
 
-                IToken token = func.Invoke(list, env);
+                IDatum token = func.Invoke(list, env);
                 return token;
             }
         }

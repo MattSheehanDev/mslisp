@@ -10,38 +10,40 @@ using mslisp.Lexical;
 
 namespace mslisp.Functions
 {
-    class Load : FuncToken
+    class Load : SExpression
     {
+        private readonly Parser parser;
+
         public Load()
         {
+            this.parser = new Parser();
             this.value = this.LoadFile;
         }
 
 
-        private IToken LoadFile(ListToken list, ScopedEnvironment env)
+        private IDatum LoadFile(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 2)
                 throw new ArgumentException("LOAD has wrong number of arguments.");
 
-            IToken filename = list[1];
+            IDatum filename = list[1];
 
-            if (filename.Type != TokenType.STRING)
+            if (filename.Type != DatumType.STRING)
                 throw new TypeException("LOAD can only load string paths.");
 
             string file = File.ReadAllText((string)filename.Value);
 
-            var reader = new StringReader(file);
-            var scanner = new Scanner(reader);
-            var parser = new Parser(scanner);
-            parser.Parse();
+            
+            var lexer = new Lexer(file);
+            var tokens = parser.Parse(lexer.Tokenize());
             
 
-            parser.tokens.ForEach((token) =>
+            tokens.ForEach((token) =>
             {
                 var eval = Evaluator.Eval(token, env);
             });
 
-            return new Token(TokenType.BOOLEAN, true);
+            return new Datum(DatumType.BOOLEAN, true);
         }
         
     }

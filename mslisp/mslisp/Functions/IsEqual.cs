@@ -12,7 +12,7 @@ namespace mslisp.Functions
      * ISEQUAL
      * (equal? args...)
      */
-    class IsEqual : FuncToken
+    class IsEqual : SExpression
     {
         public IsEqual()
         {
@@ -24,7 +24,7 @@ namespace mslisp.Functions
         // 1. (equal?) => error
         // 2. (equal? arg arg ...) => error
         // 3. (equal? arg arg) => T or ()
-        public IToken equals(ListToken list, ScopedEnvironment env)
+        public IDatum equals(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 3)
                 throw new ArgumentException("equal? has incorrect number of arguments. Correct number is 2.");
@@ -32,10 +32,10 @@ namespace mslisp.Functions
                 return this._equals(list.CDR(), env);
         }
 
-        private IToken _equals(ListToken list, ScopedEnvironment env)
+        private IDatum _equals(Vector list, ScopedEnvironment env)
         {
-            IToken first = Evaluator.Eval(list[0], env);
-            IToken second = Evaluator.Eval(list[1], env);
+            IDatum first = Evaluator.Eval(list[0], env);
+            IDatum second = Evaluator.Eval(list[1], env);
 
             // todo: check if list?
             // todo: my compare values doesn't work
@@ -48,17 +48,17 @@ namespace mslisp.Functions
             // then compare values
             else if(first.Type == second.Type)
             {
-                if(first.Type == TokenType.DOUBLE)
+                if(first.Type == DatumType.DOUBLE)
                 {
                     if ((double)first.Value == (double)second.Value)
                         return env.Fetch("#t");
                 }
-                else if (first.Type == TokenType.INT)
+                else if (first.Type == DatumType.INT)
                 {
                     if ((int)first.Value == (int)second.Value)
                         return env.Fetch("#t");
                 }
-                else if (first.Type == TokenType.STRING)
+                else if (first.Type == DatumType.STRING)
                 {
                     if ((string)first.Value == (string)second.Value)
                         return env.Fetch("#t");

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace mslisp.Tokens
 {
-    enum TokenType
+    enum DatumType
     {
-        COMMENT,
         SYMBOL,
         STRING,
         INT,
@@ -16,7 +15,6 @@ namespace mslisp.Tokens
         BOOLEAN,
         NULL,
         LIST,
-        LAMBDA,
-        QUOTE
+        LAMBDA
     }
 }

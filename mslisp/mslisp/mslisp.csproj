@@ -62,12 +62,13 @@
     <Compile Include="Lexical\Lexer.cs" />
     <Compile Include="Lexical\Parser.cs" />
     <Compile Include="Lexical\Scanner.cs" />
+    <Compile Include="Lexical\Token.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tokens\Token.cs" />
-    <Compile Include="Tokens\FuncToken.cs" />
-    <Compile Include="Tokens\ListToken.cs" />
-    <Compile Include="Tokens\TokenType.cs" />
+    <Compile Include="Datums\Datum.cs" />
+    <Compile Include="Datums\SExpression.cs" />
+    <Compile Include="Datums\Vector.cs" />
+    <Compile Include="Datums\DatumType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

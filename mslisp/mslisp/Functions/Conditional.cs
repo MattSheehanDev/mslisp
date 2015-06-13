@@ -13,7 +13,7 @@ namespace mslisp.Functions
      * IF
      * (if condition exp1 exp2) => val1 || val2
      */
-    class IfElse : FuncToken
+    class IfElse : SExpression
     {
         public IfElse()
         {
@@ -21,17 +21,17 @@ namespace mslisp.Functions
         }
 
 
-        private IToken CheckIfElse(ListToken list, ScopedEnvironment env)
+        private IDatum CheckIfElse(Vector list, ScopedEnvironment env)
         {
             if (list.Count != 4)
                 throw new ArgumentException("IF has wrong number of arguments.");
 
-            ListToken args = list.CDR();
-            IToken condition = args[0];
-            IToken expr1 = args[1];
-            IToken expr2 = args[2];
+            Vector args = list.CDR();
+            IDatum condition = args[0];
+            IDatum expr1 = args[1];
+            IDatum expr2 = args[2];
 
-            IToken value = Evaluator.Eval(condition, env);
+            IDatum value = Evaluator.Eval(condition, env);
 
             // anything thats not nil is true.
             if (value != env.Fetch("nil"))
@@ -47,7 +47,7 @@ namespace mslisp.Functions
      * COND
      * (cond (c1 e1) ... (cn en)) => value(en) || nil
      */
-     class Conditions : FuncToken
+     class Conditions : SExpression
     {
         public Conditions()
         {
@@ -55,7 +55,7 @@ namespace mslisp.Functions
         }
 
 
-        public IToken CheckConditions(ListToken list, ScopedEnvironment env)
+        public IDatum CheckConditions(Vector list, ScopedEnvironment env)
         {
             if (list.Count < 2)
                 throw new ArgumentException("COND is missing arguments.");
@@ -65,23 +65,23 @@ namespace mslisp.Functions
 
             for (var i = 0; i < conditions.Count; i++)
             {
-                IToken item = conditions[i];
+                IDatum item = conditions[i];
 
-                if (!(item is ListToken))
+                if (!(item is Vector))
                     throw new SyntaxException("Conditional pair {0} is missing an expresion.", item.Value);
 
-                ListToken pair = (ListToken)item;
+                Vector pair = (Vector)item;
 
                 if (pair.Count != 2)
                     throw new ArgumentException("Conditional has wrong number of arguments");
 
-                IToken condition = pair[0];
-                IToken result = Evaluator.Eval(condition, env);
+                IDatum condition = pair[0];
+                IDatum result = Evaluator.Eval(condition, env);
 
                 if ((bool)result.Value)
                 {
-                    IToken expression = pair[1];
-                    IToken value = Evaluator.Eval(expression, env);
+                    IDatum expression = pair[1];
+                    IDatum value = Evaluator.Eval(expression, env);
                     return value;
                 }
             }

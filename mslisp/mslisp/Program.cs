@@ -11,38 +11,43 @@ using mslisp.Tokens;
 
 namespace mslisp
 {
-    // todo: convert all input to uppercase
+    // todo: convert all datums to uppercase
     // todo: load multiline files
     // todo: consolidate load and repl
-    // todo: run sqrt.lisp
     class Program
     {
         static void Main(string[] args)
         {
-            GlobalEnvironment env = new GlobalEnvironment();
-
             // add C-c keyboard event listener
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
-            
+
+            var env = new GlobalEnvironment();
+            var parser = new Parser();
+            string expr = "";
+
             // repl
             while(true)
             {
                 try
                 {
-                    IToken prompt = env["*prompt*"];
+                    IDatum prompt = env["*prompt*"];
                     Console.Write(string.Format("{0}> ", (string)prompt.Value));
 
-                    string expr = Console.ReadLine();
+                    expr += Console.ReadLine();
 
-                    var reader = new StringReader(expr);
-                    var scanner = new Scanner(reader);
-                    var parser = new Parser(scanner);
+                    // todo: need a better way to count parenthesis
+                    var open = expr.Count(c => c == '(');
+                    var close = expr.Count(c => c == ')');
 
-                    bool needMore = parser.Parse();
-                    if (needMore)
+                    if (open != close)
                         continue;
 
-                    var tokens = parser.tokens;
+                    
+                    // have lexer count parens?
+                    // lexer should count line numbers.
+                    var lexer = new Lexer(expr);
+                    var tokens = parser.Parse(lexer.Tokenize());
+
                     
                     tokens.ForEach((list) =>
                     {
@@ -51,6 +56,10 @@ namespace mslisp
                         var str = parser.Stringify(eval);
                         Console.WriteLine(str);
                     });
+
+
+                    // cleanup
+                    expr = "";
                 }
                 catch(ArgumentException ex)
                 {
@@ -70,7 +79,7 @@ namespace mslisp
 
         static void CancelKeyPress(Object sender, ConsoleCancelEventArgs args)
         {
-            Console.WriteLine("{0}-{1} pressed.", args.SpecialKey, args.Cancel);
+            Console.WriteLine("Ctrl-C pressed.");
             Console.WriteLine("Exiting mslisp.");
         }
         

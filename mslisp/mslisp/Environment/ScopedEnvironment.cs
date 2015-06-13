@@ -7,7 +7,7 @@ using mslisp.Tokens;
 
 namespace mslisp.Environment
 {
-    class ScopedEnvironment : Dictionary<string, IToken>
+    class ScopedEnvironment : Dictionary<string, IDatum>
     {
         private ScopedEnvironment outerenv;
 
@@ -23,7 +23,7 @@ namespace mslisp.Environment
         }
 
 
-        public new void Add(string str, IToken token)
+        public new void Add(string str, IDatum token)
         {
             // wraps base Add, but makes sure str is upper
             base.Add(str, token);
@@ -40,7 +40,7 @@ namespace mslisp.Environment
             throw new SyntaxException("Symbol {0} not found.", variable);
         }
 
-        public IToken Fetch(string variable)
+        public IDatum Fetch(string variable)
         {
             if (base.ContainsKey(variable))
                 return this[variable];

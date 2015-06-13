@@ -6,29 +6,29 @@ using System.Threading.Tasks;
 
 namespace mslisp.Tokens
 {
-    class ListToken : List<IToken>, IToken
+    class Vector : List<IDatum>, IDatum
     {
-        private readonly TokenType type;
+        private readonly DatumType type;
         private readonly object value;
 
-        public TokenType Type { get { return this.type; } }
+        public DatumType Type { get { return this.type; } }
         public object Value { get { return this.value; } }
 
 
-        public ListToken()
+        public Vector()
         {
-            this.type = TokenType.LIST;
+            this.type = DatumType.LIST;
             this.value = this;
         }
 
-        public IToken Shift()
+        public IDatum Shift()
         {
             var item = this.First();
             this.RemoveAt(0);
             return item;
         }
 
-        public IToken CAR()
+        public IDatum CAR()
         {
             if (this.Count == 0)
                 return null;
@@ -36,12 +36,12 @@ namespace mslisp.Tokens
             return this[0];
         }
 
-        public ListToken CDR()
+        public Vector CDR()
         {
             if (this.Count <= 1)
                 return null;
 
-            var rest = new ListToken();
+            var rest = new Vector();
             for (var i = 1; i < this.Count; i++)
             {
                 rest.Add(this[i]);
