@@ -9,7 +9,7 @@ namespace mslisp.Lexical
 {
     class Scanner
     {
-        private readonly TextReader reader;
+        private readonly StringReader reader;
 
         private char current;
         private char prev;
@@ -58,29 +58,6 @@ namespace mslisp.Lexical
             return this.current;
         }
         
-        //public TokenType IsType(char value)
-        //{
-        //    if (char.IsWhiteSpace(value))
-        //        return TokenType.WHITESPACE;
-
-        //    switch (value)
-        //    {
-        //        case ';':
-        //            return TokenType.COMMENT;
-        //        case '(':
-        //            return TokenType.LISTOPEN;
-        //        case ')':
-        //            return TokenType.LISTCLOSE;
-        //        case '\"':
-        //            return TokenType.QUOTATION;
-        //        case '\'':
-        //            return TokenType.TICK;
-        //        case '\\':
-        //            return TokenType.ESCAPE;
-        //        default:
-        //            return TokenType.SYMBOL;
-        //    }
-        //}
 
         public bool IsMore()
         {

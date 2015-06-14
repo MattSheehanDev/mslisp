@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Tokens;
+using mslisp.Datums;
 using mslisp.Environment;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     /*
      * ISATOM
@@ -27,9 +27,9 @@ namespace mslisp.Functions
         // 3. (atom? args...) => T if all atoms
         private IDatum checkIfAtom(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
-                return new Datum(DatumType.BOOLEAN, false);
-            else if (list.Count == 2)
+            if (list.Length == 1)
+                return new Atom(DatumType.BOOLEAN, false);
+            else if (list.Length == 2)
                 return this._checkIfAtom(list[1], env);
             else
                 return this._checkIfAtom(list.CDR(), env);
@@ -38,22 +38,28 @@ namespace mslisp.Functions
         private IDatum _checkIfAtom(IDatum token, ScopedEnvironment env)
         {
             IDatum value = Evaluator.Eval(token, env);
-            if (Datum.isAtom(value))
+            if (this.isAtom(value))
                 return env.Fetch("#t");
             return env.Fetch("nil");
         }
 
         private IDatum _checkIfAtom(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Length; i++)
             {
                 IDatum token = Evaluator.Eval(list[i], env);
 
-                if (!Datum.isAtom(token))
+                if (!this.isAtom(token))
                     return env.Fetch("nil");
             }
 
             return env.Fetch("#t");
+        }
+
+
+        private bool isAtom(IDatum data)
+        {
+            return data is Atom;
         }
 
     }

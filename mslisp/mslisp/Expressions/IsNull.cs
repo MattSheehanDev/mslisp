@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Tokens;
+using mslisp.Datums;
 using mslisp.Environment;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     /*
      * ISNULL
@@ -27,9 +27,9 @@ namespace mslisp.Functions
         // 3. (null? args...) => T if all are null
         private IDatum checkIfNull(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
-                return new Datum(DatumType.BOOLEAN, true);
-            else if (list.Count == 2)
+            if (list.Length == 1)
+                return new Atom(DatumType.BOOLEAN, true);
+            else if (list.Length == 2)
                 return this._checkIfNull(list[1], env);
             else
                 return this._checkIfNull(list.CDR(), env);
@@ -47,7 +47,7 @@ namespace mslisp.Functions
                 Vector list = (Vector)value;
 
                 // empty list is nil
-                if (list.Count == 0)
+                if (list.Length == 0)
                     return env.Fetch("#t");
             }
             else if (value == env.Fetch("nil"))
@@ -61,7 +61,7 @@ namespace mslisp.Functions
 
         private IDatum _checkIfNull(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Length; i++)
             {
                 IDatum value = this._checkIfNull(list[i], env);
 

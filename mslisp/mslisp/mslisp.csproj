@@ -43,22 +43,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datums\Atom.cs" />
+    <Compile Include="Datums\Bool.cs" />
+    <Compile Include="Datums\Null.cs" />
+    <Compile Include="Datums\Number.cs" />
+    <Compile Include="Datums\Symbol.cs" />
     <Compile Include="Environment\GlobalEnvironment.cs" />
     <Compile Include="Environment\ScopedEnvironment.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="Functions\Arithmetic.cs" />
-    <Compile Include="Functions\IsAtom.cs" />
-    <Compile Include="Functions\Begin.cs" />
-    <Compile Include="Functions\Comparison.cs" />
-    <Compile Include="Functions\Conditional.cs" />
-    <Compile Include="Functions\Define.cs" />
-    <Compile Include="Functions\IsEqual.cs" />
-    <Compile Include="Functions\List.cs" />
-    <Compile Include="Functions\IsNull.cs" />
-    <Compile Include="Functions\Load.cs" />
-    <Compile Include="Functions\Quote.cs" />
-    <Compile Include="Functions\Set.cs" />
+    <Compile Include="Expressions\Arithmetic.cs" />
+    <Compile Include="Expressions\IsAtom.cs" />
+    <Compile Include="Expressions\Begin.cs" />
+    <Compile Include="Expressions\Comparison.cs" />
+    <Compile Include="Expressions\Conditional.cs" />
+    <Compile Include="Expressions\Define.cs" />
+    <Compile Include="Expressions\IsEqual.cs" />
+    <Compile Include="Expressions\List.cs" />
+    <Compile Include="Expressions\IsNull.cs" />
+    <Compile Include="Expressions\Load.cs" />
+    <Compile Include="Expressions\Quote.cs" />
+    <Compile Include="Expressions\Set.cs" />
     <Compile Include="Lexical\Lexer.cs" />
     <Compile Include="Lexical\Parser.cs" />
     <Compile Include="Lexical\Scanner.cs" />
@@ -68,11 +73,10 @@
     <Compile Include="Datums\Datum.cs" />
     <Compile Include="Datums\SExpression.cs" />
     <Compile Include="Datums\Vector.cs" />
-    <Compile Include="Datums\DatumType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="Functions\Lambda.cs" />
+    <Compile Include="Expressions\Lambda.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

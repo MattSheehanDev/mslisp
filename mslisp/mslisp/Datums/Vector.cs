@@ -4,49 +4,73 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Tokens
+namespace mslisp.Datums
 {
-    class Vector : List<IDatum>, IDatum
+
+    class Vector : IDatum
     {
         private readonly DatumType type;
-        private readonly object value;
+        private readonly IDatum[] value;
 
-        public DatumType Type { get { return this.type; } }
-        public object Value { get { return this.value; } }
+        public DatumType Type
+        {
+            get { return this.type; }
+        }
+        public object Value
+        {
+            get { return this.value; }
+        }
 
 
-        public Vector()
+        public IDatum this[int i]
+        {
+            get { return this.value[i]; }
+            set { this.value[i] = value; }
+        }
+
+        public int Length
+        {
+            get { return this.value.Length; }
+        }
+
+
+        public Vector(IDatum[] value)
         {
             this.type = DatumType.LIST;
-            this.value = this;
+            this.value = value;
         }
-
-        public IDatum Shift()
-        {
-            var item = this.First();
-            this.RemoveAt(0);
-            return item;
-        }
+        
 
         public IDatum CAR()
         {
-            if (this.Count == 0)
+            if (this.value.Length == 0)
                 return null;
 
-            return this[0];
+            return this.value[0];
         }
 
         public Vector CDR()
         {
-            if (this.Count <= 1)
+            if (this.value.Length <= 1)
                 return null;
 
-            var rest = new Vector();
-            for (var i = 1; i < this.Count; i++)
+            var rest = new List<IDatum>();
+            for (var i = 1; i < this.value.Length; i++)
             {
-                rest.Add(this[i]);
+                rest.Add(this.value[i]);
             }
-            return rest;
+            return new Vector(rest.ToArray());
+        }
+
+        
+        public override string ToString()
+        {
+            var str = "(";
+            var atoms = this.value.Select((atom) => atom.ToString());
+            str += string.Join(" ", atoms);
+            str += ")";
+
+            return str;
         }
 
     }

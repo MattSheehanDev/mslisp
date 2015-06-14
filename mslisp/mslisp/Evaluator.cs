@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
 namespace mslisp
 {
@@ -17,35 +17,24 @@ namespace mslisp
 
         public static IDatum Eval(IDatum x, ScopedEnvironment env)
         {
-            if (Datum.isAtom(x))
+            if (x is Atom)
             {
                 return x;
             }
-            else if (x.Type == DatumType.SYMBOL)
+            else if (x is Symbol)
             {
-                var sym = env.Fetch((string)x.Value);
-                
-                if (sym is IDatum)
-                {
-                    return (IDatum)sym;
-                }
-                else
-                {
-                    IDatum token = new Datum(DatumType.LAMBDA, sym);
-                    return token;
-                }
+                var data = env.Fetch((string)x.Value);
+                return data;
             }
             else
             {
                 var list = (Vector)x;
+                
+                SExpression procedure = (SExpression)Evaluator.Eval(list.CAR(), env);
+                return procedure.Invoke(list, env);
 
-                IDatum first = list.CAR();
-                IDatum procedure = Evaluator.Eval(first, env);
-
-                var func = (SExpression)procedure;
-
-                IDatum token = func.Invoke(list, env);
-                return token;
+                //Action<string> s = Console.WriteLine;
+                //s.Invoke("test");
             }
         }
 

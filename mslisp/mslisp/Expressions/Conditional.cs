@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
 
     /*
@@ -23,7 +23,7 @@ namespace mslisp.Functions
 
         private IDatum CheckIfElse(Vector list, ScopedEnvironment env)
         {
-            if (list.Count != 4)
+            if (list.Length != 4)
                 throw new ArgumentException("IF has wrong number of arguments.");
 
             Vector args = list.CDR();
@@ -57,13 +57,13 @@ namespace mslisp.Functions
 
         public IDatum CheckConditions(Vector list, ScopedEnvironment env)
         {
-            if (list.Count < 2)
+            if (list.Length < 2)
                 throw new ArgumentException("COND is missing arguments.");
 
 
             var conditions = list.CDR();
 
-            for (var i = 0; i < conditions.Count; i++)
+            for (var i = 0; i < conditions.Length; i++)
             {
                 IDatum item = conditions[i];
 
@@ -72,7 +72,7 @@ namespace mslisp.Functions
 
                 Vector pair = (Vector)item;
 
-                if (pair.Count != 2)
+                if (pair.Length != 2)
                     throw new ArgumentException("Conditional has wrong number of arguments");
 
                 IDatum condition = pair[0];

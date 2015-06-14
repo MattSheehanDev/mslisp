@@ -7,11 +7,11 @@ using System.Diagnostics;
 using System.IO;
 using mslisp.Environment;
 using mslisp.Lexical;
-using mslisp.Tokens;
+using mslisp.Datums;
 
 namespace mslisp
 {
-    // todo: convert all datums to uppercase
+    // todo: convert all Atoms to uppercase
     // todo: load multiline files
     // todo: consolidate load and repl
     class Program
@@ -51,10 +51,8 @@ namespace mslisp
                     
                     tokens.ForEach((list) =>
                     {
-                        var eval = Evaluator.Eval(list, env);
-
-                        var str = parser.Stringify(eval);
-                        Console.WriteLine(str);
+                        IDatum eval = Evaluator.Eval(list, env);
+                        Console.WriteLine(eval.ToString());
                     });
 
 
@@ -64,14 +62,22 @@ namespace mslisp
                 catch(ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
+                    expr = "";
                 }
                 catch(SyntaxException ex)
                 {
                     Console.WriteLine(ex.Message);
+                    expr = "";
+                }
+                catch(TypeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    expr = "";
                 }
                 catch (Exception ex)
                 {
                     ReplError(ex);
+                    expr = "";
                 }
             }
         }

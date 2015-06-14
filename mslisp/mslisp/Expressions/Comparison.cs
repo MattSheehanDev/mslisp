@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Tokens;
+using mslisp.Datums;
 using mslisp.Environment;
 using mslisp.Lexical;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     /*
      * GREATER THAN
@@ -26,9 +26,9 @@ namespace mslisp.Functions
         // 3. (> number...) => T if all pair comparisons, from left to right, are T
         private IDatum Greater(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
+            if (list.Length == 1)
                 throw new ArgumentException("> is missing some arguments.");
-            else if (list.Count == 2)
+            else if (list.Length == 2)
                 return this._Greater(list[1], env);
             else
                 return this._Greater(list.CDR(), env);
@@ -37,10 +37,10 @@ namespace mslisp.Functions
 
         private IDatum _Greater(IDatum token, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(token, env);
+            Number value = Evaluator.Eval(token, env) as Number;
 
             // single argument always returns true
-            if (Datum.isNumber(token))
+            if (value != null)
                 return env.Fetch("#t");
 
             throw new TypeException("> cannot compare non-numerical types.");
@@ -48,18 +48,17 @@ namespace mslisp.Functions
 
         private IDatum _Greater(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count - 1; i++)
+            for (var i = 0; i < list.Length - 1; i++)
             {
-                IDatum curr = Evaluator.Eval(list[i], env);
-                IDatum next = Evaluator.Eval(list[i + 1], env);
+                // use 'as' instead of a cast.
+                // if 'as' fails, no exception is thrown, null is returned intead.
+                Number curr = Evaluator.Eval(list[i], env) as Number;
+                Number next = Evaluator.Eval(list[i + 1], env) as Number;
 
-                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
-                    throw new TypeException("> cannot compare non-numerical types.");
-                
-                var currValue = Convert.ToDouble(curr.Value);
-                var nextValue = Convert.ToDouble(next.Value);
+                if (curr == null || next == null)
+                    throw new TypeException("> expected numbers.");
 
-                if (currValue <= nextValue)
+                if (curr <= next)
                     return env.Fetch("nil");
             }
 
@@ -87,9 +86,9 @@ namespace mslisp.Functions
         // 3. (< numbers...) => T if all pair comparisons, from left to right, are T
         private IDatum Less(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
+            if (list.Length == 1)
                 throw new ArgumentException("< is missing some arguments.");
-            else if (list.Count == 2)
+            else if (list.Length == 2)
                 return this._Less(list[1], env);
             else
                 return this._Less(list.CDR(), env);
@@ -97,9 +96,9 @@ namespace mslisp.Functions
 
         private IDatum _Less(IDatum token, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(token, env);
+            Number value = Evaluator.Eval(token, env) as Number;
 
-            if (Datum.isNumber(token))
+            if (value != null)
                 return env.Fetch("#t");
 
             throw new TypeException("< cannot compare non-numerical types.");
@@ -107,19 +106,15 @@ namespace mslisp.Functions
 
         private IDatum _Less(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count - 1; i++)
+            for (var i = 0; i < list.Length - 1; i++)
             {
-                IDatum curr = Evaluator.Eval(list[i], env);
-                IDatum next = Evaluator.Eval(list[i + 1], env);
+                Number curr = Evaluator.Eval(list[i], env) as Number;
+                Number next = Evaluator.Eval(list[i + 1], env) as Number;
 
-                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
-                    throw new TypeException("< cannot compare non-numerical types.");
+                if (curr == null || next == null)
+                    throw new TypeException("< expected numbers.");
 
-                var currValue = Convert.ToDouble(curr.Value);
-                var nextValue = Convert.ToDouble(next.Value);
-
-                // not less than, return false.
-                if (currValue >= nextValue)
+                if (curr >= next)
                     return env.Fetch("nil");
             }
 
@@ -148,9 +143,9 @@ namespace mslisp.Functions
         // 2. (>= number) => T
         private IDatum Greater(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
+            if (list.Length == 1)
                 throw new ArgumentException(">= is missing some arguments.");
-            else if (list.Count == 2)
+            else if (list.Length == 2)
                 return this._Greater(list[1], env);
             else
                 return this._Greater(list.CDR(), env);
@@ -159,9 +154,9 @@ namespace mslisp.Functions
 
         private IDatum _Greater(IDatum token, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(token, env);
+            Number value = Evaluator.Eval(token, env) as Number;
 
-            if (Datum.isNumber(token))
+            if (value != null)
                 return env.Fetch("#t");
 
             throw new TypeException(">= cannot compare non-numerical types.");
@@ -169,18 +164,15 @@ namespace mslisp.Functions
 
         private IDatum _Greater(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count - 1; i++)
+            for (var i = 0; i < list.Length - 1; i++)
             {
-                IDatum curr = Evaluator.Eval(list[i], env);
-                IDatum next = Evaluator.Eval(list[i + 1], env);
+                Number curr = Evaluator.Eval(list[i], env) as Number;
+                Number next = Evaluator.Eval(list[i + 1], env) as Number;
 
-                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
-                    throw new TypeException(">= cannot compare non-numerical types.");
+                if (curr == null || next == null)
+                    throw new TypeException(">= expected numbers.");
 
-                var currValue = Convert.ToDouble(curr.Value);
-                var nextValue = Convert.ToDouble(next.Value);
-
-                if (currValue < nextValue)
+                if (curr < next)
                     return env.Fetch("nil");
             }
 
@@ -208,9 +200,9 @@ namespace mslisp.Functions
         // 3. (<= numbers...) => T if all pairs, from left to right, are T
         private IDatum Less(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
+            if (list.Length == 1)
                 throw new ArgumentException("<= is missing some arguments.");
-            else if (list.Count == 2)
+            else if (list.Length == 2)
                 return this._Less(list[1], env);
             else
                 return this._Less(list.CDR(), env);
@@ -219,10 +211,10 @@ namespace mslisp.Functions
 
         private IDatum _Less(IDatum token, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(token, env);
+            Number value = Evaluator.Eval(token, env) as Number;
 
             // a comparison of one number always returns true.
-            if (Datum.isNumber(token))
+            if (value != null)
                 return env.Fetch("#t");
 
             throw new TypeException("<= cannot compare non-numerical types.");
@@ -230,18 +222,15 @@ namespace mslisp.Functions
 
         private IDatum _Less(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count - 1; i++)
+            for (var i = 0; i < list.Length - 1; i++)
             {
-                IDatum curr = Evaluator.Eval(list[i], env);
-                IDatum next = Evaluator.Eval(list[i + 1], env);
+                Number curr = Evaluator.Eval(list[i], env) as Number;
+                Number next = Evaluator.Eval(list[i + 1], env) as Number;
 
-                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
-                    throw new TypeException("<= cannot compare non-numerical types.");
+                if (curr == null || next == null)
+                    throw new TypeException("<= expected numbers.");
 
-                var currValue = Convert.ToDouble(curr.Value);
-                var nextValue = Convert.ToDouble(next.Value);
-
-                if (currValue > nextValue)
+                if (curr > next)
                     return env.Fetch("nil");
             }
 
@@ -269,9 +258,9 @@ namespace mslisp.Functions
         // 3. (= number...) => T if all pairs, from left to right, are T
         public IDatum IsEquals(Vector list, ScopedEnvironment env)
         {
-            if (list.Count == 1)
+            if (list.Length == 1)
                 throw new ArgumentException("= is missing some arguments.");
-            else if (list.Count == 2)
+            else if (list.Length == 2)
                 return this._IsEquals(list[1], env);
             else
                 return this._IsEquals(list.CDR(), env);
@@ -280,9 +269,9 @@ namespace mslisp.Functions
 
         private IDatum _IsEquals(IDatum token, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(token, env);
+            Number value = Evaluator.Eval(token, env) as Number;
 
-            if (Datum.isNumber(token))
+            if (value != null)
                 return env.Fetch("#t");
 
             throw new TypeException("= cannot compare non-numerical types.");
@@ -290,19 +279,28 @@ namespace mslisp.Functions
 
         private IDatum _IsEquals(Vector list, ScopedEnvironment env)
         {
-            for (var i = 0; i < list.Count - 1; i++)
+            for (var i = 0; i < list.Length - 1; i++)
             {
                 IDatum curr = Evaluator.Eval(list[i], env);
                 IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (!Datum.isNumber(curr) || !Datum.isNumber(next))
-                    throw new TypeException("= cannot compare non-numerical types.");
-
-                var currValue = Convert.ToDouble(curr.Value);
-                var nextValue = Convert.ToDouble(curr.Value);
-
-                if (currValue != nextValue)
+                if (curr.GetType() != typeof(Atom) || next.GetType() != typeof(Atom))
                     return env.Fetch("nil");
+
+                var cAtom = (Atom)curr;
+                var nAtom = (Atom)next;
+
+                if (cAtom != nAtom)
+                    return env.Fetch("nil");
+
+                //if (!Atom.isNumber(curr) || !Atom.isNumber(next))
+                //    throw new TypeException("= cannot compare non-numerical types.");
+
+                //var currValue = Convert.ToDouble(curr.Value);
+                //var nextValue = Convert.ToDouble(next.Value);
+
+                //if (currValue != nextValue)
+                //    return env.Fetch("nil");
             }
 
             return env.Fetch("#t");

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
 
     /*
@@ -23,17 +23,16 @@ namespace mslisp.Functions
 
         private IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Count < 2)
+            if (list.Length < 2)
                 throw new ArgumentException("BEGIN is missing arguments.");
 
-            var args = list.CDR();
+            Vector argv = list.CDR();
+
             IDatum value = null;
-
-            for (var i = 0; i < args.Count; i++)
+            for (var i = 0; i < argv.Length; i++)
             {
-                value = Evaluator.Eval(args[i], env);
+                value = Evaluator.Eval(argv[i], env);
             }
-
             return value;
         }
 

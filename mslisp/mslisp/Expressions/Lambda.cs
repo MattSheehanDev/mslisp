@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
 
     /*
@@ -23,7 +23,7 @@ namespace mslisp.Functions
 
 		private IDatum CreateScope(Vector list, ScopedEnvironment env)
         {
-            if (list.Count != 3)
+            if (list.Length != 3)
                 throw new ArgumentException("LAMBDA definition is missing arguments.");
 
             if (!(list[1] is Vector))
@@ -31,7 +31,7 @@ namespace mslisp.Functions
 			
             Func<Vector, ScopedEnvironment, IDatum> func = (largs, lenv) =>
             {
-                if (largs.Count < 2)
+                if (largs.Length < 2)
                     throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
 
                 Vector paramslist = list.CDR();
@@ -46,7 +46,7 @@ namespace mslisp.Functions
                 var scopedenv = new ScopedEnvironment(env);
 
                 // bind parameter list with argument list
-                for (var i = 0; i < parameters.Count; i++)
+                for (var i = 0; i < parameters.Length; i++)
                 {
                     IDatum param = parameters[i];
                     IDatum arg = Evaluator.Eval(argslist[i], lenv);

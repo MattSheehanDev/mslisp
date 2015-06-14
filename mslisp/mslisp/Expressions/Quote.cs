@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     /*
      * QUOTE
@@ -22,7 +22,7 @@ namespace mslisp.Functions
 
         private IDatum AsData(Vector list, ScopedEnvironment env)
         {
-            if (list.Count != 2)
+            if (list.Length != 2)
                 throw new ArgumentException("QUOTE is missing arguments.");
 
             return list[1];

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
 
-namespace mslisp.Tokens
+namespace mslisp.Datums
 {
     class SExpression : IDatum
     {

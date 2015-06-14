@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using mslisp.Tokens;
+using mslisp.Datums;
 using mslisp.Environment;
 using mslisp.Lexical;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     class Load : SExpression
     {
@@ -23,7 +23,7 @@ namespace mslisp.Functions
 
         private IDatum LoadFile(Vector list, ScopedEnvironment env)
         {
-            if (list.Count != 2)
+            if (list.Length != 2)
                 throw new ArgumentException("LOAD has wrong number of arguments.");
 
             IDatum filename = list[1];
@@ -43,7 +43,7 @@ namespace mslisp.Functions
                 var eval = Evaluator.Eval(token, env);
             });
 
-            return new Datum(DatumType.BOOLEAN, true);
+            return env.Fetch("#t");
         }
         
     }

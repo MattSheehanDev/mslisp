@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
 
     /*
@@ -23,7 +23,7 @@ namespace mslisp.Functions
 
         public IDatum Setter(Vector list, ScopedEnvironment env)
         {
-            if (list.Count < 3)
+            if (list.Length < 3)
                 throw new ArgumentException("SET is missing arguments.");
 
             Vector args = list.CDR();
@@ -36,7 +36,7 @@ namespace mslisp.Functions
             envscope[(string)variable.Value] = value;
 
             // empty list is nil
-            return new Vector();
+            return env.Fetch("nil");
         }
 
     }

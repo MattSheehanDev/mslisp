@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using mslisp.Environment;
-using mslisp.Tokens;
+using mslisp.Datums;
 
-namespace mslisp.Functions
+namespace mslisp.Expressions
 {
     /*
      * CAR
@@ -29,7 +29,7 @@ namespace mslisp.Functions
 
             Vector listvalue = (Vector)value;
 
-            if (listvalue.Count == 0)
+            if (listvalue.Length == 0)
                 return env.Fetch("nil");
 
             return listvalue[0];
@@ -58,15 +58,15 @@ namespace mslisp.Functions
 
             Vector listvalue = (Vector)value;
 
-            if (listvalue.Count <= 1)
+            if (listvalue.Length <= 1)
                 return env.Fetch("nil");
 
-            var rest = new Vector();
-            for (var i = 1; i < listvalue.Count; i++)
+            var rest = new List<IDatum>();
+            for (var i = 1; i < listvalue.Length; i++)
             {
                 rest.Add(listvalue[i]);
             }
-            return rest;
+            return new Vector(rest.ToArray());
         }
     }
 
@@ -84,7 +84,7 @@ namespace mslisp.Functions
 
         private IDatum Append(Vector list, ScopedEnvironment env)
         {
-            if (list.Count != 3)
+            if (list.Length != 3)
                 throw new ArgumentException("CONS has wrong number of arguments.");
 
             Vector exprs = list.CDR();
@@ -94,41 +94,34 @@ namespace mslisp.Functions
             IDatum value1 = Evaluator.Eval(expr1, env);
             IDatum value2 = Evaluator.Eval(expr2, env);
 
-            //if (value1 is ListToken && value2 is ListToken)
-            //{
-            //    ListToken list1 = (ListToken)value1;
-            //    ListToken list2 = (ListToken)value2;
 
-            //    list2.InsertRange(0, list2);
-            //    return list2;
-            //}
             if (value2 is Vector)
             {
-                var cons = new Vector();
+                var cons = new List<IDatum>();
                 
                 cons.Add(value1);
 
                 Vector list2 = (Vector)value2;
-                list2.ForEach((v) =>
+                for (var i = 0; i < list2.Length; i++)
                 {
-                    cons.Add(v);
-                });
+                    cons.Add(list2[i]);
+                }
 
-                return cons;
+                return new Vector(cons.ToArray());
             }
             else if (value1 is Vector)
             {
-                var cons = new Vector();
+                var cons = new List<IDatum>();
 
                 cons.Add(value2);
 
                 Vector list1 = (Vector)value1;
-                list1.ForEach((v) =>
+                for (var i = 0; i < list1.Length; i++)
                 {
-                    cons.Add(v);
-                });
+                    cons.Add(list1[i]);
+                }
 
-                return cons;
+                return new Vector(cons.ToArray());
             }
             else
             {

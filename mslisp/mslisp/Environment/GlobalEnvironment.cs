@@ -3,22 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Functions;
-using mslisp.Tokens;
-
+using mslisp.Expressions;
+using mslisp.Datums;
 
 namespace mslisp.Environment
 {
+
+    class New : SExpression
+    {
+        public New()
+        {
+            this.value = this.createNew;
+        }
+
+        private IDatum createNew(Vector list, ScopedEnvironment env)
+        {
+            if (list.Length <= 1)
+                throw new ArgumentException("NEW is missing arguments.");
+            
+            var type = System.Type.GetType(list[1].Value.ToString());
+            var args = new List<object>();
+            for(var i = 2; i < list.Length; i++)
+            {
+                args.Add(list[i].Value);
+            }
+            var instance = Activator.CreateInstance(type, args.ToArray());
+
+            // arbitrary type for now.
+            return new Atom(DatumType.SYMBOL, instance);
+        }
+    }
+
+
     class GlobalEnvironment : ScopedEnvironment
     {
 
         public GlobalEnvironment()
         {
             // global variables
-            this.Add("*prompt*", new Datum(DatumType.STRING, "mslisp"));
+            this.Add("*prompt*", new Atom(DatumType.STRING, "mslisp"));
 
-            this.Add("#t", new Datum(DatumType.BOOLEAN, true));
-            this.Add("nil", new Datum(DatumType.NULL, null));
+            this.Add("new", new New());
+
+            this.Add("#t", new Bool(true));
+            this.Add("nil", new Null());
 
             // global procedures
             this.Add("+", new Addition());
