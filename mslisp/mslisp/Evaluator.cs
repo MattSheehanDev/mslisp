@@ -14,6 +14,17 @@ namespace mslisp
         public Evaluator()
         {
         }
+        
+        
+        public static IDatum Eval(List<IDatum> datums)
+        {
+            IDatum eval = null;
+            datums.ForEach((data) =>
+            {
+                eval = Eval(data, Program.environment);
+            });
+            return Bool.True;
+        }
 
         public static IDatum Eval(IDatum x, ScopedEnvironment env)
         {
@@ -31,7 +42,7 @@ namespace mslisp
                 var list = (Vector)x;
                 
                 SExpression procedure = (SExpression)Evaluator.Eval(list.CAR(), env);
-                return procedure.Invoke(list, env);
+                return procedure.Evaluate(list, env);
 
                 //Action<string> s = Console.WriteLine;
                 //s.Invoke("test");

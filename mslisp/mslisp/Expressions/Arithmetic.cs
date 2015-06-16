@@ -17,13 +17,12 @@ namespace mslisp.Expressions
     {
         public Addition()
         {
-            this.value = this.Add;
         }
 
         // addition can go one of two ways.
         // 1. (+) => 0
         // 2. (+ number...) => number1 + ... + numberN
-        private IDatum Add(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 return this._Add();
@@ -62,14 +61,13 @@ namespace mslisp.Expressions
     {
         public Multiplication()
         {
-            this.value = this.Multiply;
         }
 
 
         // multiplication can go one of two ways
         // 1. (*) => 1
         // 2. (* number...) => number1 * ... * numberN
-        private IDatum Multiply(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 return _Multiply();
@@ -111,7 +109,6 @@ namespace mslisp.Expressions
 
         public Subtraction()
         {
-            this.value = this.Subtract;
             this.zero = new Number(0);
         }
 
@@ -120,7 +117,7 @@ namespace mslisp.Expressions
         // 1. (-) => error
         // 2. (- number) => 0 - number
         // 3. (- number...) => number1 - ... - numberN
-        private IDatum Subtract(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("- is missing argument(s).");
@@ -166,7 +163,6 @@ namespace mslisp.Expressions
 
         public Division()
         {
-            this.value = this.Divide;
             this.one = new Number(1);
         }
         
@@ -174,7 +170,7 @@ namespace mslisp.Expressions
         // 1. (/) => error
         // 2. (/ number) => 1 / number
         // 3. (/ number...) => number1 / ... / numberN
-        private IDatum Divide(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("/ is missing argument(s)");

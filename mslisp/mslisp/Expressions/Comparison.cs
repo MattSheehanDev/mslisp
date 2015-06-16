@@ -17,14 +17,13 @@ namespace mslisp.Expressions
     {
         public GreaterThan()
         {
-            this.value = this.Greater;
         }
 
         // greater than an go one of three ways
         // 1. (>) => error
         // 2. (> number) => T
         // 3. (> number...) => T if all pair comparisons, from left to right, are T
-        private IDatum Greater(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("> is missing some arguments.");
@@ -41,7 +40,7 @@ namespace mslisp.Expressions
 
             // single argument always returns true
             if (value != null)
-                return env.Fetch("#t");
+                return Bool.True;
 
             throw new TypeException("> cannot compare non-numerical types.");
         }
@@ -59,10 +58,10 @@ namespace mslisp.Expressions
                     throw new TypeException("> expected numbers.");
 
                 if (curr <= next)
-                    return env.Fetch("nil");
+                    return Null.Instance;
             }
 
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
     }
@@ -76,7 +75,6 @@ namespace mslisp.Expressions
     {
         public LessThan()
         {
-            this.value = this.Less;
         }
 
 
@@ -84,7 +82,7 @@ namespace mslisp.Expressions
         // 1. (<) => error
         // 2. (< number) => T
         // 3. (< numbers...) => T if all pair comparisons, from left to right, are T
-        private IDatum Less(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("< is missing some arguments.");
@@ -99,7 +97,7 @@ namespace mslisp.Expressions
             Number value = Evaluator.Eval(token, env) as Number;
 
             if (value != null)
-                return env.Fetch("#t");
+                return Bool.True;
 
             throw new TypeException("< cannot compare non-numerical types.");
         }
@@ -115,11 +113,10 @@ namespace mslisp.Expressions
                     throw new TypeException("< expected numbers.");
 
                 if (curr >= next)
-                    return env.Fetch("nil");
+                    return Null.Instance;
             }
-
-            // return true;
-            return env.Fetch("#t");
+            
+            return Bool.True;
         }
 
     }
@@ -134,14 +131,13 @@ namespace mslisp.Expressions
         // class is called NotLessThan because it's shorter than GreaterThanOrEqualTo
         public NotLessThan()
         {
-            this.value = this.Greater;
         }
 
 
         // >= can go one of three ways.
         // 1. (>=) => error
         // 2. (>= number) => T
-        private IDatum Greater(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException(">= is missing some arguments.");
@@ -157,7 +153,7 @@ namespace mslisp.Expressions
             Number value = Evaluator.Eval(token, env) as Number;
 
             if (value != null)
-                return env.Fetch("#t");
+                return Bool.True;
 
             throw new TypeException(">= cannot compare non-numerical types.");
         }
@@ -173,10 +169,10 @@ namespace mslisp.Expressions
                     throw new TypeException(">= expected numbers.");
 
                 if (curr < next)
-                    return env.Fetch("nil");
+                    return Null.Instance;
             }
 
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
     }
@@ -190,7 +186,6 @@ namespace mslisp.Expressions
     {
         public NotGreaterThan()
         {
-            this.value = this.Less;
         }
 
 
@@ -198,7 +193,7 @@ namespace mslisp.Expressions
         // 1. (<=) => error
         // 2. (<= number) => T
         // 3. (<= numbers...) => T if all pairs, from left to right, are T
-        private IDatum Less(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("<= is missing some arguments.");
@@ -215,7 +210,7 @@ namespace mslisp.Expressions
 
             // a comparison of one number always returns true.
             if (value != null)
-                return env.Fetch("#t");
+                return Bool.True;
 
             throw new TypeException("<= cannot compare non-numerical types.");
         }
@@ -231,10 +226,10 @@ namespace mslisp.Expressions
                     throw new TypeException("<= expected numbers.");
 
                 if (curr > next)
-                    return env.Fetch("nil");
+                    return Null.Instance;
             }
 
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
     }
@@ -248,7 +243,6 @@ namespace mslisp.Expressions
     {
         public Equals()
         {
-            this.value = this.IsEquals;
         }
 
 
@@ -256,7 +250,7 @@ namespace mslisp.Expressions
         // 1. (=) => error
         // 2. (= number) => T
         // 3. (= number...) => T if all pairs, from left to right, are T
-        public IDatum IsEquals(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
                 throw new ArgumentException("= is missing some arguments.");
@@ -272,7 +266,7 @@ namespace mslisp.Expressions
             Number value = Evaluator.Eval(token, env) as Number;
 
             if (value != null)
-                return env.Fetch("#t");
+                return Bool.True;
 
             throw new TypeException("= cannot compare non-numerical types.");
         }
@@ -285,13 +279,13 @@ namespace mslisp.Expressions
                 IDatum next = Evaluator.Eval(list[i + 1], env);
 
                 if (curr.GetType() != typeof(Atom) || next.GetType() != typeof(Atom))
-                    return env.Fetch("nil");
+                    return Null.Instance;
 
                 var cAtom = (Atom)curr;
                 var nAtom = (Atom)next;
 
                 if (cAtom != nAtom)
-                    return env.Fetch("nil");
+                    return Null.Instance;
 
                 //if (!Atom.isNumber(curr) || !Atom.isNumber(next))
                 //    throw new TypeException("= cannot compare non-numerical types.");
@@ -303,7 +297,7 @@ namespace mslisp.Expressions
                 //    return env.Fetch("nil");
             }
 
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
     }

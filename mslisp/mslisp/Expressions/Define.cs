@@ -17,10 +17,9 @@ namespace mslisp.Expressions
     {
         public Define()
         {
-            this.value = this.Def;
         }
 
-        private IDatum Def(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 3)
                 throw new ArgumentException("DEFINE has wrong number of arguments.");
@@ -32,7 +31,7 @@ namespace mslisp.Expressions
             env.Add((string)variable.Value, Evaluator.Eval(expression, env));
 
             // the empty list is nil
-            return env.Fetch("nil");
+            return Null.Instance;
         }
 
     }

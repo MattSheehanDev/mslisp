@@ -9,17 +9,14 @@ namespace mslisp.Datums
 
     class Atom : IDatum
     {
-        private readonly DatumType type;
         private readonly object value;
 
-
-        public DatumType Type { get { return this.type; } }
+        
         public object Value { get { return this.value; } }
 
 
-        public Atom(DatumType type, object value)
+        public Atom(object value)
         {
-            this.type = type;
             this.value = value;
         }
 

@@ -13,7 +13,7 @@ namespace mslisp.Datums
     class Number : Atom
     {
 
-        public Number(object num) : base(num is int ? DatumType.INT : DatumType.DOUBLE, num)
+        public Number(object num) : base(num)
         {
         }
 

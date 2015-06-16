@@ -8,7 +8,10 @@ namespace mslisp.Datums
 {
     class Bool : Atom
     {
-        public Bool(bool value) : base(DatumType.BOOLEAN, value)
+        public static readonly Bool True = new Bool(true);
+
+
+        private Bool(bool value) : base(value)
         {
         }
 

@@ -17,12 +17,6 @@ namespace mslisp.Environment
         }
 
 
-        public void define(string key, Array code)
-        {
-
-        }
-
-
         public new void Add(string str, IDatum token)
         {
             // wraps base Add, but makes sure str is upper

@@ -17,11 +17,10 @@ namespace mslisp.Expressions
     {
         public IfElse()
         {
-            this.value = this.CheckIfElse;
         }
 
 
-        private IDatum CheckIfElse(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 4)
                 throw new ArgumentException("IF has wrong number of arguments.");
@@ -34,7 +33,7 @@ namespace mslisp.Expressions
             IDatum value = Evaluator.Eval(condition, env);
 
             // anything thats not nil is true.
-            if (value != env.Fetch("nil"))
+            if (!Null.Instance.Equals(value))
                 return Evaluator.Eval(expr1, env);
             else
                 return Evaluator.Eval(expr2, env);
@@ -51,11 +50,10 @@ namespace mslisp.Expressions
     {
         public Conditions()
         {
-            this.value = this.CheckConditions;
         }
 
 
-        public IDatum CheckConditions(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length < 2)
                 throw new ArgumentException("COND is missing arguments.");
@@ -87,7 +85,7 @@ namespace mslisp.Expressions
             }
 
             // no conditional executed, return false.
-            return env.Fetch("nil");
+            return Null.Instance;
         }
 
     }

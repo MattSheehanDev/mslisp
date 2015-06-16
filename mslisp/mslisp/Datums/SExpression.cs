@@ -7,27 +7,28 @@ using mslisp.Environment;
 
 namespace mslisp.Datums
 {
+    /*
+     * Lambda's defined during runtime, will evaluate to s-expressions
+     * with the value set.
+     * Expressions that are predefined should just override the Evaluate method.
+     */
     class SExpression : IDatum
     {
-        protected DatumType type;
         protected Func<Vector, ScopedEnvironment, IDatum> value;
 
-        public DatumType Type { get { return this.type; } }
         public object Value { get { return this.value; } }
 
 
         public SExpression(Func<Vector, ScopedEnvironment, IDatum> func)
         {
-            this.type = DatumType.LAMBDA;
             this.value = func;
         }
         public SExpression()
         {
-            this.type = DatumType.LAMBDA;
         }
 
 
-        public IDatum Invoke(Vector list, ScopedEnvironment env)
+        public virtual IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             return this.value.Invoke(list, env);
         }

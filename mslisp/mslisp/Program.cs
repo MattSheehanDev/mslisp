@@ -16,21 +16,29 @@ namespace mslisp
     // todo: consolidate load and repl
     class Program
     {
+
+        public static readonly GlobalEnvironment environment = new GlobalEnvironment();
+
         static void Main(string[] args)
         {
+            var parser = new Parser();
+            string expr = "";
+
+
             // add C-c keyboard event listener
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
-            var env = new GlobalEnvironment();
-            var parser = new Parser();
-            string expr = "";
+            // first load repl.lisp
+            var lex = new Lexer(File.ReadAllText("../../repl.lisp"));
+            Evaluator.Eval(parser.Parse(lex.Tokenize()));
+            
 
             // repl
             while(true)
             {
                 try
                 {
-                    IDatum prompt = env["*prompt*"];
+                    IDatum prompt = environment["*prompt*"];
                     Console.Write(string.Format("{0}> ", (string)prompt.Value));
 
                     expr += Console.ReadLine();
@@ -51,10 +59,10 @@ namespace mslisp
                     
                     tokens.ForEach((list) =>
                     {
-                        IDatum eval = Evaluator.Eval(list, env);
+                        IDatum eval = Evaluator.Eval(list, environment);
                         Console.WriteLine(eval.ToString());
                     });
-
+                    
 
                     // cleanup
                     expr = "";

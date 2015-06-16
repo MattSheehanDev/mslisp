@@ -9,13 +9,8 @@ namespace mslisp.Datums
 
     class Vector : IDatum
     {
-        private readonly DatumType type;
         private readonly IDatum[] value;
 
-        public DatumType Type
-        {
-            get { return this.type; }
-        }
         public object Value
         {
             get { return this.value; }
@@ -36,7 +31,6 @@ namespace mslisp.Datums
 
         public Vector(IDatum[] value)
         {
-            this.type = DatumType.LIST;
             this.value = value;
         }
         

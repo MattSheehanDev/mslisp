@@ -17,7 +17,6 @@ namespace mslisp.Expressions
         // todo: check atoms by !list
         public IsAtom()
         {
-            this.value = this.checkIfAtom;
         }
 
 
@@ -25,10 +24,10 @@ namespace mslisp.Expressions
         // 1. (atom?) => false
         // 2. (atom? arg) => T if atom
         // 3. (atom? args...) => T if all atoms
-        private IDatum checkIfAtom(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
-                return new Atom(DatumType.BOOLEAN, false);
+                return Bool.True;
             else if (list.Length == 2)
                 return this._checkIfAtom(list[1], env);
             else
@@ -39,8 +38,8 @@ namespace mslisp.Expressions
         {
             IDatum value = Evaluator.Eval(token, env);
             if (this.isAtom(value))
-                return env.Fetch("#t");
-            return env.Fetch("nil");
+                return Bool.True;
+            return Null.Instance;
         }
 
         private IDatum _checkIfAtom(Vector list, ScopedEnvironment env)
@@ -50,10 +49,10 @@ namespace mslisp.Expressions
                 IDatum token = Evaluator.Eval(list[i], env);
 
                 if (!this.isAtom(token))
-                    return env.Fetch("nil");
+                    return Null.Instance;
             }
 
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
 

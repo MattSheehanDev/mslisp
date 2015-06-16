@@ -16,11 +16,10 @@ namespace mslisp.Expressions
     {
         public Quote()
         {
-            this.value = this.AsData;
         }
 
 
-        private IDatum AsData(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 2)
                 throw new ArgumentException("QUOTE is missing arguments.");

@@ -17,11 +17,10 @@ namespace mslisp.Expressions
     {
 		public Lambda()
         {
-            this.value = this.CreateScope;
         }
 
 
-		private IDatum CreateScope(Vector list, ScopedEnvironment env)
+		public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 3)
                 throw new ArgumentException("LAMBDA definition is missing arguments.");

@@ -5,48 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using mslisp.Expressions;
 using mslisp.Datums;
+using mslisp.DotNet;
 
 namespace mslisp.Environment
 {
-
-    class New : SExpression
-    {
-        public New()
-        {
-            this.value = this.createNew;
-        }
-
-        private IDatum createNew(Vector list, ScopedEnvironment env)
-        {
-            if (list.Length <= 1)
-                throw new ArgumentException("NEW is missing arguments.");
-            
-            var type = System.Type.GetType(list[1].Value.ToString());
-            var args = new List<object>();
-            for(var i = 2; i < list.Length; i++)
-            {
-                args.Add(list[i].Value);
-            }
-            var instance = Activator.CreateInstance(type, args.ToArray());
-
-            // arbitrary type for now.
-            return new Atom(DatumType.SYMBOL, instance);
-        }
-    }
-
-
+    
     class GlobalEnvironment : ScopedEnvironment
     {
 
         public GlobalEnvironment()
         {
             // global variables
-            this.Add("*prompt*", new Atom(DatumType.STRING, "mslisp"));
+            this.Add("*prompt*", new Atom("mslisp"));
 
             this.Add("new", new New());
+            this.Add("get-type", new GetType());
+            this.Add("invoke-static", new InvokeStatic());
+            this.Add("invoke-method", new InvokeMethod());
 
-            this.Add("#t", new Bool(true));
-            this.Add("nil", new Null());
+            this.Add("#t", Bool.True);
+            this.Add("nil", Null.Instance);
 
             // global procedures
             this.Add("+", new Addition());
@@ -71,8 +49,6 @@ namespace mslisp.Environment
             
             this.Add("quote", new Quote());
             this.Add("lambda", new Lambda());
-
-            this.Add("load", new Load());
 
             // these can be implemented in lisp.
             // also to be implemented in lisp

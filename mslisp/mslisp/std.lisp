@@ -47,17 +47,32 @@
 	  (quote ())
 	  (cons (car x) (list (cdr x))))))
 
-; the following to procedures could be combined
-; with a [let] macro.
+; Y = ¦Ëf.(¦Ëx.f(x x))(¦Ëx.f(x x))
+(define Y
+    (lambda (m)
+      ((lambda (z) (z z))
+       (lambda (f)
+	(m (lambda (a) ((f f) a)))))))
+
+; factorial using y-combinator.
+; defines f(x).
+(define fac
+    (Y
+     (lambda (f)
+       (lambda (x)
+	 (if (< x 2)
+	     1
+	     (* x (f (- x 1))))))))
+
+; find length using regular recursion.
 (define length
     (lambda (list)
-      (count-length list 0)))
-
-(define count-length
-    (lambda (list count)
-      (if (null? list)
-	  count
-	  (count-length (cdr list) (inc count)))))
+      (begin
+       (define count (lambda (listp num)
+		       (if (null? listp)
+			   num
+			   (count (cdr listp) (inc num)))))
+       (count list 0))))
 
 (define inc
     (lambda (x)

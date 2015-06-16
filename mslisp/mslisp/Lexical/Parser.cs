@@ -52,7 +52,7 @@ namespace mslisp.Lexical
             }
             else if (TokenType.STRING == tokens.Current.Type)
             {
-                return new Atom(DatumType.STRING, tokens.Current.Value);
+                return new Atom(tokens.Current.Value);
             }
             else if (TokenType.INT == tokens.Current.Type)
             {

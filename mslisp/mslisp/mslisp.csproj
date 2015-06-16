@@ -48,6 +48,7 @@
     <Compile Include="Datums\Null.cs" />
     <Compile Include="Datums\Number.cs" />
     <Compile Include="Datums\Symbol.cs" />
+    <Compile Include="DotNet\New.cs" />
     <Compile Include="Environment\GlobalEnvironment.cs" />
     <Compile Include="Environment\ScopedEnvironment.cs" />
     <Compile Include="Evaluator.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="Expressions\IsEqual.cs" />
     <Compile Include="Expressions\List.cs" />
     <Compile Include="Expressions\IsNull.cs" />
-    <Compile Include="Expressions\Load.cs" />
     <Compile Include="Expressions\Quote.cs" />
     <Compile Include="Expressions\Set.cs" />
     <Compile Include="Lexical\Lexer.cs" />

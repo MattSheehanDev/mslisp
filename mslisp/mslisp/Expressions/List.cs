@@ -16,23 +16,23 @@ namespace mslisp.Expressions
     {
         public CAR()
         {
-            this.value = this.First;
         }
 
 
-        private IDatum First(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(list[1], env);
+            if (list.Length < 2)
+                throw new ArgumentException("CAR is missing argument.");
 
-            if (!(value is Vector))
+            var args = list.CDR();
+            var value = Evaluator.Eval(args[0], env) as Vector;
+            
+            if(value == null)
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
+            else if (value.Length == 0)
+                return Null.Instance;
 
-            Vector listvalue = (Vector)value;
-
-            if (listvalue.Length == 0)
-                return env.Fetch("nil");
-
-            return listvalue[0];
+            return value[0];
         }
     }
     
@@ -45,26 +45,22 @@ namespace mslisp.Expressions
     {
         public CDR()
         {
-            this.value = this.Rest;
         }
 
 
-        private IDatum Rest(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            IDatum value = Evaluator.Eval(list[1], env);
+            var value = Evaluator.Eval(list[1], env) as Vector;
 
-            if (!(value is Vector))
+            if (value == null)
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
-
-            Vector listvalue = (Vector)value;
-
-            if (listvalue.Length <= 1)
-                return env.Fetch("nil");
+            else if (value.Length <= 1)
+                return Null.Instance;
 
             var rest = new List<IDatum>();
-            for (var i = 1; i < listvalue.Length; i++)
+            for (var i = 1; i < value.Length; i++)
             {
-                rest.Add(listvalue[i]);
+                rest.Add(value[i]);
             }
             return new Vector(rest.ToArray());
         }
@@ -78,21 +74,18 @@ namespace mslisp.Expressions
     {
         public CONS()
         {
-            this.value = this.Append;
         }
 
 
-        private IDatum Append(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 3)
                 throw new ArgumentException("CONS has wrong number of arguments.");
 
             Vector exprs = list.CDR();
-            IDatum expr1 = exprs[0];
-            IDatum expr2 = exprs[1];
 
-            IDatum value1 = Evaluator.Eval(expr1, env);
-            IDatum value2 = Evaluator.Eval(expr2, env);
+            IDatum value1 = Evaluator.Eval(exprs[0], env);
+            IDatum value2 = Evaluator.Eval(exprs[1], env);
 
 
             if (value2 is Vector)

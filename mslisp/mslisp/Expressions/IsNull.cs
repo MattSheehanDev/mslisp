@@ -17,7 +17,6 @@ namespace mslisp.Expressions
         // todo: don't actually check if 'null', check if empty list '()'
         public IsNull()
         {
-            this.value = this.checkIfNull;
         }
 
 
@@ -25,10 +24,10 @@ namespace mslisp.Expressions
         // 1. (null?) => T
         // 2. (null? arg) => T if null
         // 3. (null? args...) => T if all are null
-        private IDatum checkIfNull(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length == 1)
-                return new Atom(DatumType.BOOLEAN, true);
+                return Bool.True;
             else if (list.Length == 2)
                 return this._checkIfNull(list[1], env);
             else
@@ -42,21 +41,21 @@ namespace mslisp.Expressions
 
             // Check if empty list or nil.
             // if not either, then it's not null
-            if(value.Type == DatumType.LIST)
+            if(value is Vector)
             {
                 Vector list = (Vector)value;
 
                 // empty list is nil
                 if (list.Length == 0)
-                    return env.Fetch("#t");
+                    return Bool.True;
             }
-            else if (value == env.Fetch("nil"))
+            else if (Null.Instance.Equals(value))
             {
-                return env.Fetch("#t");
+                return Bool.True;
             }
 
             // return false
-            return env.Fetch("nil");
+            return Null.Instance;
         }
 
         private IDatum _checkIfNull(Vector list, ScopedEnvironment env)
@@ -66,12 +65,12 @@ namespace mslisp.Expressions
                 IDatum value = this._checkIfNull(list[i], env);
 
                 // check if true, otherwise return false
-                if (value != env.Fetch("#t"))
-                    return env.Fetch("nil");
+                if (!Null.Instance.Equals(value))
+                    return Null.Instance;
             }
 
             // return true
-            return env.Fetch("#t");
+            return Bool.True;
         }
 
     }

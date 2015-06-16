@@ -16,7 +16,6 @@ namespace mslisp.Expressions
     {
         public IsEqual()
         {
-            this.value = this.equals;
         }
 
 
@@ -24,7 +23,7 @@ namespace mslisp.Expressions
         // 1. (equal?) => error
         // 2. (equal? arg arg ...) => error
         // 3. (equal? arg arg) => T or ()
-        public IDatum equals(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length != 3)
                 throw new ArgumentException("equal? has incorrect number of arguments. Correct number is 2.");
@@ -44,9 +43,9 @@ namespace mslisp.Expressions
             // booleans, null, .net values.
             // keeps testing to see if s_expressions, lists compare correctly.
             if (first.Equals(second))
-                return env.Fetch("#t");
+                return Bool.True;
 
-            return env.Fetch("nil");
+            return Null.Instance;
 
             //// todo: check if list?
             

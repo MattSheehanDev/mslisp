@@ -17,26 +17,23 @@ namespace mslisp.Expressions
     {
         public Set()
         {
-            this.value = this.Setter;
         }
 
-
-        public IDatum Setter(Vector list, ScopedEnvironment env)
+        
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length < 3)
                 throw new ArgumentException("SET is missing arguments.");
 
             Vector args = list.CDR();
-            IDatum variable = args[0];
-            IDatum expr = args[1];
+            var variable = args[0].Value as string;
+            
+            // re-bind environment symbol and datum
+            ScopedEnvironment envscope = env.Find(variable);
+            envscope[variable] = Evaluator.Eval(args[1], env);
+            
 
-            IDatum value = Evaluator.Eval(expr, env);
-
-            ScopedEnvironment envscope = env.Find((string)variable.Value);
-            envscope[(string)variable.Value] = value;
-
-            // empty list is nil
-            return env.Fetch("nil");
+            return Null.Instance;
         }
 
     }

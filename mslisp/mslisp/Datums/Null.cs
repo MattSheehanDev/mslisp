@@ -8,7 +8,10 @@ namespace mslisp.Datums
 {
     class Null : Atom
     {
-        public Null() : base(DatumType.NULL, null)
+        public static readonly Null Instance = new Null();
+
+
+        private Null() : base(null)
         {
         }
         

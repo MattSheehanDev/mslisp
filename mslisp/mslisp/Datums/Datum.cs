@@ -21,7 +21,7 @@ namespace mslisp.Datums
 
     interface IDatum
     {
-        DatumType Type { get; }
+        //DatumType Type { get; }
         object Value { get; }
     }
     

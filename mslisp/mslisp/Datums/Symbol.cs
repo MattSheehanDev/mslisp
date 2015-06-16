@@ -9,13 +9,7 @@ namespace mslisp.Datums
     class Symbol : IDatum
     {
         private readonly string identifier;
-        private readonly DatumType type;
-
-
-        public DatumType Type
-        {
-            get { return this.type; }
-        }
+        
 
         public object Value
         {
@@ -26,7 +20,6 @@ namespace mslisp.Datums
         public Symbol(string identifier)
         {
             this.identifier = identifier;
-            this.type = DatumType.SYMBOL;
         }
     }
 }

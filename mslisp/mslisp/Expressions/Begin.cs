@@ -17,11 +17,10 @@ namespace mslisp.Expressions
     {
         public Begin()
         {
-            this.value = this.Evaluate;
         }
 
 
-        private IDatum Evaluate(Vector list, ScopedEnvironment env)
+        public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             if (list.Length < 2)
                 throw new ArgumentException("BEGIN is missing arguments.");
