@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Lexical
+namespace MsLisp.Lexical
 {
     enum CharType
     {
@@ -18,7 +18,7 @@ namespace mslisp.Lexical
     }
 
 
-    class Lexer
+    public class Lexer
     {
         private readonly Scanner scanner;
         private readonly List<Token> tokens;

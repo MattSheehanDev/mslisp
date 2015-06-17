@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Expressions;
-using mslisp.Datums;
-using mslisp.DotNet;
+using MsLisp.Expressions;
+using MsLisp.Datums;
+using MsLisp.DotNet;
 
-namespace mslisp.Environment
+namespace MsLisp.Environment
 {
     
-    class GlobalEnvironment : ScopedEnvironment
+    public class GlobalEnvironment : ScopedEnvironment
     {
 
         public GlobalEnvironment()
@@ -50,13 +50,7 @@ namespace mslisp.Environment
             this.Add("quote", new Quote());
             this.Add("lambda", new Lambda());
 
-            // these can be implemented in lisp.
-            // also to be implemented in lisp
-            // => cadr
-            // => append
-            // => not
             this.Add("atom?", new IsAtom());
-            this.Add("null?", new IsNull());
         }
 
     }

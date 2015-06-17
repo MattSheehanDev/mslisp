@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using mslisp.Environment;
-using mslisp.Lexical;
-using mslisp.Datums;
+using MsLisp;
+using MsLisp.Lexical;
+using MsLisp.Datums;
 
-namespace mslisp
+
+namespace MsRepl
 {
-    // todo: convert all Atoms to uppercase
-    // todo: load multiline files
-    // todo: consolidate load and repl
     class Program
     {
-
-        public static readonly GlobalEnvironment environment = new GlobalEnvironment();
-
         static void Main(string[] args)
         {
             var parser = new Parser();
@@ -29,16 +24,16 @@ namespace mslisp
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
             // first load repl.lisp
-            var lex = new Lexer(File.ReadAllText("../../repl.lisp"));
+            var lex = new Lexer(File.ReadAllText("../../../repl.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
-            
+
 
             // repl
-            while(true)
+            while (true)
             {
                 try
                 {
-                    IDatum prompt = environment["*prompt*"];
+                    IDatum prompt = Evaluator.environment["*prompt*"];
                     Console.Write(string.Format("{0}> ", (string)prompt.Value));
 
                     expr += Console.ReadLine();
@@ -50,34 +45,34 @@ namespace mslisp
                     if (open != close)
                         continue;
 
-                    
+
                     // have lexer count parens?
                     // lexer should count line numbers.
                     var lexer = new Lexer(expr);
                     var tokens = parser.Parse(lexer.Tokenize());
 
-                    
+                    // eval and print
                     tokens.ForEach((list) =>
                     {
-                        IDatum eval = Evaluator.Eval(list, environment);
+                        IDatum eval = Evaluator.Eval(list, Evaluator.environment);
                         Console.WriteLine(eval.ToString());
                     });
-                    
+
 
                     // cleanup
                     expr = "";
                 }
-                catch(ArgumentException ex)
+                catch (MsLisp.ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
                     expr = "";
                 }
-                catch(SyntaxException ex)
+                catch (SyntaxException ex)
                 {
                     Console.WriteLine(ex.Message);
                     expr = "";
                 }
-                catch(TypeException ex)
+                catch (TypeException ex)
                 {
                     Console.WriteLine(ex.Message);
                     expr = "";
@@ -94,9 +89,9 @@ namespace mslisp
         static void CancelKeyPress(Object sender, ConsoleCancelEventArgs args)
         {
             Console.WriteLine("Ctrl-C pressed.");
-            Console.WriteLine("Exiting mslisp.");
+            Console.WriteLine("Exiting MsLisp.");
         }
-        
+
         static void ReplError(Exception ex)
         {
             var trace = new StackTrace(ex);
@@ -107,5 +102,4 @@ namespace mslisp
             }
         }
     }
-
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Datums;
-using mslisp.Environment;
+using MsLisp.Datums;
+using MsLisp.Environment;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
     /*
      * ISEQUAL

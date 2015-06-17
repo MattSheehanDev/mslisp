@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Environment;
-using mslisp.Datums;
+using MsLisp.Environment;
+using MsLisp.Datums;
 
-namespace mslisp
+namespace MsLisp
 {
-    class Evaluator
+    public class Evaluator
     {
+
+        public static readonly GlobalEnvironment environment = new GlobalEnvironment();
 
         public Evaluator()
         {
@@ -21,14 +23,14 @@ namespace mslisp
             IDatum eval = null;
             datums.ForEach((data) =>
             {
-                eval = Eval(data, Program.environment);
+                eval = Eval(data, environment);
             });
             return Bool.True;
         }
 
         public static IDatum Eval(IDatum x, ScopedEnvironment env)
         {
-            if (x is Atom)
+            if (x is Atom || x is Null)
             {
                 return x;
             }
@@ -43,9 +45,6 @@ namespace mslisp
                 
                 SExpression procedure = (SExpression)Evaluator.Eval(list.CAR(), env);
                 return procedure.Evaluate(list, env);
-
-                //Action<string> s = Console.WriteLine;
-                //s.Invoke("test");
             }
         }
 

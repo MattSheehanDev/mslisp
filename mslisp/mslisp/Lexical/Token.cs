@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Lexical
+namespace MsLisp.Lexical
 {
 
-    enum TokenType
+    public enum TokenType
     {
         LISTOPEN,           // (
         LISTCLOSE,          // )
@@ -20,7 +20,7 @@ namespace mslisp.Lexical
         TICK                // ' or `
     }
 
-    class Token
+    public class Token
     {
         private TokenType type;
         private string value;

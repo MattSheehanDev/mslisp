@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
-    class Symbol : IDatum
+    public class Symbol : IDatum
     {
         private readonly string identifier;
         

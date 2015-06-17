@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace mslisp.Lexical
+namespace MsLisp.Lexical
 {
-    class Scanner
+    public class Scanner
     {
         private readonly StringReader reader;
 

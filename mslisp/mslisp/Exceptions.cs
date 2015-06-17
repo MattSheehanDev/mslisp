@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp
+namespace MsLisp
 {
-    class SyntaxException : Exception
+    public class SyntaxException : Exception
     {
         public SyntaxException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {
         }
     }
 
-    class ArgumentException : Exception
+    public class ArgumentException : Exception
     {
         public ArgumentException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {
@@ -21,7 +21,7 @@ namespace mslisp
     }
 
 
-    class TypeException : Exception
+    public class TypeException : Exception
     {
         public TypeException(string msg, params object[] obj) : base(String.Format(msg, obj))
         {

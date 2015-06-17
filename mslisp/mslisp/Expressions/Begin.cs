@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Environment;
-using mslisp.Datums;
+using MsLisp.Environment;
+using MsLisp.Datums;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
 
     /*
      * BEGIN
      * (begin exp*) => last valueof(exp)
      */
-    class Begin : SExpression
+    public class Begin : SExpression
     {
         public Begin()
         {

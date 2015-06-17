@@ -4,11 +4,46 @@
 ;;; NOTE: I might change the name to sml.lisp (standard macro library),
 ;;; once macros are implemented.
 
+
+; Y = ¦Ëf.(¦Ëx.f(x x))(¦Ëx.f(x x))
+(define Y
+    (lambda (m)
+      ((lambda (z) (z z))
+       (lambda (f)
+	(m (lambda (a) ((f f) a)))))))
+
+; factorial using y-combinator.
+; defines f(x).
+(define fac
+    (Y
+     (lambda (f)
+       (lambda (x)
+	 (if (< x 2)
+	     1
+	     (* x (f (- x 1))))))))
+
+; find length using regular recursion.
+(define length
+    (lambda (list)
+      (begin
+       (define count (lambda (listp num)
+		       (if (null? listp)
+			   num
+			   (count (cdr listp) (inc num)))))
+       (count list 0))))
+
 ; returns opposite of input.
 ; equivalent to the more conventional !true or !false
 (define not
     (lambda (x)
       (if (null? x) #t nil)))
+
+; checks if input is equal to nil or ()
+(define null?
+    (lambda (x)
+      (if (equals? x nil)
+	  #t
+	  nil)))
 
 ; joins two lists together.
 (define append
@@ -47,37 +82,12 @@
 	  (quote ())
 	  (cons (car x) (list (cdr x))))))
 
-; Y = ¦Ëf.(¦Ëx.f(x x))(¦Ëx.f(x x))
-(define Y
-    (lambda (m)
-      ((lambda (z) (z z))
-       (lambda (f)
-	(m (lambda (a) ((f f) a)))))))
-
-; factorial using y-combinator.
-; defines f(x).
-(define fac
-    (Y
-     (lambda (f)
-       (lambda (x)
-	 (if (< x 2)
-	     1
-	     (* x (f (- x 1))))))))
-
-; find length using regular recursion.
-(define length
-    (lambda (list)
-      (begin
-       (define count (lambda (listp num)
-		       (if (null? listp)
-			   num
-			   (count (cdr listp) (inc num)))))
-       (count list 0))))
-
+; x++
 (define inc
     (lambda (x)
       (+ 1 x)))
 
+; x--
 (define dec
     (lambda (x)
       (- x 1)))

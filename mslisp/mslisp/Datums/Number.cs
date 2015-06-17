@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
     /*
      * Numbers are Atoms but there are certain operator overloads
      * that make doing arithmatic on number atoms easier.
      */
-    class Number : Atom
+    public class Number : Atom
     {
 
         public Number(object num) : base(num)

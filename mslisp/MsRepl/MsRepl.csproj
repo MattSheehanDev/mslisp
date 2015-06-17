@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8028F07A-2A20-472B-848A-D49098AF002A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{CAB28763-A9CA-40BD-846A-B377EFC18D00}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MsLisp</RootNamespace>
-    <AssemblyName>MsLisp</AssemblyName>
+    <RootNamespace>MsRepl</RootNamespace>
+    <AssemblyName>MsRepl</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,35 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Datums\Atom.cs" />
-    <Compile Include="Datums\Bool.cs" />
-    <Compile Include="Datums\Datum.cs" />
-    <Compile Include="Datums\Null.cs" />
-    <Compile Include="Datums\Number.cs" />
-    <Compile Include="Datums\SExpression.cs" />
-    <Compile Include="Datums\Symbol.cs" />
-    <Compile Include="Datums\Vector.cs" />
-    <Compile Include="DotNet\New.cs" />
-    <Compile Include="Environment\GlobalEnvironment.cs" />
-    <Compile Include="Environment\ScopedEnvironment.cs" />
-    <Compile Include="Evaluator.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="Expressions\Arithmetic.cs" />
-    <Compile Include="Expressions\Begin.cs" />
-    <Compile Include="Expressions\Comparison.cs" />
-    <Compile Include="Expressions\Conditional.cs" />
-    <Compile Include="Expressions\Define.cs" />
-    <Compile Include="Expressions\IsAtom.cs" />
-    <Compile Include="Expressions\IsEqual.cs" />
-    <Compile Include="Expressions\Lambda.cs" />
-    <Compile Include="Expressions\List.cs" />
-    <Compile Include="Expressions\Quote.cs" />
-    <Compile Include="Expressions\Set.cs" />
-    <Compile Include="Lexical\Lexer.cs" />
-    <Compile Include="Lexical\Parser.cs" />
-    <Compile Include="Lexical\Scanner.cs" />
-    <Compile Include="Lexical\Token.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MsLisp\MsLisp.csproj">
+      <Project>{8028f07a-2a20-472b-848a-d49098af002a}</Project>
+      <Name>MsLisp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Datums;
-using mslisp.Environment;
-using mslisp.Lexical;
+using MsLisp.Datums;
+using MsLisp.Environment;
+using MsLisp.Lexical;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
     /*
      * GREATER THAN
      * (> 1 2 ...)
      */
-    class GreaterThan : SExpression
+    public class GreaterThan : SExpression
     {
         public GreaterThan()
         {
@@ -71,7 +71,7 @@ namespace mslisp.Expressions
      * LESS THAN
      * (< 1 2 ...)
      */
-    class LessThan : SExpression
+    public class LessThan : SExpression
     {
         public LessThan()
         {
@@ -126,7 +126,7 @@ namespace mslisp.Expressions
      * GREATER THAN OR EQUAL TO
      * (>= 1 2 ...)
      */
-    class NotLessThan : SExpression
+    public class NotLessThan : SExpression
     {
         // class is called NotLessThan because it's shorter than GreaterThanOrEqualTo
         public NotLessThan()
@@ -182,7 +182,7 @@ namespace mslisp.Expressions
      * LESS THAN OR EQUAL TO
      * (<= 1 2 ...)
      */
-     class NotGreaterThan : SExpression
+    public class NotGreaterThan : SExpression
     {
         public NotGreaterThan()
         {
@@ -239,7 +239,7 @@ namespace mslisp.Expressions
      * EQUALS
      * (= 2 2 ...)
      */
-    class Equals : SExpression
+    public class Equals : SExpression
     {
         public Equals()
         {

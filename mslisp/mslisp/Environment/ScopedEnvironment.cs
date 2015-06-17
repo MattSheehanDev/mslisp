@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Datums;
+using MsLisp.Datums;
 
-namespace mslisp.Environment
+namespace MsLisp.Environment
 {
-    class ScopedEnvironment : Dictionary<string, IDatum>
+    public class ScopedEnvironment : Dictionary<string, IDatum>
     {
         private ScopedEnvironment outerenv;
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
-    class Bool : Atom
+    public class Bool : Atom
     {
         public static readonly Bool True = new Bool(true);
 

@@ -3,7 +3,7 @@
 ;;; Program.Main should load this during startup.
 
 
-(define *parser* (new "mslisp.Lexical.Parser"))
+(define *parser* (new "MsLisp.Lexical.Parser"))
 
 (define load
     (lambda (filename)
@@ -20,7 +20,7 @@
 
 (define evaluate-datums
     (lambda (datums)
-      (invoke-static (get-type "mslisp" "Evaluator") "Eval" datums)))
+      (invoke-static (get-type "MsLisp" "Evaluator") "Eval" datums)))
 
 (define parse-tokens
     (lambda (tokens)
@@ -32,7 +32,7 @@
 
 (define lexer
     (lambda (filename)
-      (new "mslisp.Lexical.Lexer" (read-file filename))))
+      (new "MsLisp.Lexical.Lexer" (read-file filename))))
 
 (define read-file
     (lambda (x)

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using mslisp.Datums;
-using mslisp.Environment;
+using MsLisp.Datums;
+using MsLisp.Environment;
 
-namespace mslisp.DotNet
+namespace MsLisp.DotNet
 {
-    class New : SExpression
+    public class New : SExpression
     {
         public New()
         {
@@ -27,14 +27,13 @@ namespace mslisp.DotNet
                 args.Add(Evaluator.Eval(list[i], env).Value);
             }
             var instance = Activator.CreateInstance(type, args.ToArray());
-
-            // arbitrary type for now.
+            
             return new Atom(instance);
         }
     }
 
 
-    class GetType : SExpression
+    public class GetType : SExpression
     {
         public GetType()
         {
@@ -63,7 +62,7 @@ namespace mslisp.DotNet
     }
 
 
-    class InvokeStatic : SExpression
+    public class InvokeStatic : SExpression
     {
         public InvokeStatic()
         {
@@ -98,7 +97,7 @@ namespace mslisp.DotNet
     }
 
 
-    class InvokeMethod : SExpression
+    public class InvokeMethod : SExpression
     {
         public InvokeMethod()
         {

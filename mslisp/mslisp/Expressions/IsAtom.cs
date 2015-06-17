@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Datums;
-using mslisp.Environment;
+using MsLisp.Datums;
+using MsLisp.Environment;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
     /*
      * ISATOM
@@ -58,7 +58,10 @@ namespace mslisp.Expressions
 
         private bool isAtom(IDatum data)
         {
-            return data is Atom;
+            // everything that's not a list is an atom
+            if (data is Vector && !(data is Null))
+                return false;
+            return true;
         }
 
     }

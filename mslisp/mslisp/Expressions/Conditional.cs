@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Environment;
-using mslisp.Datums;
+using MsLisp.Environment;
+using MsLisp.Datums;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
 
     /*
      * IF
      * (if condition exp1 exp2) => val1 || val2
      */
-    class IfElse : SExpression
+    public class IfElse : SExpression
     {
         public IfElse()
         {
@@ -46,7 +46,7 @@ namespace mslisp.Expressions
      * COND
      * (cond (c1 e1) ... (cn en)) => value(en) || nil
      */
-     class Conditions : SExpression
+    public class Conditions : SExpression
     {
         public Conditions()
         {

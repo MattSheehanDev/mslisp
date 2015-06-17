@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
 
-    class Atom : IDatum
+    public class Atom : IDatum
     {
         private readonly object value;
 

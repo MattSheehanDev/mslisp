@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Datums;
+using MsLisp.Datums;
 
-namespace mslisp.Lexical
-{   
-    class Parser
+namespace MsLisp.Lexical
+{
+    public class Parser
     {
         
         public Parser()
@@ -42,6 +42,12 @@ namespace mslisp.Lexical
                 {
                     list.Add(this.Parse(tokens));
                 }
+
+                // empty list is NULL instance.
+                // nil == ()
+                if (list.Count == 0)
+                    return Null.Instance;
+
                 return new Vector(list.ToArray());
             }
             else if (TokenType.LISTCLOSE == tokens.Current.Type)

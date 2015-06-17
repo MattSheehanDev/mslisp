@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Environment;
-using mslisp.Datums;
-using mslisp.Lexical;
+using MsLisp.Environment;
+using MsLisp.Datums;
+using MsLisp.Lexical;
 
-namespace mslisp.Expressions
+namespace MsLisp.Expressions
 {
     /*
      * ADDITION
      * (+ 1 2 ...)
      */
-    class Addition : SExpression
+    public class Addition : SExpression
     {
         public Addition()
         {
@@ -52,12 +52,12 @@ namespace mslisp.Expressions
         }
     }
 
-    
+
     /*
      * MULTIPLICATION
      * (* 10 7 ...)
      */
-    class Multiplication : SExpression
+    public class Multiplication : SExpression
     {
         public Multiplication()
         {
@@ -103,7 +103,7 @@ namespace mslisp.Expressions
      * SUBTRACTION
      * (- 10 7)
      */
-    class Subtraction : SExpression
+    public class Subtraction : SExpression
     {
         private readonly Number zero;
 
@@ -156,7 +156,7 @@ namespace mslisp.Expressions
      * DIVISION
      * (/ 21 7)
      */
-    class Division : SExpression
+    public class Division : SExpression
     {
         private readonly Number one;
 

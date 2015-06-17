@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mslisp.Environment;
+using MsLisp.Environment;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
     /*
      * Lambda's defined during runtime, will evaluate to s-expressions
      * with the value set.
      * Expressions that are predefined should just override the Evaluate method.
      */
-    class SExpression : IDatum
+    public class SExpression : IDatum
     {
         protected Func<Vector, ScopedEnvironment, IDatum> value;
 

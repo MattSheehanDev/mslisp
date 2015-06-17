@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mslisp.Datums
+namespace MsLisp.Datums
 {
 
-    enum DatumType
+    public enum DatumType
     {
         SYMBOL,
         STRING,
@@ -19,7 +19,7 @@ namespace mslisp.Datums
         LAMBDA
     }
 
-    interface IDatum
+    public interface IDatum
     {
         //DatumType Type { get; }
         object Value { get; }
