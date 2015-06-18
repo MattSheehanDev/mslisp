@@ -48,6 +48,9 @@
     <Compile Include="Datums\SExpression.cs" />
     <Compile Include="Datums\Symbol.cs" />
     <Compile Include="Datums\Vector.cs" />
+    <Compile Include="DotNet\GetType.cs" />
+    <Compile Include="DotNet\InvokeMethod.cs" />
+    <Compile Include="DotNet\InvokeStatic.cs" />
     <Compile Include="DotNet\New.cs" />
     <Compile Include="Environment\GlobalEnvironment.cs" />
     <Compile Include="Environment\ScopedEnvironment.cs" />

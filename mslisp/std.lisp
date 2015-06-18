@@ -57,22 +57,6 @@
     (lambda (x y)
       (cons x (cons y (quote ())))))
 
-; takes two lists '(1 2 3) '(4 5 6) and forms pairs,
-; ((1 4) (2 5) (3 6))
-(define map
-    (lambda (x y)
-      (if (null? x)
-	  (quote ())
-	  (cons (pair (car x) (car y)) (map (cdr x) (cdr y))))))
-
-; x is a key, y is a map
-; returns value
-(define assoc
-    (lambda (x y)
-      (if (equals? (caar y) x)
-	  (cadar y)
-	  (assoc x (cdr y)))))
-
 ; &rest parameters are not implemented yet,
 ; but if they were [list] would be preferred
 ; over [pair].
@@ -91,6 +75,96 @@
 (define dec
     (lambda (x)
       (- x 1)))
+
+
+; eval in lisp.
+; e is a lisp expression, a is the environment
+; todo: create if/cond function/macro
+(define eval
+    (lambda (e a)
+      (cond
+	; atom or symbol
+	; todo: check for condition type symbol
+	;       seperately in next conditional.
+	((atom? e)
+	 (cond
+	   ((null? (assoc e a)) e)
+	   (#t (assoc e a))))
+	; list
+	((atom? (car e))
+	 (cond
+	   ; CAR
+	   ((equals? (car e) (quote car))
+	    (car (eval (cadr e) a)))
+	   ; CDR
+	   ((equals? (car e) (quote cdr))
+	    (cdr (eval (cadr e) a)))
+	   ; CONS
+	   ((equals? (car e) (quote cons))
+	    (cons (eval (cadr e) a) (eval (caddr e) a)))
+	   ; ATOM?
+	   ((equals? (car e) (quote atom?))
+	    (atom? (eval (cadr e) a)))
+	   ; EQUALS?
+	   ((equals? (car e) (quote equals?))
+	    (equals? (eval (cadr e) a) (eval (caddr e) a)))
+	   ; QUOTE
+	   ((equals? (car e) (quote quote))
+	    (cadr e))
+	   ; COND
+	   ((equals? (car e) (quote cond))
+	    (evcon (cdr e) a))
+	   ; assume a symbol that is defined in the environment.
+	   ; replace symbol with binding
+	   ; re-evaluate list
+	   (#t
+	    (eval (cons (assoc (car e) a) (cdr e)) a))))
+	; lambda functions,
+	; re-evaluate with lambda body
+	; with updated environment,
+	; mapping the arguments and parameters together
+	((equals? (caar e) (quote lambda))
+	 (eval (caddar e) (append (map (cadar e) (evlis (cdr e) a)) a))))))
+
+
+; we could replace if with a recursive cond,
+; or replace cond with a recursive if.
+; something to think about.
+; evaluate conditionals
+(define evcon
+    (lambda (c a)
+      (cond
+	((eval (caar c) a)
+	 (eval (cadar c) a))
+	(#t
+	 (evcon (cdr c) a)))))
+
+; evaluate list
+(define evlis
+    (lambda  (m a)
+      (cond
+	((null? m)
+	 nil)
+	(#t
+	 (cons (eval (car m) a) (evlis (cdr m) a))))))
+	
+; takes two lists '(1 2 3) '(4 5 6) and forms pairs,
+; ((1 4) (2 5) (3 6))
+(define map
+    (lambda (x y)
+      (if (null? x)
+	  (quote ())
+	  (cons (pair (car x) (car y)) (map (cdr x) (cdr y))))))
+
+; x is a key, y is a map
+; returns value
+(define assoc
+    (lambda (x y)
+      (if (null? y)
+	  nil
+	  (if (equals? (caar y) x)
+	      (cadar y)
+	      (assoc x (cdr y))))))
 
 ; [cdr [car x]]
 (define cdar
