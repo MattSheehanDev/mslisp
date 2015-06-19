@@ -30,7 +30,7 @@ namespace MsLisp
 
         public static IDatum Eval(IDatum x, ScopedEnvironment env)
         {
-            if (x is Atom || x is Null)
+            if (x is Atom || x is SExpression || x is Null)
             {
                 return x;
             }

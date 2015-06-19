@@ -24,7 +24,7 @@ namespace MsRepl
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
             // first load repl.lisp
-            var lex = new Lexer(File.ReadAllText("../../../repl.lisp"));
+            var lex = new Lexer(File.ReadAllText("repl.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
 

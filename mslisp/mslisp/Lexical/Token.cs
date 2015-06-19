@@ -14,7 +14,7 @@ namespace MsLisp.Lexical
         STRING,             // "   "
         INT,                // 2
         DOUBLE,             // 2.0
-        SYMBOL,             // #t and nil are symbols, so we don't need a boolean type
+        SYMBOL,             // #t and nil are symbols, so we don't need a boolean token (we still have boolean data values though)
         COMMENT,            // ;
         WHITESPACE,         //
         TICK                // ' or `

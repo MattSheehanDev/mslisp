@@ -55,7 +55,7 @@
 ; creates a list of two items.
 (define pair
     (lambda (x y)
-      (cons x (cons y (quote ())))))
+      (cons x (cons y '()))))
 
 ; &rest parameters are not implemented yet,
 ; but if they were [list] would be preferred
@@ -94,25 +94,25 @@
 	((atom? (car e))
 	 (cond
 	   ; CAR
-	   ((equals? (car e) (quote car))
+	   ((equals? (car e) 'car)
 	    (car (eval (cadr e) a)))
 	   ; CDR
-	   ((equals? (car e) (quote cdr))
+	   ((equals? (car e) 'cdr)
 	    (cdr (eval (cadr e) a)))
 	   ; CONS
-	   ((equals? (car e) (quote cons))
+	   ((equals? (car e) 'cons)
 	    (cons (eval (cadr e) a) (eval (caddr e) a)))
 	   ; ATOM?
-	   ((equals? (car e) (quote atom?))
+	   ((equals? (car e) 'atom?)
 	    (atom? (eval (cadr e) a)))
 	   ; EQUALS?
-	   ((equals? (car e) (quote equals?))
+	   ((equals? (car e) 'equals?)
 	    (equals? (eval (cadr e) a) (eval (caddr e) a)))
 	   ; QUOTE
-	   ((equals? (car e) (quote quote))
+	   ((equals? (car e) 'quote)
 	    (cadr e))
 	   ; COND
-	   ((equals? (car e) (quote cond))
+	   ((equals? (car e) 'cond)
 	    (evcon (cdr e) a))
 	   ; assume a symbol that is defined in the environment.
 	   ; replace symbol with binding
@@ -123,7 +123,7 @@
 	; re-evaluate with lambda body
 	; with updated environment,
 	; mapping the arguments and parameters together
-	((equals? (caar e) (quote lambda))
+	((equals? (caar e) 'lambda)
 	 (eval (caddar e) (append (map (cadar e) (evlis (cdr e) a)) a))))))
 
 

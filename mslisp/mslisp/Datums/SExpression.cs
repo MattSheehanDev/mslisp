@@ -11,6 +11,8 @@ namespace MsLisp.Datums
      * Lambda's defined during runtime, will evaluate to s-expressions
      * with the value set.
      * Expressions that are predefined should just override the Evaluate method.
+     *
+     * Seems strange but sexpressions (lambda (params) body) are actually atoms
      */
     public class SExpression : IDatum
     {
@@ -32,7 +34,7 @@ namespace MsLisp.Datums
         {
             return this.value.Invoke(list, env);
         }
-
+        
     }
 
 }

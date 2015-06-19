@@ -14,6 +14,7 @@ namespace MsLisp.Lexical
         ESCAPE,
         SEMICOLON,
         WHITESPACE,
+        TICK,
         OTHER
     }
 
@@ -59,6 +60,9 @@ namespace MsLisp.Lexical
                     case CharType.QUOTATION:
                         this.tokens.Add(this.String());
                         break;
+                    case CharType.TICK:
+                        this.tokens.Add(this.Tick());
+                        break;
                     case CharType.OTHER:
                         this.tokens.Add(this.NumberOrSymbol());
                         break;
@@ -82,6 +86,8 @@ namespace MsLisp.Lexical
                 return CharType.QUOTATION;
             else if (value == '\\')
                 return CharType.ESCAPE;
+            else if (value == '\'')
+                return CharType.TICK;
             else
                 return CharType.OTHER;
         }
@@ -183,6 +189,13 @@ namespace MsLisp.Lexical
             }
 
             return new Token(TokenType.COMMENT, comment);
+        }
+
+
+        private Token Tick()
+        {
+            this.Expect(this.scanner.Current, '\'');
+            return new Token(TokenType.TICK, this.scanner.Current.ToString());
         }
 
 

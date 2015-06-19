@@ -14,6 +14,7 @@ namespace MsLisp.Expressions
      */
     class Quote : SExpression
     {
+
         public Quote()
         {
         }
@@ -25,6 +26,12 @@ namespace MsLisp.Expressions
                 throw new ArgumentException("QUOTE is missing arguments.");
 
             return list[1];
+        }
+
+
+        public override string ToString()
+        {
+            return "quote";
         }
 
     }

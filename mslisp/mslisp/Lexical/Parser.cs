@@ -4,14 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MsLisp.Datums;
+using MsLisp.Expressions;
 
 namespace MsLisp.Lexical
 {
     public class Parser
     {
+
+        // quote symbol is used everywhere a 'tick' is found,
+        // so it's useful to keep a copy around.
+        private readonly Symbol quote;
         
         public Parser()
         {
+            this.quote = new Symbol("quote");
         }
 
 
@@ -71,6 +77,17 @@ namespace MsLisp.Lexical
             else if (TokenType.SYMBOL == tokens.Current.Type)
             {
                 return new Symbol(tokens.Current.Value);
+            }
+            else if (TokenType.TICK == tokens.Current.Type)
+            {
+                // a tick is an abbreviated quote,
+                // so replace tick with (quote exp);
+                var quoted = new List<IDatum>();        // create new vector
+                quoted.Add(this.quote);                 // add quote expression
+                tokens.MoveNext();
+                quoted.Add(this.Parse(tokens));         // add whatever the next datum is
+
+                return new Vector(quoted.ToArray());    // return vector
             }
 
             throw new SyntaxException("Unrecognized token type {0}", tokens.Current.Value);
