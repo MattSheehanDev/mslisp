@@ -57,6 +57,11 @@ dlldata.c
 *.svclog
 *.scc
 
+mslisp/MsRepl/*.dll
+mslisp/MsRepl/*.pdb
+mslisp/MsRepl/*.user
+mslisp/MsRepl/*.exe
+
 # Chutzpah Test files
 _Chutzpah*
 
