@@ -17,7 +17,10 @@ namespace MsLisp.Lexical
         SYMBOL,             // #t and nil are symbols, so we don't need a boolean token (we still have boolean data values though)
         COMMENT,            // ;
         WHITESPACE,         //
-        TICK                // ' or `
+        QUOTE,              // '
+        QUASIQUOTE,         // `
+        UNQUOTE,            // ,
+        SPLICE              // ,@
     }
 
     public class Token

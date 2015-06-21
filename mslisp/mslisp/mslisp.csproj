@@ -71,6 +71,7 @@
     <Compile Include="Lexical\Parser.cs" />
     <Compile Include="Lexical\Scanner.cs" />
     <Compile Include="Lexical\Token.cs" />
+    <Compile Include="Macro\Macro.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

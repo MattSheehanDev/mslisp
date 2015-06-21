@@ -8,13 +8,15 @@ namespace MsLisp.Lexical
 {
     enum CharType
     {
-        OPENPARENS,
-        CLOSEPARENS,
-        QUOTATION,
-        ESCAPE,
-        SEMICOLON,
-        WHITESPACE,
-        TICK,
+        OPENPARENS,             // (
+        CLOSEPARENS,            // )
+        QUOTATION,              // "
+        ESCAPE,                 // \
+        SEMICOLON,              // ;
+        WHITESPACE,             // 
+        TICK,                   // '
+        QUASIQUOTE,             // `
+        COMMA,                  // ,
         OTHER
     }
 
@@ -63,6 +65,12 @@ namespace MsLisp.Lexical
                     case CharType.TICK:
                         this.tokens.Add(this.Tick());
                         break;
+                    case CharType.QUASIQUOTE:
+                        this.tokens.Add(this.QuasiQuote());
+                        break;
+                    case CharType.COMMA:
+                        this.tokens.Add(this.UnQuoteOrSplice());
+                        break;
                     case CharType.OTHER:
                         this.tokens.Add(this.NumberOrSymbol());
                         break;
@@ -88,6 +96,10 @@ namespace MsLisp.Lexical
                 return CharType.ESCAPE;
             else if (value == '\'')
                 return CharType.TICK;
+            else if (value == '`')
+                return CharType.QUASIQUOTE;
+            else if (value == ',')
+                return CharType.COMMA;
             else
                 return CharType.OTHER;
         }
@@ -194,8 +206,31 @@ namespace MsLisp.Lexical
 
         private Token Tick()
         {
+            // a '\'' is considered an abbr. for (quote)
             this.Expect(this.scanner.Current, '\'');
-            return new Token(TokenType.TICK, this.scanner.Current.ToString());
+            return new Token(TokenType.QUOTE, this.scanner.Current.ToString());
+        }
+
+        private Token QuasiQuote()
+        {
+            // a '`' is considered abbr. for (quasiquote)
+            this.Expect(this.scanner.Current, '`');
+            return new Token(TokenType.QUASIQUOTE, this.scanner.Current.ToString());
+        }
+
+        private Token UnQuoteOrSplice()
+        {
+            this.Expect(this.scanner.Current, ',');
+
+            // a ',' followed by an '@', is considered an abbr. for (splice)
+            if(this.scanner.Peek == '@')
+            {
+                string str = this.scanner.Current.ToString() + this.scanner.Next();
+                return new Token(TokenType.SPLICE, str);
+            }
+
+            // a ',' followed by anything else is considered an abbr. for (unquote)
+            return new Token(TokenType.UNQUOTE, this.scanner.Current.ToString());
         }
 
 

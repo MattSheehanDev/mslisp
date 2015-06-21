@@ -3,14 +3,53 @@
 ;;;
 ;;; NOTE: I might change the name to sml.lisp (standard macro library),
 ;;; once macros are implemented.
+;;;
 
+
+;; macro to make it easier to define macros
+(define defmacro
+    (macro
+     (lambda (name params body)
+       `(define ,name
+	    (macro
+	     (lambda ,params
+	       ,body))))))
+
+; flattens a list, ex: (1 2 (3 4)) => (1 2 3 4)
+(define flatten 
+    (lambda (list)
+      (begin
+       (define flat 
+	   (lambda (x y)
+	     (if (atom? x)
+		 (if (null? x)
+		     y
+		     (cons x y))
+		 (flat (car x) (flat (cdr x) y)))))
+       (flat list ()))))
+
+; checks if input is equal to nil or ()
+(define null? 
+    (lambda (x)
+      (if (equals? x nil)
+	  #t
+	  nil)))
+
+;; macro to make it easier to define functions
+(defmacro defun (name params body)
+  `(define ,name
+       (lambda ,params
+	 ,body)))
+
+(defmacro let (var value body)
+  `((lambda (,var)
+      ,body) ,value))
 
 ; Y = ¦Ëf.(¦Ëx.f(x x))(¦Ëx.f(x x))
-(define Y
-    (lambda (m)
-      ((lambda (z) (z z))
-       (lambda (f)
-	(m (lambda (a) ((f f) a)))))))
+(defun Y (m)
+  ((lambda (z) (z z))
+   (lambda (f)
+     (m (lambda (a) ((f f) a))))))
 
 ; factorial using y-combinator.
 ; defines f(x).
@@ -22,40 +61,30 @@
 	     1
 	     (* x (f (- x 1))))))))
 
-; find length using regular recursion.
-(define length
-    (lambda (list)
-      (begin
-       (define count (lambda (listp num)
-		       (if (null? listp)
-			   num
-			   (count (cdr listp) (inc num)))))
-       (count list 0))))
+; find the length of a list
+(defun length (list)
+  (let num 0
+       ((Y (lambda (f)
+	     (lambda (x)
+	       (if (null? x)
+		   num
+		   (begin (set! num (inc num)) (f (cdr x)))))))
+	list)))
 
 ; returns opposite of input.
 ; equivalent to the more conventional !true or !false
-(define not
-    (lambda (x)
-      (if (null? x) #t nil)))
-
-; checks if input is equal to nil or ()
-(define null?
-    (lambda (x)
-      (if (equals? x nil)
-	  #t
-	  nil)))
+(defun not (x)
+  (if (null? x) #t nil))
 
 ; joins two lists together.
-(define append
-    (lambda (x y)
-      (if (null? x)
-	  y
-	  (cons (car x) (append (cdr x) y)))))
+(defun append (x y)
+  (if (null? x)
+      y
+      (cons (car x) (append (cdr x) y))))
 
 ; creates a list of two items.
-(define pair
-    (lambda (x y)
-      (cons x (cons y '()))))
+(defun pair (x y)
+  (cons x (cons y '())))
 
 ; &rest parameters are not implemented yet,
 ; but if they were [list] would be preferred
@@ -67,14 +96,12 @@
 	  (cons (car x) (list (cdr x))))))
 
 ; x++
-(define inc
-    (lambda (x)
-      (+ 1 x)))
+(defun inc (x)
+  (+ 1 x))
 
 ; x--
-(define dec
-    (lambda (x)
-      (- x 1)))
+(defun dec (x)
+  (- x 1))
 
 
 ; eval in lisp.

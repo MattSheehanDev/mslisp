@@ -13,11 +13,17 @@ namespace MsLisp.Lexical
 
         // quote symbol is used everywhere a 'tick' is found,
         // so it's useful to keep a copy around.
+        // same with the rest of these.
         private readonly Symbol quote;
+        private readonly Symbol quasiquote;
+        private readonly Symbol unquote;
+
         
         public Parser()
         {
             this.quote = new Symbol("quote");
+            this.quasiquote = new Symbol("quasiquote");
+            this.unquote = new Symbol("unquote");
         }
 
 
@@ -78,7 +84,7 @@ namespace MsLisp.Lexical
             {
                 return new Symbol(tokens.Current.Value);
             }
-            else if (TokenType.TICK == tokens.Current.Type)
+            else if (TokenType.QUOTE == tokens.Current.Type)
             {
                 // a tick is an abbreviated quote,
                 // so replace tick with (quote exp);
@@ -88,6 +94,29 @@ namespace MsLisp.Lexical
                 quoted.Add(this.Parse(tokens));         // add whatever the next datum is
 
                 return new Vector(quoted.ToArray());    // return vector
+            }
+            else if (TokenType.QUASIQUOTE == tokens.Current.Type)
+            {
+                var quasi = new List<IDatum>();
+                quasi.Add(this.quasiquote);
+                tokens.MoveNext();
+                quasi.Add(this.Parse(tokens));
+
+                return new Vector(quasi.ToArray());
+            }
+            else if (TokenType.UNQUOTE == tokens.Current.Type)
+            {
+                // throw error if not in quasiquote
+                var unquoted = new List<IDatum>();
+                unquoted.Add(this.unquote);
+                tokens.MoveNext();
+                unquoted.Add(this.Parse(tokens));
+
+                return new Vector(unquoted.ToArray());
+            }
+            else if (TokenType.SPLICE == tokens.Current.Type)
+            {
+                // throw error if not in quasiquote
             }
 
             throw new SyntaxException("Unrecognized token type {0}", tokens.Current.Value);

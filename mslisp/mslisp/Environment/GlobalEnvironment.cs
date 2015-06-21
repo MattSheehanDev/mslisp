@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MsLisp.Expressions;
 using MsLisp.Datums;
 using MsLisp.DotNet;
+using MsLisp.Macro;
 
 namespace MsLisp.Environment
 {
@@ -46,9 +47,12 @@ namespace MsLisp.Environment
             this.Add("if", new IfElse());
             this.Add("cond", new Conditions());
             this.Add("begin", new Begin());
-            
-            this.Add("quote", new Quote());
             this.Add("lambda", new Lambda());
+
+            this.Add("macro", new Macro.Macro());
+            this.Add("quote", new Quote());
+            this.Add("quasiquote", new QuasiQuote());
+            this.Add("unquote", new UnQuote());
 
             this.Add("atom?", new IsAtom());
         }

@@ -30,6 +30,8 @@ namespace MsLisp.Expressions
 			
             Func<Vector, ScopedEnvironment, IDatum> func = (largs, lenv) =>
             {
+                // first argument is s-expression symbol
+                // second+ arguement(s) are arguments
                 if (largs.Length < 2)
                     throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
 
