@@ -278,13 +278,13 @@ namespace MsLisp.Expressions
                 IDatum curr = Evaluator.Eval(list[i], env);
                 IDatum next = Evaluator.Eval(list[i + 1], env);
 
-                if (curr.GetType() != typeof(Atom) || next.GetType() != typeof(Atom))
+                if (!(curr is Number) || !(next is Number))
                     return Null.Instance;
 
-                var cAtom = (Atom)curr;
-                var nAtom = (Atom)next;
+                var cAtom = (Number)curr;
+                var nAtom = (Number)next;
 
-                if (cAtom != nAtom)
+                if (!cAtom.Equals(nAtom))
                     return Null.Instance;
 
                 //if (!Atom.isNumber(curr) || !Atom.isNumber(next))

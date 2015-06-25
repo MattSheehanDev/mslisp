@@ -41,9 +41,116 @@
        (lambda ,params
 	 ,body)))
 
-(defmacro let (var value body)
-  `((lambda (,var)
-      ,body) ,value))
+(defun loop (list cb)
+  (let (first (car list))
+    (if (null? first)
+	nil
+	(begin
+	 (loop (cdr list) cb)
+	 (cb first)))))
+
+(defun loop-sum (list cb)
+  (begin
+   (let (sum ())
+     (loop list (lambda (part)
+		  (set! sum (cons (cb part) sum)))))
+   sum))
+
+
+;; + operator macro
+;; creates an list like (add (add 1 2) 3)
+;; to add from left to right.
+;; note: length and inc must use the primitive [add] function
+;;       to not get caught in infinite loop.
+(defmacro + (&rest x)
+  (if (= (length x) 1)
+      (car x)
+      `(+ ,@(cons `(add ,@(first-pair x)) (cddr x)))))
+
+(defmacro multiply (&rest x)
+  (if (= (length x) 1)
+      (car x)
+      `(multiply ,@(cons `(* ,@(first-pair x)) (cddr x)))))
+
+(defmacro subtract (&rest x)
+  (if (= (length x) 1)
+      (if (atom? (car x))
+	  (- 0 (car x))
+	  (car x))
+      `(subtract ,@(cons `(- ,@(first-pair x)) (cddr x)))))
+
+(defmacro divide (&rest x)
+  (if (= (length x) 1)
+      (if (atom? (car x))
+	  (/ 1 (car x))
+	  (car x))
+      `(divide ,@(cons `(/ ,@(first-pair x)) (cddr x)))))
+
+(defun first-pair (x)
+  (if (not (null? (car x)))
+      (if (not (null? (cadr x)))
+	  (pair (car x) (cadr x))
+	  ())
+      ()))
+
+
+;; wrap compare operators for multiple parameters.
+;; name => function name.
+;; func => lambda callback that takes two parameters and
+;;         returns either true or false
+(defmacro defcompare (name func)
+  `(defun ,name (&rest x)
+     ((Y
+       (lambda (f)
+	 (lambda (x)
+	   (if (<= (length x) 1)
+	       #t
+	       (if (not (null? (,func (car x) (cadr x))))
+		   (f (cdr x))
+		   nil)))))
+      x)))
+
+(defcompare greater
+    (lambda (x y)
+      (if (> x y)
+	  #t
+	  ())))
+
+(defcompare lesser
+    (lambda (x y)
+      (if (< x y)
+	  #t
+	  ())))
+
+(defcompare not-lesser
+    (lambda (x y)
+      (if (>= x y)
+	  #t
+	  ())))
+
+(defcompare not-greater
+    (lambda (x y)
+      (if (<= x y)
+	  #t
+	  ())))
+
+
+(defmacro condd (&rest conditions)
+  `(begin
+    (let (t nil)
+      ,(loop conditions (lambda (pair)
+			`(if (not (null? (car ,pair)))
+			     (if (null? t)
+				 (begin
+				  (set! t #t)
+				  (cdr ,pair))
+				 nil)
+			     nil))))))
+
+	        
+(defmacro let (var-value body)
+  `((lambda (,(car var-value))
+      ,body) ,(cadr var-value)))
 
 ; Y = ¦Ëf.(¦Ëx.f(x x))(¦Ëx.f(x x))
 (defun Y (m)
@@ -53,23 +160,29 @@
 
 ; factorial using y-combinator.
 ; defines f(x).
-(define fac
-    (Y
-     (lambda (f)
-       (lambda (x)
-	 (if (< x 2)
-	     1
-	     (* x (f (- x 1))))))))
+(define fac (Y (lambda (f)
+		 (lambda (x)
+		   (if (< x 2)
+		       1
+		       (* x (f (- x 1))))))))
 
 ; find the length of a list
 (defun length (list)
-  (let num 0
+  (let (num 0)
        ((Y (lambda (f)
 	     (lambda (x)
 	       (if (null? x)
 		   num
 		   (begin (set! num (inc num)) (f (cdr x)))))))
 	list)))
+
+; x++
+(defun inc (x)
+  (add 1 x))
+
+; x--
+(defun dec (x)
+  (- x 1))
 
 ; returns opposite of input.
 ; equivalent to the more conventional !true or !false
@@ -89,19 +202,8 @@
 ; &rest parameters are not implemented yet,
 ; but if they were [list] would be preferred
 ; over [pair].
-(define list
-    (lambda (&rest x)
-      (if (null? x)
-	  (quote ())
-	  (cons (car x) (list (cdr x))))))
-
-; x++
-(defun inc (x)
-  (+ 1 x))
-
-; x--
-(defun dec (x)
-  (- x 1))
+(defun list (&rest x)
+  (append x ()))
 
 
 ; eval in lisp.
@@ -202,6 +304,11 @@
 (define caar
     (lambda (x)
       (car (car x))))
+
+; [cdr [cdr x]]
+(define cddr
+    (lambda (x)
+      (cdr (cdr x))))
 
 ; [car [cdr x]]
 (define cadr

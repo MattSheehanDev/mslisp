@@ -11,45 +11,25 @@ namespace MsLisp.Expressions
 {
     /*
      * ADDITION
-     * (+ 1 2 ...)
+     * (+ number number)
      */
     public class Addition : SExpression
     {
         public Addition()
         {
         }
-
-        // addition can go one of two ways.
-        // 1. (+) => 0
-        // 2. (+ number...) => number1 + ... + numberN
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                return this._Add();
-            else
-                return _Add(list.CDR(), env);
+            if (list.Length != 3)
+                throw new ArgumentException("ADD takes two arguments.");
+
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
+
+            return first + second;
         }
 
-        private IDatum _Add()
-        {
-            return new Number(0);
-        }
-
-        private IDatum _Add(Vector list, ScopedEnvironment env)
-        {
-            Number sum = null;
-
-            for (var i = 0; i < list.Length; i++)
-            {
-                Number num = Evaluator.Eval(list[i], env) as Number;
-
-                if (num == null)
-                    throw new TypeException("+ expected numbers.");
-                
-                sum = sum == null ? num : sum + num;
-            }
-            return sum;
-        }
     }
 
 

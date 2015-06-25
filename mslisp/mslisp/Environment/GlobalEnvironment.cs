@@ -28,7 +28,7 @@ namespace MsLisp.Environment
             this.Add("nil", Null.Instance);
 
             // global procedures
-            this.Add("+", new Addition());
+            this.Add("add", new Addition());
             this.Add("*", new Multiplication());
             this.Add("-", new Subtraction());
             this.Add("/", new Division());
@@ -53,6 +53,7 @@ namespace MsLisp.Environment
             this.Add("quote", new Quote());
             this.Add("quasiquote", new QuasiQuote());
             this.Add("unquote", new UnQuote());
+            this.Add("splice", new Splice());
 
             this.Add("atom?", new IsAtom());
         }

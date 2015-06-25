@@ -76,12 +76,19 @@ namespace MsLisp.Expressions
                 IDatum condition = pair[0];
                 IDatum result = Evaluator.Eval(condition, env);
 
-                if (Bool.True.Equals(result))
+                if (!Null.Instance.Equals(result))
                 {
                     IDatum expression = pair[1];
                     IDatum value = Evaluator.Eval(expression, env);
                     return value;
                 }
+
+                //if (Bool.True.Equals(result))
+                //{
+                //    IDatum expression = pair[1];
+                //    IDatum value = Evaluator.Eval(expression, env);
+                //    return value;
+                //}
             }
 
             // no conditional executed, return false.

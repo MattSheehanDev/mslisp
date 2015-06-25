@@ -27,6 +27,9 @@ namespace MsRepl
             var lex = new Lexer(File.ReadAllText("repl.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
+            // then std.lisp
+            lex = new Lexer(File.ReadAllText("std.lisp"));
+            Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
             // repl
             while (true)

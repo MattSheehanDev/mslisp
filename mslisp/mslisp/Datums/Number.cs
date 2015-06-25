@@ -60,5 +60,30 @@ namespace MsLisp.Datums
             return Convert.ToDouble(left.Value) <= Convert.ToDouble(right.Value);
         }
 
+        //public static bool operator ==(Number left, Number right)
+        //{
+        //    return Convert.ToDouble(left.Value) == Convert.ToDouble(right.Value);
+        //}
+
+        //public static bool operator !=(Number left, Number right)
+        //{
+        //    return Convert.ToDouble(left.Value) == Convert.ToDouble(right.Value);
+        //}
+
+
+        public override bool Equals(object obj)
+        {
+            if (base.Equals(obj)) return true;
+            if (ReferenceEquals(obj, Null.Instance)) return false;
+            return this.Equals((Number)obj);
+        }
+
+        public bool Equals(Number num)
+        {
+            if (ReferenceEquals(null, num)) return false;
+            if (ReferenceEquals(this, num)) return true;
+            return Convert.ToDouble(this.Value) == Convert.ToDouble(num.Value);
+        }
+
     }
 }

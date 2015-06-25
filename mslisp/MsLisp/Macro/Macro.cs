@@ -70,8 +70,14 @@ namespace MsLisp.Macro
 
     class QuasiQuote : SExpression
     {
+        private Symbol unquote;
+        private Symbol splice;
+
+
         public QuasiQuote()
         {
+            this.unquote = new Symbol("unquote");
+            this.splice = new Symbol("splice");
         }
 
 
@@ -81,35 +87,59 @@ namespace MsLisp.Macro
                 throw new ArgumentException("QUASIQUOTE takes 1 argument.");
             
             var quasiquoted = list[1];
-            return this.Expand(list, quasiquoted, env);
+            return this.Expand((IDatum[])list.Value, quasiquoted, env);
         }
 
 
-        private IDatum Expand(Vector parent, IDatum datum, ScopedEnvironment env)
+        private void Expand(IDatum datum, ScopedEnvironment env)
+        {
+            if (datum is Vector)
+            {
+                var list = new List<IDatum>();
+                var first = this.CheckExpression(datum as Vector);
+
+                if(first == this.unquote)
+                {
+                    
+                }
+            }
+        }
+
+        private IDatum Expand(IDatum[] parent, IDatum datum, ScopedEnvironment env)
         {
             // if vector, expand each child datum
             if (datum is Vector)
             {
-                var q = datum as Vector;
-                var first = q.CAR();
+                var first = this.CheckExpression(datum as Vector);
 
-                if (first.ToString() == "unquote")
+                if (first == this.unquote)
                 {
                     return Evaluator.Eval(datum, env);
                 }
-                else if (first.ToString() == "splice")
+                else if (first == this.splice)
                 {
-                    //var result = Evaluator.Eval(datum, env);
-                    //var list = (IDatum[])parent.Value;
-
-                    //var list = new List<IDatum>();
+                    return Evaluator.Eval(datum, env);
                 }
                 else
                 {
+                    var q = datum as Vector;
+
                     var list = new List<IDatum>();
                     for (var i = 0; i < q.Length; i++)
                     {
-                        list.Add(this.Expand(q, q[i], env));
+                        var data = q[i];
+                        var exp = this.Expand(list.ToArray(), data, env);
+
+                        if(data is Vector && exp is Vector)
+                        {
+                            if(this.CheckExpression(data as Vector) == this.splice)
+                            {
+                                list.AddRange((IDatum[])exp.Value);
+                                continue;
+                            }
+                        }
+
+                        list.Add(exp);
                     }
                     return new Vector(list.ToArray());
                 }
@@ -118,6 +148,20 @@ namespace MsLisp.Macro
             // not a vector, means there are no children to expand
             return datum;
         }
+
+
+        private IDatum CheckExpression(Vector exp)
+        {
+            var first = exp.CAR();
+
+            if (this.unquote.Equals(first))
+                return this.unquote;
+            else if (this.splice.Equals(first))
+                return this.splice;
+
+            return exp;
+        }
+
     }
 
 
@@ -159,7 +203,7 @@ namespace MsLisp.Macro
             if (list.Length != 2)
                 throw new ArgumentException("SPLICE takes 2 arguments.");
 
-            return base.Evaluate(list, env);
+            return Evaluator.Eval(list[1], env);
         }
 
     }

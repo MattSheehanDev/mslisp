@@ -17,6 +17,7 @@ namespace MsLisp.Lexical
         private readonly Symbol quote;
         private readonly Symbol quasiquote;
         private readonly Symbol unquote;
+        private readonly Symbol splice;
 
         
         public Parser()
@@ -24,6 +25,7 @@ namespace MsLisp.Lexical
             this.quote = new Symbol("quote");
             this.quasiquote = new Symbol("quasiquote");
             this.unquote = new Symbol("unquote");
+            this.splice = new Symbol("splice");
         }
 
 
@@ -117,6 +119,12 @@ namespace MsLisp.Lexical
             else if (TokenType.SPLICE == tokens.Current.Type)
             {
                 // throw error if not in quasiquote
+                var spliced = new List<IDatum>();
+                spliced.Add(this.splice);
+                tokens.MoveNext();
+                spliced.Add(this.Parse(tokens));
+
+                return new Vector(spliced.ToArray());
             }
 
             throw new SyntaxException("Unrecognized token type {0}", tokens.Current.Value);
