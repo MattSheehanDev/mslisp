@@ -67,24 +67,24 @@
       (car x)
       `(+ ,@(cons `(add ,@(first-pair x)) (cddr x)))))
 
-(defmacro multiply (&rest x)
+(defmacro * (&rest x)
   (if (= (length x) 1)
       (car x)
-      `(multiply ,@(cons `(* ,@(first-pair x)) (cddr x)))))
+      `(* ,@(cons `(multiply ,@(first-pair x)) (cddr x)))))
 
-(defmacro subtract (&rest x)
+(defmacro - (&rest x)
   (if (= (length x) 1)
       (if (atom? (car x))
-	  (- 0 (car x))
+	  (subtract 0 (car x))
 	  (car x))
-      `(subtract ,@(cons `(- ,@(first-pair x)) (cddr x)))))
+      `(- ,@(cons `(subtract ,@(first-pair x)) (cddr x)))))
 
-(defmacro divide (&rest x)
+(defmacro / (&rest x)
   (if (= (length x) 1)
       (if (atom? (car x))
-	  (/ 1 (car x))
+	  (divide 1 (car x))
 	  (car x))
-      `(divide ,@(cons `(/ ,@(first-pair x)) (cddr x)))))
+      `(/ ,@(cons `(divide ,@(first-pair x)) (cddr x)))))
 
 (defun first-pair (x)
   (if (not (null? (car x)))
@@ -103,49 +103,57 @@
      ((Y
        (lambda (f)
 	 (lambda (x)
-	   (if (<= (length x) 1)
+	   (if (not-greater (length x) 1)
 	       #t
 	       (if (not (null? (,func (car x) (cadr x))))
 		   (f (cdr x))
 		   nil)))))
       x)))
 
-(defcompare greater
+(defcompare >
     (lambda (x y)
-      (if (> x y)
+      (if (greater x y)
 	  #t
 	  ())))
 
-(defcompare lesser
+(defcompare <
     (lambda (x y)
-      (if (< x y)
+      (if (lesser x y)
 	  #t
 	  ())))
 
-(defcompare not-lesser
+(defcompare >=
     (lambda (x y)
-      (if (>= x y)
+      (if (not-lesser x y)
 	  #t
 	  ())))
 
-(defcompare not-greater
+(defcompare <=
     (lambda (x y)
-      (if (<= x y)
+      (if (not-greater x y)
 	  #t
 	  ())))
 
+(defcompare =
+    (lambda (x y)
+      (if (equal x y)
+	  #t
+	  ())))
 
-(defmacro condd (&rest conditions)
-  `(begin
-    (let (t nil)
-      ,(loop conditions (lambda (pair)
-			`(if (not (null? (car ,pair)))
-			     (if (null? t)
-				 (begin
-				  (set! t #t)
-				  (cdr ,pair))
-				 nil)
-			     nil))))))
+;; macro for cond
+;; works as nested if statements
+(defmacro cond (&rest conditions)
+  ((Y
+    (lambda (f)
+      (lambda (x)
+	(if (null? (car x))
+	    ()
+	    `(if (not (null? ,(caar `,x)))
+		 ,(cadar `,x)
+		 ,(if (not (null? (cdr x)))
+		      (f (cdr x))
+		      ()))))))
+   conditions))
 
 	        
 (defmacro let (var-value body)
@@ -182,7 +190,7 @@
 
 ; x--
 (defun dec (x)
-  (- x 1))
+  (subtract x 1))
 
 ; returns opposite of input.
 ; equivalent to the more conventional !true or !false

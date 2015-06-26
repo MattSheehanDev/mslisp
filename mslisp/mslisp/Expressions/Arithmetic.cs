@@ -11,7 +11,7 @@ namespace MsLisp.Expressions
 {
     /*
      * ADDITION
-     * (+ number number)
+     * (add number number)
      */
     public class Addition : SExpression
     {
@@ -35,45 +35,23 @@ namespace MsLisp.Expressions
 
     /*
      * MULTIPLICATION
-     * (* 10 7 ...)
+     * (multiply number number)
      */
     public class Multiplication : SExpression
     {
         public Multiplication()
         {
         }
-
-
-        // multiplication can go one of two ways
-        // 1. (*) => 1
-        // 2. (* number...) => number1 * ... * numberN
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                return _Multiply();
-            else
-                return _Multiply(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("MULTIPLY takes exactly 2 arguments.");
 
-        private IDatum _Multiply()
-        {
-            return new Number(1);
-        }
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Multiply(Vector list, ScopedEnvironment env)
-        {
-            Number times = null;
-
-            for (var i = 0; i < list.Length; i++)
-            {
-                Number num = Evaluator.Eval(list[i], env) as Number;
-
-                if (num == null)
-                    throw new TypeException("* expected numbers.");
-
-                times = times == null ? num : times * num;
-            }
-            return times;
+            return first * second;
         }
 
     }
@@ -81,52 +59,24 @@ namespace MsLisp.Expressions
 
     /*
      * SUBTRACTION
-     * (- 10 7)
+     * (subtract number number)
      */
     public class Subtraction : SExpression
     {
-        private readonly Number zero;
 
         public Subtraction()
         {
-            this.zero = new Number(0);
         }
-
-
-        // subtraction can go one of three ways
-        // 1. (-) => error
-        // 2. (- number) => 0 - number
-        // 3. (- number...) => number1 - ... - numberN
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("- is missing argument(s).");
-            else if (list.Length == 2)
-                return _Subtract(list[1], env);
-            else
-                return _Subtract(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("SUBTRACT takes exactly 2 arguments.");
 
-        private IDatum _Subtract(IDatum token, ScopedEnvironment env)
-        {
-            Number num = Evaluator.Eval(token, env) as Number;
-            return zero - num;
-        }
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Subtract(Vector list, ScopedEnvironment env)
-        {
-            Number diff = null;
-
-            for (var i = 0; i < list.Length; i++)
-            {
-                Number num = Evaluator.Eval(list[i], env) as Number;
-
-                if (num == null)
-                    throw new TypeException("- expected numbers.");
-
-                diff = diff == null ? num : diff - num;
-            }
-            return diff;
+            return first - second;
         }
 
     }
@@ -134,52 +84,24 @@ namespace MsLisp.Expressions
 
     /*
      * DIVISION
-     * (/ 21 7)
+     * (divide number number)
      */
     public class Division : SExpression
     {
-        private readonly Number one;
-
-
+        
         public Division()
         {
-            this.one = new Number(1);
         }
         
-        // division can go one of three ways
-        // 1. (/) => error
-        // 2. (/ number) => 1 / number
-        // 3. (/ number...) => number1 / ... / numberN
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("/ is missing argument(s)");
-            else if (list.Length == 2)
-                return _Divide(list[1], env);
-            else
-                return _Divide(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("DIVIDE takes exactly 2 arguments.");
 
-        private IDatum _Divide(IDatum token, ScopedEnvironment env)
-        {
-            Number num = Evaluator.Eval(token, env) as Number;
-            return one / num;
-        }
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Divide(Vector list, ScopedEnvironment env)
-        {
-            Number quotient = null;
-
-            for (var i = 0; i < list.Length; i++)
-            {
-                Number num = Evaluator.Eval(list[i], env) as Number;
-
-                if (num == null)
-                    throw new TypeException("/ expected numbers.");
-
-                quotient = quotient == null ? num : quotient / num;
-            }
-            return quotient;
+            return first / second;
         }
     }
 

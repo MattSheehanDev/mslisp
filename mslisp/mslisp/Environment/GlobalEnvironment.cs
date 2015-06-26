@@ -29,14 +29,14 @@ namespace MsLisp.Environment
 
             // global procedures
             this.Add("add", new Addition());
-            this.Add("*", new Multiplication());
-            this.Add("-", new Subtraction());
-            this.Add("/", new Division());
-            this.Add(">", new GreaterThan());
-            this.Add("<", new LessThan());
-            this.Add(">=", new NotLessThan());
-            this.Add("<=", new NotGreaterThan());
-            this.Add("=", new Equals());
+            this.Add("multiply", new Multiplication());
+            this.Add("subtract", new Subtraction());
+            this.Add("divide", new Division());
+            this.Add("greater", new GreaterThan());
+            this.Add("lesser", new LessThan());
+            this.Add("not-lesser", new NotLessThan());
+            this.Add("not-greater", new NotGreaterThan());
+            this.Add("equal", new Equal());
 
             this.Add("car", new CAR());
             this.Add("cdr", new CDR());
@@ -45,7 +45,6 @@ namespace MsLisp.Environment
             this.Add("set!", new Set());
             this.Add("equals?", new IsEqual());
             this.Add("if", new IfElse());
-            this.Add("cond", new Conditions());
             this.Add("begin", new Begin());
             this.Add("lambda", new Lambda());
 

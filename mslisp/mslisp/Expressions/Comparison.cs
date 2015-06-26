@@ -11,57 +11,26 @@ namespace MsLisp.Expressions
 {
     /*
      * GREATER THAN
-     * (> 1 2 ...)
+     * (greater number number)
      */
     public class GreaterThan : SExpression
     {
         public GreaterThan()
         {
         }
-
-        // greater than an go one of three ways
-        // 1. (>) => error
-        // 2. (> number) => T
-        // 3. (> number...) => T if all pair comparisons, from left to right, are T
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("> is missing some arguments.");
-            else if (list.Length == 2)
-                return this._Greater(list[1], env);
-            else
-                return this._Greater(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("GREATER takes exactly 2 arguments.");
 
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Greater(IDatum token, ScopedEnvironment env)
-        {
-            Number value = Evaluator.Eval(token, env) as Number;
-
-            // single argument always returns true
-            if (value != null)
+            if (first > second)
                 return Bool.True;
-
-            throw new TypeException("> cannot compare non-numerical types.");
-        }
-
-        private IDatum _Greater(Vector list, ScopedEnvironment env)
-        {
-            for (var i = 0; i < list.Length - 1; i++)
-            {
-                // use 'as' instead of a cast.
-                // if 'as' fails, no exception is thrown, null is returned intead.
-                Number curr = Evaluator.Eval(list[i], env) as Number;
-                Number next = Evaluator.Eval(list[i + 1], env) as Number;
-
-                if (curr == null || next == null)
-                    throw new TypeException("> expected numbers.");
-
-                if (curr <= next)
-                    return Null.Instance;
-            }
-
-            return Bool.True;
+            else
+                return Null.Instance;
         }
 
     }
@@ -69,54 +38,26 @@ namespace MsLisp.Expressions
 
     /*
      * LESS THAN
-     * (< 1 2 ...)
+     * (lesser number number)
      */
     public class LessThan : SExpression
     {
         public LessThan()
         {
         }
-
-
-        // less than can go one of three ways.
-        // 1. (<) => error
-        // 2. (< number) => T
-        // 3. (< numbers...) => T if all pair comparisons, from left to right, are T
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("< is missing some arguments.");
-            else if (list.Length == 2)
-                return this._Less(list[1], env);
-            else
-                return this._Less(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("LESSER takes exactly two arguments.");
 
-        private IDatum _Less(IDatum token, ScopedEnvironment env)
-        {
-            Number value = Evaluator.Eval(token, env) as Number;
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-            if (value != null)
+            if (first < second)
                 return Bool.True;
-
-            throw new TypeException("< cannot compare non-numerical types.");
-        }
-
-        private IDatum _Less(Vector list, ScopedEnvironment env)
-        {
-            for (var i = 0; i < list.Length - 1; i++)
-            {
-                Number curr = Evaluator.Eval(list[i], env) as Number;
-                Number next = Evaluator.Eval(list[i + 1], env) as Number;
-
-                if (curr == null || next == null)
-                    throw new TypeException("< expected numbers.");
-
-                if (curr >= next)
-                    return Null.Instance;
-            }
-            
-            return Bool.True;
+            else
+                return Null.Instance;
         }
 
     }
@@ -124,7 +65,7 @@ namespace MsLisp.Expressions
 
     /*
      * GREATER THAN OR EQUAL TO
-     * (>= 1 2 ...)
+     * (not-lesser number number)
      */
     public class NotLessThan : SExpression
     {
@@ -133,46 +74,18 @@ namespace MsLisp.Expressions
         {
         }
 
-
-        // >= can go one of three ways.
-        // 1. (>=) => error
-        // 2. (>= number) => T
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException(">= is missing some arguments.");
-            else if (list.Length == 2)
-                return this._Greater(list[1], env);
-            else
-                return this._Greater(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("NOT-LESSER takes exactly 2 arguments.");
 
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Greater(IDatum token, ScopedEnvironment env)
-        {
-            Number value = Evaluator.Eval(token, env) as Number;
-
-            if (value != null)
+            if (first >= second)
                 return Bool.True;
-
-            throw new TypeException(">= cannot compare non-numerical types.");
-        }
-
-        private IDatum _Greater(Vector list, ScopedEnvironment env)
-        {
-            for (var i = 0; i < list.Length - 1; i++)
-            {
-                Number curr = Evaluator.Eval(list[i], env) as Number;
-                Number next = Evaluator.Eval(list[i + 1], env) as Number;
-
-                if (curr == null || next == null)
-                    throw new TypeException(">= expected numbers.");
-
-                if (curr < next)
-                    return Null.Instance;
-            }
-
-            return Bool.True;
+            else
+                return Null.Instance;
         }
 
     }
@@ -180,56 +93,26 @@ namespace MsLisp.Expressions
 
     /*
      * LESS THAN OR EQUAL TO
-     * (<= 1 2 ...)
+     * (not-greater number number)
      */
     public class NotGreaterThan : SExpression
     {
         public NotGreaterThan()
         {
         }
-
-
-        // <= can go one of three ways
-        // 1. (<=) => error
-        // 2. (<= number) => T
-        // 3. (<= numbers...) => T if all pairs, from left to right, are T
+        
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("<= is missing some arguments.");
-            else if (list.Length == 2)
-                return this._Less(list[1], env);
-            else
-                return this._Less(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("NOT-GREATER takes exactly 2 arguments.");
 
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _Less(IDatum token, ScopedEnvironment env)
-        {
-            Number value = Evaluator.Eval(token, env) as Number;
-
-            // a comparison of one number always returns true.
-            if (value != null)
+            if (first <= second)
                 return Bool.True;
-
-            throw new TypeException("<= cannot compare non-numerical types.");
-        }
-
-        private IDatum _Less(Vector list, ScopedEnvironment env)
-        {
-            for (var i = 0; i < list.Length - 1; i++)
-            {
-                Number curr = Evaluator.Eval(list[i], env) as Number;
-                Number next = Evaluator.Eval(list[i + 1], env) as Number;
-
-                if (curr == null || next == null)
-                    throw new TypeException("<= expected numbers.");
-
-                if (curr > next)
-                    return Null.Instance;
-            }
-
-            return Bool.True;
+            else
+                return Null.Instance;
         }
 
     }
@@ -237,67 +120,26 @@ namespace MsLisp.Expressions
 
     /*
      * EQUALS
-     * (= 2 2 ...)
+     * (equal number number)
      */
-    public class Equals : SExpression
+    public class Equal : SExpression
     {
-        public Equals()
+        public Equal()
         {
         }
 
-
-        // = can go one of three ways
-        // 1. (=) => error
-        // 2. (= number) => T
-        // 3. (= number...) => T if all pairs, from left to right, are T
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
-                throw new ArgumentException("= is missing some arguments.");
-            else if (list.Length == 2)
-                return this._IsEquals(list[1], env);
-            else
-                return this._IsEquals(list.CDR(), env);
-        }
+            if (list.Length != 3)
+                throw new ArgumentException("EQUAl takes exactly two arguments.");
 
+            Number first = Evaluator.Eval(list[1], env) as Number;
+            Number second = Evaluator.Eval(list[2], env) as Number;
 
-        private IDatum _IsEquals(IDatum token, ScopedEnvironment env)
-        {
-            Number value = Evaluator.Eval(token, env) as Number;
-
-            if (value != null)
+            if (first.Equals(second))
                 return Bool.True;
-
-            throw new TypeException("= cannot compare non-numerical types.");
-        }
-
-        private IDatum _IsEquals(Vector list, ScopedEnvironment env)
-        {
-            for (var i = 0; i < list.Length - 1; i++)
-            {
-                IDatum curr = Evaluator.Eval(list[i], env);
-                IDatum next = Evaluator.Eval(list[i + 1], env);
-
-                if (!(curr is Number) || !(next is Number))
-                    return Null.Instance;
-
-                var cAtom = (Number)curr;
-                var nAtom = (Number)next;
-
-                if (!cAtom.Equals(nAtom))
-                    return Null.Instance;
-
-                //if (!Atom.isNumber(curr) || !Atom.isNumber(next))
-                //    throw new TypeException("= cannot compare non-numerical types.");
-
-                //var currValue = Convert.ToDouble(curr.Value);
-                //var nextValue = Convert.ToDouble(next.Value);
-
-                //if (currValue != nextValue)
-                //    return env.Fetch("nil");
-            }
-
-            return Bool.True;
+            else
+                return Null.Instance;
         }
 
     }
