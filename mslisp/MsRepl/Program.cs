@@ -23,12 +23,12 @@ namespace MsRepl
             // add C-c keyboard event listener
             Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPress);
 
-            // first load repl.lisp
-            var lex = new Lexer(File.ReadAllText("repl.lisp"));
+            // first load std.lisp
+            var lex = new Lexer(File.ReadAllText("std.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
-            // then std.lisp
-            lex = new Lexer(File.ReadAllText("std.lisp"));
+            // then load repl.lisp
+            lex = new Lexer(File.ReadAllText("repl.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
             // repl

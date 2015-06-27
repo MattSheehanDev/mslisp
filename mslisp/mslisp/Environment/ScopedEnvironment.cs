@@ -20,7 +20,9 @@ namespace MsLisp.Environment
         public new void Add(string str, IDatum token)
         {
             // wraps base Add, but makes sure str is upper
-            base.Add(str, token);
+            if (!base.ContainsKey(str)) {
+                base.Add(str, token);
+            }
         }
 
         // returns environment that variable can be found.
@@ -34,9 +36,21 @@ namespace MsLisp.Environment
             throw new SyntaxException("Symbol {0} not found.", variable);
         }
 
+        public bool HasOuterEnvironment(ScopedEnvironment env)
+        {
+            if(this.outerenv != null)
+            {
+                if (this.outerenv == env)
+                    return true;
+                else
+                    return this.outerenv.HasOuterEnvironment(env);
+            }
+            return false;
+        }
+
         public IDatum Fetch(string variable)
         {
-            if (base.ContainsKey(variable))
+            if (this.ContainsKey(variable))
                 return this[variable];
             else if (this.outerenv != null)
                 return this.outerenv.Fetch(variable);

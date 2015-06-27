@@ -49,6 +49,13 @@
 	 (loop (cdr list) cb)
 	 (cb first)))))
 
+;; (defun beginn (&rest exps)
+;;   `(let (all ())
+;;      ,((Y
+;; 	(lambda (f)
+;; 	  (lambda (x)
+;; 	    `(cons
+
 (defun loop-sum (list cb)
   (begin
    (let (sum ())
@@ -63,28 +70,44 @@
 ;; note: length and inc must use the primitive [add] function
 ;;       to not get caught in infinite loop.
 (defmacro + (&rest x)
-  (if (= (length x) 1)
-      (car x)
-      `(+ ,@(cons `(add ,@(first-pair x)) (cddr x)))))
+  ((Y
+    (lambda (f)
+      (lambda (x)
+	(if (= (length x) 1)
+	    (car x)
+	    (f (cons `(add ,@(first-pair x)) (cddr x)))))))
+   x))
 
 (defmacro * (&rest x)
-  (if (= (length x) 1)
-      (car x)
-      `(* ,@(cons `(multiply ,@(first-pair x)) (cddr x)))))
+  ((Y
+    (lambda (f)
+      (lambda (x)
+	(if (= (length x) 1)
+	    (car x)
+	    (f (cons `(multiply ,@(first-pair x)) (cddr x)))))))
+   x))
 
 (defmacro - (&rest x)
-  (if (= (length x) 1)
-      (if (atom? (car x))
-	  (subtract 0 (car x))
-	  (car x))
-      `(- ,@(cons `(subtract ,@(first-pair x)) (cddr x)))))
+  ((Y
+    (lambda (f)
+      (lambda (x)
+	(if (= (length x) 1)
+	    (if (atom? (car x))
+		(subtract 0 (car x))
+		(car x))
+	    (f (cons `(subtract ,@(first-pair x)) (cddr x)))))))
+   x))
 
 (defmacro / (&rest x)
-  (if (= (length x) 1)
-      (if (atom? (car x))
-	  (divide 1 (car x))
-	  (car x))
-      `(/ ,@(cons `(divide ,@(first-pair x)) (cddr x)))))
+  ((Y
+    (lambda (f)
+      (lambda (x)
+	(if (= (length x) 1)
+	    (if (atom? (car x))
+		(divide 1 (car x))
+		(car x))
+	    (f (cons `(divide ,@(first-pair x)) (cddr x)))))))
+   x))
 
 (defun first-pair (x)
   (if (not (null? (car x)))
@@ -337,4 +360,23 @@
 (define caddar
     (lambda (x)
       (caddr (car x))))
-	  
+
+;; (defun last (list)
+;;   ((Y
+;;     (lambda (f)
+;;       (lambda (x)
+;; 	(if (= 1 (length x))
+;; 	    (car x)
+;; 	    (f (cdr x))))))
+;;    list))
+;; (defun nth (list pos)
+;;   (let (num pos)
+;;     ((Y
+;;       (lambda (f)
+;; 	(lambda (x)
+;; 	  (if (= 0 num)
+;; 	      (car x)
+;; 	      (begin
+;; 	       (set! num (dec num))
+;; 	       (f (cdr x)))))))
+;;      list)))

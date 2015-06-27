@@ -27,7 +27,19 @@ namespace MsLisp.Expressions
 
             if (!(list[1] is Vector))
                 throw new SyntaxException("LAMBDA does not have a parameter list.");
-			
+
+            // parameters and body expression
+            Vector paramslist = list.CDR();
+            Vector parameters = (Vector)paramslist[0];
+            IDatum expr = paramslist[1];
+
+
+            // the big quesion.
+            // should the environment that the expression is initialized
+            // in be used to evaluate it or the environment that it's
+            // invoked in be used to initialize it.
+            // i'm leaning toward the former because it seems to
+            // work better, but the latter makes more sense to me.
             Func<Vector, ScopedEnvironment, IDatum> func = (largs, lenv) =>
             {
                 // first argument is s-expression symbol
@@ -35,47 +47,19 @@ namespace MsLisp.Expressions
                 if (largs.Length < 2)
                     throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
 
-                Vector paramslist = list.CDR();
                 Vector argslist = largs.CDR();
 
-                Vector parameters = (Vector)paramslist[0];
-                IDatum expr = paramslist[1];
-
+                //////var outer = env.HasOuterEnvironment(lenv) ? env : lenv;
+                //////if (outer == env)
+                //////{
+                //////    var stop = "";
+                //////}
 
                 // create new environment
                 // not sure if i'm using the right environment???
                 var scopedenv = new ScopedEnvironment(env);
-
-                //// bind parameter list with argument list
-                //for (var i = 0; i < parameters.Length; i++)
-                //{
-                //    IDatum param = parameters[i];
-                //    IDatum arg = Evaluator.Eval(argslist[i], lenv);
-
-                //    if (param is Vector)
-                //    {
-                //        var plist = param as Vector;
-                //        var pargs = arg as Vector;
-
-                //        if (pargs == null)
-                //            throw new ArgumentException("{0} expected a list.", list.CAR());
-
-                //        for (var j = 0; j < plist.Length; j++)
-                //        {
-                //            //IDatum argi = Evaluator.Eval(pargs[i], lenv);
-                //            scopedenv.Add((string)plist[j].Value, pargs[j]);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        scopedenv.Add((string)param.Value, arg);
-                //    }
-                //}
-
                 this.BindArguments(scopedenv, lenv, parameters, argslist);
-
-                var result = Evaluator.Eval(expr, scopedenv);
-                return result;
+                return Evaluator.Eval(expr, scopedenv);
             };
 
             return new SExpression(func);
@@ -125,7 +109,7 @@ namespace MsLisp.Expressions
                         vlist.Add(arg);
                         for (var j = i + 1; j < arguments.Length; j++)
                         {
-                            vlist.Add(Evaluator.Eval(arguments[j], env));
+                            vlist.Add(Evaluator.Eval(arguments[j], context));
                         }
 
                         env.Add((string)parameters[i + 1].Value, new Vector(vlist.ToArray()));
@@ -142,11 +126,6 @@ namespace MsLisp.Expressions
             if ((string)param.Value == "&rest")
                 return true;
             return false;
-        }
-
-        private void RestParam(ScopedEnvironment env, IDatum param, IEnumerable<IDatum> args)
-        {
-            env.Add((string)param.Value, new Vector(args.ToArray()));
         }
 
     }
