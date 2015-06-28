@@ -61,7 +61,7 @@ mslisp/MsRepl/*.dll
 mslisp/MsRepl/*.pdb
 mslisp/MsRepl/*.user
 mslisp/MsRepl/*.exe
-mslisp/MsRepl/*.config
+mslisp/MsRepl/*.exe.config
 mslisp/MsRepl/*.manifest
 
 # Chutzpah Test files
