@@ -17,11 +17,10 @@ namespace MsLisp.DotNet
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length <= 1)
+            if (list.Length < 1)
                 throw new ArgumentException("GET-TYPE is missing arguments.");
-
-            var args = list.CDR();
-            var arr = (IDatum[])args.Value;
+            
+            var arr = (IDatum[])list.Value;
 
             var names = arr.Select((datum) =>
             {

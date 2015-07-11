@@ -22,13 +22,12 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 4)
+            if (list.Length != 3)
                 throw new ArgumentException("IF has wrong number of arguments.");
-
-            Vector args = list.CDR();
-            IDatum condition = args[0];
-            IDatum expr1 = args[1];
-            IDatum expr2 = args[2];
+            
+            IDatum condition = list[0];
+            IDatum expr1 = list[1];
+            IDatum expr2 = list[2];
 
             IDatum value = Evaluator.Eval(condition, env);
 

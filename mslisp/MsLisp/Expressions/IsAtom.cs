@@ -26,12 +26,12 @@ namespace MsLisp.Expressions
         // 3. (atom? args...) => T if all atoms
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length == 1)
+            if (list == null)
                 return Bool.True;
-            else if (list.Length == 2)
-                return this._checkIfAtom(list[1], env);
+            else if (list.Length == 1)
+                return this._checkIfAtom(list.CAR(), env);
             else
-                return this._checkIfAtom(list.CDR(), env);
+                return this._checkIfAtom(list, env);
         }
 
         private IDatum _checkIfAtom(IDatum token, ScopedEnvironment env)

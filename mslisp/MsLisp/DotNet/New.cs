@@ -18,12 +18,12 @@ namespace MsLisp.DotNet
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length <= 1)
+            if (list.Length < 1)
                 throw new ArgumentException("NEW is missing arguments.");
 
-            var type = System.Type.GetType(Evaluator.Eval(list[1], env).Value.ToString());
+            var type = System.Type.GetType(Evaluator.Eval(list[0], env).Value.ToString());
             var args = new List<object>();
-            for (var i = 2; i < list.Length; i++)
+            for (var i = 1; i < list.Length; i++)
             {
                 args.Add(Evaluator.Eval(list[i], env).Value);
             }

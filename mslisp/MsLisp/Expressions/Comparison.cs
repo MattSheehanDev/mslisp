@@ -21,11 +21,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("GREATER takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             if (first > second)
                 return Bool.True;
@@ -48,11 +48,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("LESSER takes exactly two arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             if (first < second)
                 return Bool.True;
@@ -76,11 +76,11 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("NOT-LESSER takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             if (first >= second)
                 return Bool.True;
@@ -103,11 +103,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("NOT-GREATER takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             if (first <= second)
                 return Bool.True;
@@ -130,11 +130,11 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("EQUAl takes exactly two arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             if (first.Equals(second))
                 return Bool.True;

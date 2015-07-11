@@ -21,11 +21,10 @@ namespace MsLisp.DotNet
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             // (invoke-method instance method args)
-            if (list.Length < 3)
+            if (list.Length < 2)
                 throw new ArgumentException("INVOKE-METHOD is missing arguments.");
-
-            var cdr = list.CDR();
-            var arr = (IDatum[])cdr.Value;
+            
+            var arr = (IDatum[])list.Value;
 
             var type = Evaluator.Eval(arr[0], env).Value;
             var method = (string)Evaluator.Eval(arr[1], env).Value;

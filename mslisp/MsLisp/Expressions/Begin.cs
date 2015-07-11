@@ -22,15 +22,13 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length < 2)
+            if (list.Length < 1)
                 throw new ArgumentException("BEGIN is missing arguments.");
-
-            Vector argv = list.CDR();
-
-            IDatum value = null;
-            for (var i = 0; i < argv.Length; i++)
+            
+            IDatum value = Null.Instance;
+            for (var i = 0; i < list.Length; i++)
             {
-                value = Evaluator.Eval(argv[i], env);
+                value = Evaluator.Eval(list[i], env);
             }
             return value;
         }

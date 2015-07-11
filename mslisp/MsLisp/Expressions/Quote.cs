@@ -22,10 +22,11 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 2)
+            if (list.Length != 1)
                 throw new ArgumentException("QUOTE is missing arguments.");
 
-            return list[1];
+            return list[0];
+            //return list[1];
         }
 
 

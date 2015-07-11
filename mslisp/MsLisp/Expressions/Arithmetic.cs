@@ -21,11 +21,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("ADD takes two arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             return first + second;
         }
@@ -45,11 +45,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("MULTIPLY takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             return first * second;
         }
@@ -70,13 +70,14 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("SUBTRACT takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
-            return first - second;
+            var diff = first - second;
+            return diff;
         }
 
     }
@@ -95,11 +96,11 @@ namespace MsLisp.Expressions
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("DIVIDE takes exactly 2 arguments.");
 
-            Number first = Evaluator.Eval(list[1], env) as Number;
-            Number second = Evaluator.Eval(list[2], env) as Number;
+            Number first = Evaluator.Eval(list[0], env) as Number;
+            Number second = Evaluator.Eval(list[1], env) as Number;
 
             return first / second;
         }

@@ -22,16 +22,16 @@ namespace MsLisp.Expressions
 
 		public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("LAMBDA definition is missing arguments.");
 
-            if (!(list[1] is Vector))
+            if (!(list[0] is Vector))
                 throw new SyntaxException("LAMBDA does not have a parameter list.");
 
             // parameters and body expression
-            Vector paramslist = list.CDR();
-            Vector parameters = (Vector)paramslist[0];
-            IDatum expr = paramslist[1];
+            Vector parameters = list[0] as Vector;
+            //Vector parameters = (Vector)paramslist[0];
+            IDatum expr = list[1];
 
 
             // the big quesion.
@@ -42,23 +42,17 @@ namespace MsLisp.Expressions
             // work better, but the latter makes more sense to me.
             Func<Vector, ScopedEnvironment, IDatum> func = (largs, lenv) =>
             {
-                // first argument is s-expression symbol
-                // second+ argument(s) are arguments
-                if (largs.Length < 2)
-                    throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
+                //// first argument is s-expression symbol
+                //// second+ argument(s) are arguments
+                //if (largs.Length < 2)
+                //    throw new ArgumentException("{0} does not have enough arguments.", largs[0]);
 
-                Vector argslist = largs.CDR();
-
-                //////var outer = env.HasOuterEnvironment(lenv) ? env : lenv;
-                //////if (outer == env)
-                //////{
-                //////    var stop = "";
-                //////}
+                //Vector argslist = largs.CDR();
 
                 // create new environment
                 // not sure if i'm using the right environment???
                 var scopedenv = new ScopedEnvironment(env);
-                this.BindArguments(scopedenv, lenv, parameters, argslist);
+                this.BindArguments(scopedenv, lenv, parameters, largs);
                 return Evaluator.Eval(expr, scopedenv);
             };
 

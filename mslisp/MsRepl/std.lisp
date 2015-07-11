@@ -39,22 +39,15 @@
 (defmacro defun (name params body)
   `(define ,name
        (lambda ,params
-	 ,body)))
+	  ,body)))
 
 (defun loop (list cb)
-  (let (first (car list))
-    (if (null? first)
-	nil
-	(begin
+  (cond
+    ((null? (car list)) ())
+    (#t (begin
 	 (loop (cdr list) cb)
-	 (cb first)))))
+	 (cb (car list))))))
 
-;; (defun beginn (&rest exps)
-;;   `(let (all ())
-;;      ,((Y
-;; 	(lambda (f)
-;; 	  (lambda (x)
-;; 	    `(cons
 
 (defun loop-sum (list cb)
   (begin
@@ -63,6 +56,18 @@
 		  (set! sum (cons (cb part) sum)))))
    sum))
 
+
+(defun and (x y)
+  (cond
+    ((null? x) ())
+    ((null? y) ())
+    (#t #t)))
+
+(defun or (x y)
+  (cond
+    ((not (null? x)) #t)
+    ((not (null? y)) #t)
+    (#t ())))
 
 ;; + operator macro
 ;; creates an list like (add (add 1 2) 3)
@@ -110,11 +115,9 @@
    x))
 
 (defun first-pair (x)
-  (if (not (null? (car x)))
-      (if (not (null? (cadr x)))
-	  (pair (car x) (cadr x))
-	  ())
-      ()))
+  (cond
+    ((or (null? (car x)) (null? (cadr x))) ())
+    (#t (pair (car x) (cadr x)))))
 
 
 ;; wrap compare operators for multiple parameters.
@@ -126,11 +129,10 @@
      ((Y
        (lambda (f)
 	 (lambda (x)
-	   (if (not-greater (length x) 1)
-	       #t
-	       (if (not (null? (,func (car x) (cadr x))))
-		   (f (cdr x))
-		   nil)))))
+	   (cond
+	     ((not-greater (length x) 1) #t)
+	     ((null? (,func (car x) (cadr x))) ,())
+	     (#t (f (cdr x)))))))
       x)))
 
 (defcompare >
@@ -178,8 +180,14 @@
 		      ()))))))
    conditions))
 
+(defmacro unless (truthy exp)
+  `(if ,truthy
+      #t
+      ,exp))
+      
+
 	        
-(defmacro let (var-value body)
+(defmacro let (var-value  body)
   `((lambda (,(car var-value))
       ,body) ,(cadr var-value)))
 
@@ -199,13 +207,9 @@
 
 ; find the length of a list
 (defun length (list)
-  (let (num 0)
-       ((Y (lambda (f)
-	     (lambda (x)
-	       (if (null? x)
-		   num
-		   (begin (set! num (inc num)) (f (cdr x)))))))
-	list)))
+  (cond
+    ((null? list) 0)
+    (#t (inc (length (cdr list))))))
 
 ; x++
 (defun inc (x)

@@ -21,11 +21,10 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length < 2)
+            if (list.Length < 1)
                 throw new ArgumentException("CAR is missing argument.");
-
-            var args = list.CDR();
-            var value = Evaluator.Eval(args[0], env) as Vector;
+            
+            var value = Evaluator.Eval(list[0], env) as Vector;
             
             if(value == null)
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
@@ -50,7 +49,8 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            var value = Evaluator.Eval(list[1], env) as Vector;
+            var value = Evaluator.Eval(list[0], env) as Vector;
+            //var value = Evaluator.Eval(list[1], env) as Vector;
 
             if (value == null)
                 throw new SyntaxException("{0} is not a valid list.", value.Value);
@@ -79,13 +79,11 @@ namespace MsLisp.Expressions
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("CONS has wrong number of arguments.");
-
-            Vector exprs = list.CDR();
-
-            IDatum value1 = Evaluator.Eval(exprs[0], env);
-            IDatum value2 = Evaluator.Eval(exprs[1], env);
+            
+            IDatum value1 = Evaluator.Eval(list[0], env);
+            IDatum value2 = Evaluator.Eval(list[1], env);
 
 
             if (value2 is Vector)

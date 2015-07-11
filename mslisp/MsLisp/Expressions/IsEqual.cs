@@ -25,10 +25,10 @@ namespace MsLisp.Expressions
         // 3. (equal? arg arg) => T or ()
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 3)
+            if (list.Length != 2)
                 throw new ArgumentException("equal? has incorrect number of arguments. Correct number is 2.");
             else
-                return this._equals(list.CDR(), env);
+                return this._equals(list, env);
         }
 
         // atom == atom

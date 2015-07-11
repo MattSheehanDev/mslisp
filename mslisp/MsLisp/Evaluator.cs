@@ -42,9 +42,12 @@ namespace MsLisp
             else
             {
                 var list = (Vector)x;
-                
-                SExpression procedure = (SExpression)Evaluator.Eval(list.CAR(), env);
-                return procedure.Evaluate(list, env);
+
+                SExpression procedure = Evaluator.Eval(list.CAR(), env) as SExpression;
+                if (procedure == null)
+                    throw new TypeException("{0} is not a procedure.", list.CAR());
+
+                return procedure.Evaluate(list.CDR(), env);
             }
         }
 

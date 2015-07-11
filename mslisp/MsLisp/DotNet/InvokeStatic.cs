@@ -19,11 +19,10 @@ namespace MsLisp.DotNet
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
             // (invoke-static type method args)
-            if (list.Length < 3)
+            if (list.Length < 2)
                 throw new ArgumentException("INVOKE-STATIC is missing arguments.");
-
-            var cdr = list.CDR();
-            var arr = (IDatum[])cdr.Value;
+            
+            var arr = (IDatum[])list.Value;
 
             var type = (System.Type)Evaluator.Eval(arr[0], env).Value;
             var method = (string)Evaluator.Eval(arr[1], env).Value;

@@ -22,11 +22,11 @@ namespace MsLisp.Macro
         
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length < 2)
+            if (list.Length < 1)
                 throw new ArgumentException("MACRO is missing arguments.");
 
             // lambda evaluated
-            SExpression exp = Evaluator.Eval(list[1], env) as SExpression;
+            SExpression exp = Evaluator.Eval(list[0], env) as SExpression;
 
             Func<Vector, ScopedEnvironment, IDatum> func = (largs, lenv) =>
             {
@@ -37,8 +37,8 @@ namespace MsLisp.Macro
                 // we want to wrap the parameters in [quote]'s so that we
                 // end with the same original arguments
                 var data = new List<IDatum>();
-                data.Add(largs[0]);
-                for (var i = 1; i < largs.Length; i++)
+                //data.Add(largs[0]);
+                for (var i = 0; i < largs.Length; i++)
                 {
                     var quoted = new List<IDatum>();
                     quoted.Add(new Symbol("quote"));
@@ -83,29 +83,15 @@ namespace MsLisp.Macro
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 2)
+            if (list.Length != 1)
                 throw new ArgumentException("QUASIQUOTE takes 1 argument.");
             
-            var quasiquoted = list[1];
-            return this.Expand((IDatum[])list.Value, quasiquoted, env);
+            //var quasiquoted = list[1];
+            return this.Expand(list[0], env);
         }
 
 
-        private void Expand(IDatum datum, ScopedEnvironment env)
-        {
-            if (datum is Vector)
-            {
-                var list = new List<IDatum>();
-                var first = this.CheckExpression(datum as Vector);
-
-                if(first == this.unquote)
-                {
-                    
-                }
-            }
-        }
-
-        private IDatum Expand(IDatum[] parent, IDatum datum, ScopedEnvironment env)
+        private IDatum Expand(IDatum datum, ScopedEnvironment env)
         {
             // if vector, expand each child datum
             if (datum is Vector)
@@ -128,7 +114,7 @@ namespace MsLisp.Macro
                     for (var i = 0; i < q.Length; i++)
                     {
                         var data = q[i];
-                        var exp = this.Expand(list.ToArray(), data, env);
+                        var exp = this.Expand(data, env);
 
                         if(data is Vector && exp is Vector)
                         {
@@ -175,13 +161,13 @@ namespace MsLisp.Macro
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 2)
+            if (list.Length != 1)
                 throw new ArgumentException("UNQUOTE takes 2 arguments.");
 
             // unquote doesn't evaluate but it does insert symbol bindings from
             // the unmacro'd environment.
             //var datum = env.Fetch(list[1].Value.ToString());
-            var datum = Evaluator.Eval(list[1], env);
+            var datum = Evaluator.Eval(list[0], env);
             return datum;
             //// unquote starts evaluating again from inside a quasiquote
             //return Evaluator.Eval(list[1], env);
@@ -200,10 +186,10 @@ namespace MsLisp.Macro
 
         public override IDatum Evaluate(Vector list, ScopedEnvironment env)
         {
-            if (list.Length != 2)
+            if (list.Length != 1)
                 throw new ArgumentException("SPLICE takes 2 arguments.");
 
-            return Evaluator.Eval(list[1], env);
+            return Evaluator.Eval(list[0], env);
         }
 
     }
