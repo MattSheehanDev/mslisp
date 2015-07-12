@@ -61,8 +61,8 @@
     <Compile Include="Expressions\Comparison.cs" />
     <Compile Include="Expressions\Conditional.cs" />
     <Compile Include="Expressions\Define.cs" />
-    <Compile Include="Expressions\IsAtom.cs" />
-    <Compile Include="Expressions\IsEqual.cs" />
+    <Compile Include="Expressions\Typeof.cs" />
+    <Compile Include="Expressions\Eq.cs" />
     <Compile Include="Expressions\Lambda.cs" />
     <Compile Include="Expressions\List.cs" />
     <Compile Include="Expressions\Quote.cs" />

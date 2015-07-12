@@ -42,11 +42,11 @@ namespace MsLisp.Datums
             return this.Equals((Atom)obj);
         }
 
-        public bool Equals(Atom Atom)
+        public bool Equals(Atom atom)
         {
-            if (ReferenceEquals(null, Atom)) return false;
-            if (ReferenceEquals(this, Atom)) return true;
-            return Equals(Atom.value, value);
+            if (ReferenceEquals(null, atom)) return false;
+            if (ReferenceEquals(this, atom)) return true;
+            return Equals(atom.value, value);
         }
 
         // usually == resolves to ReferenceEquals and checks if the object

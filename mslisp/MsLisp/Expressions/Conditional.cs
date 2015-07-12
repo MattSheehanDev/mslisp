@@ -13,9 +13,9 @@ namespace MsLisp.Expressions
      * IF
      * (if condition exp1 exp2) => val1 || val2
      */
-    public class IfElse : SExpression
+    public class IfThen : SExpression
     {
-        public IfElse()
+        public IfThen()
         {
         }
 

@@ -1,16 +1,16 @@
 (define assert-equal
     (lambda (x y)
-      (equals? x y)))
+      (equal? x y)))
 
 (define assert-not-equal
     (lambda (x y)
       (not (assert-equal x y))))
 
 (assert-equal (eval 'x '((x test-value)))
-	      (quote test-value))
+	      'test-value)
 
 (assert-not-equal (eval 'y '((y (1 2 3))))
-	      (quote (1 2 3)))
+	      '(1 2 3))
 
 (assert-not-equal (eval 'z '((z ((1) 2 3))))
 	      '((1) 2 3))

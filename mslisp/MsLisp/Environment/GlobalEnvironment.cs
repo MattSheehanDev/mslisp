@@ -17,7 +17,6 @@ namespace MsLisp.Environment
         public GlobalEnvironment()
         {
             // global variables
-            this.Add("*prompt*", new Atom("mslisp"));
 
             this.Add("new", new New());
             this.Add("get-type", new GetType());
@@ -25,7 +24,6 @@ namespace MsLisp.Environment
             this.Add("invoke-method", new InvokeMethod());
 
             this.Add("#t", Bool.True);
-            this.Add("nil", Null.Instance);
 
             // global procedures
             this.Add("add", new Addition());
@@ -43,8 +41,7 @@ namespace MsLisp.Environment
             this.Add("cons", new CONS());
             this.Add("define", new Define());
             this.Add("set!", new Set());
-            this.Add("equals?", new IsEqual());
-            this.Add("if", new IfElse());
+            this.Add("if", new IfThen());
             this.Add("begin", new Begin());
             this.Add("lambda", new Lambda());
 
@@ -54,7 +51,8 @@ namespace MsLisp.Environment
             this.Add("unquote", new UnQuote());
             this.Add("splice", new Splice());
 
-            this.Add("atom?", new IsAtom());
+            this.Add("typeof", new TypeOf());
+            this.Add("eq?", new Eq());
         }
 
     }

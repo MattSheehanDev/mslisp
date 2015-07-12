@@ -6,6 +6,10 @@
 ;;;
 
 
+;; global variables
+(define nil ())
+(define #f ())
+
 ;; macro to make it easier to define macros
 (define defmacro
     (macro
@@ -28,18 +32,91 @@
 		 (flat (car x) (flat (cdr x) y)))))
        (flat list ()))))
 
-; checks if input is equal to nil or ()
-(define null? 
-    (lambda (x)
-      (if (equals? x nil)
-	  #t
-	  nil)))
-
 ;; macro to make it easier to define functions
 (defmacro defun (name params body)
   `(define ,name
        (lambda ,params
 	  ,body)))
+
+; checks if equal to typeof "atom"
+(defun atom? (x)
+  (if (list? x)
+      ()
+      #t))
+
+; checks if equal to typeof "number"
+(defun number? (x)
+  (if (eq? (typeof x) "number")
+      #t
+      ()))
+
+; checks if arg is equal to "list"
+(defun list? (x)
+  (if (eq? (typeof x) "list")
+      #t
+      ()))
+
+; checks if input is equal to ()
+(defun null? (x)
+  (if (eq? x nil)
+      #t
+      ()))
+
+; checks if arg is equal to 0
+(defun zero? (x)
+  (if (= x 0)
+      #t
+      ()))
+
+; returns opposite of input.
+; equivalent to the more conventional !true or !false
+(defun not (x)
+  (if (null? x) #t nil))
+
+; checks if both arguments are not nil
+(defun and (x y)
+  (cond
+    ((null? x) ())
+    ((null? y) ())
+    (#t #t)))
+
+; checks if either argument is not nil
+(defun or (x y)
+  (cond
+    ((not (null? x)) #t)
+    ((not (null? y)) #t)
+    (#t ())))
+
+(defun equan? (a b)
+  (cond
+    ((and (number? a) (number? b))
+     (= a b))
+    ((or (number? a) (number? b))
+     nil)
+    (#t (eq? a b))))
+
+(defun eqlist? (a b)
+  (cond
+    ((and (null? a) (null? b)) 
+     #t)
+    ((or (null? a) (null? b)) 
+     nil)
+    ((and (atom? (car a)) (atom? (car b)))
+     (and (equan? (car a) (car b)) (eqlist? (cdr a) (cdr b))))
+    ((or (atom? (car a)) (atom? (car b))) 
+     nil)
+    (#t 
+     (and (eqlist? (car a) (car b)) (eqlist? (cdr a) (cdr b))))))
+
+(defun equal? (a b)
+  (cond
+    ((and (atom? a) (atom? b))
+     (equan? a b))
+    ((or (atom? a) (atom? b))
+     nil)
+    (#t
+     (eqlist? a b))))
+
 
 (defun loop (list cb)
   (cond
@@ -56,18 +133,6 @@
 		  (set! sum (cons (cb part) sum)))))
    sum))
 
-
-(defun and (x y)
-  (cond
-    ((null? x) ())
-    ((null? y) ())
-    (#t #t)))
-
-(defun or (x y)
-  (cond
-    ((not (null? x)) #t)
-    ((not (null? y)) #t)
-    (#t ())))
 
 ;; + operator macro
 ;; creates an list like (add (add 1 2) 3)
@@ -97,7 +162,7 @@
     (lambda (f)
       (lambda (x)
 	(if (= (length x) 1)
-	    (if (atom? (car x))
+	    (if (number? (car x))
 		(subtract 0 (car x))
 		(car x))
 	    (f (cons `(subtract ,@(first-pair x)) (cddr x)))))))
@@ -108,7 +173,7 @@
     (lambda (f)
       (lambda (x)
 	(if (= (length x) 1)
-	    (if (atom? (car x))
+	    (if (number? (car x))
 		(divide 1 (car x))
 		(car x))
 	    (f (cons `(divide ,@(first-pair x)) (cddr x)))))))
@@ -168,23 +233,24 @@
 ;; macro for cond
 ;; works as nested if statements
 (defmacro cond (&rest conditions)
-  ((Y
-    (lambda (f)
-      (lambda (x)
-	(if (null? (car x))
-	    ()
-	    `(if (not (null? ,(caar `,x)))
-		 ,(cadar `,x)
-		 ,(if (not (null? (cdr x)))
-		      (f (cdr x))
-		      ()))))))
-   conditions))
+  `(let (else #t)
+     ,((Y
+	(lambda (f)
+	  (lambda (x)
+	    (if (null? x)
+		()
+		`(if (not (null? ,(caar `,x)))
+		     ,(cadar `,x)
+		     ,(f (cdr x)))))))
+;		     ,(if (not (null? (cdr x)))
+;			  (f (cdr x))
+;			  ()))))))
+       conditions)))
 
 (defmacro unless (truthy exp)
   `(if ,truthy
       #t
       ,exp))
-      
 
 	        
 (defmacro let (var-value  body)
@@ -209,7 +275,7 @@
 (defun length (list)
   (cond
     ((null? list) 0)
-    (#t (inc (length (cdr list))))))
+    (else (inc (length (cdr list))))))
 
 ; x++
 (defun inc (x)
@@ -218,11 +284,6 @@
 ; x--
 (defun dec (x)
   (subtract x 1))
-
-; returns opposite of input.
-; equivalent to the more conventional !true or !false
-(defun not (x)
-  (if (null? x) #t nil))
 
 ; joins two lists together.
 (defun append (x y)
@@ -258,25 +319,25 @@
 	((atom? (car e))
 	 (cond
 	   ; CAR
-	   ((equals? (car e) 'car)
+	   ((equal? (car e) 'car)
 	    (car (eval (cadr e) a)))
 	   ; CDR
-	   ((equals? (car e) 'cdr)
+	   ((equal? (car e) 'cdr)
 	    (cdr (eval (cadr e) a)))
 	   ; CONS
-	   ((equals? (car e) 'cons)
+	   ((equal? (car e) 'cons)
 	    (cons (eval (cadr e) a) (eval (caddr e) a)))
 	   ; ATOM?
-	   ((equals? (car e) 'atom?)
+	   ((equal? (car e) 'atom?)
 	    (atom? (eval (cadr e) a)))
-	   ; EQUALS?
-	   ((equals? (car e) 'equals?)
-	    (equals? (eval (cadr e) a) (eval (caddr e) a)))
+	   ; EQUAL?
+	   ((equal? (car e) 'equal?)
+	    (equal? (eval (cadr e) a) (eval (caddr e) a)))
 	   ; QUOTE
-	   ((equals? (car e) 'quote)
+	   ((equal? (car e) 'quote)
 	    (cadr e))
 	   ; COND
-	   ((equals? (car e) 'cond)
+	   ((equal? (car e) 'cond)
 	    (evcon (cdr e) a))
 	   ; assume a symbol that is defined in the environment.
 	   ; replace symbol with binding
@@ -287,7 +348,7 @@
 	; re-evaluate with lambda body
 	; with updated environment,
 	; mapping the arguments and parameters together
-	((equals? (caar e) 'lambda)
+	((equal? (caar e) 'lambda)
 	 (eval (caddar e) (append (map (cadar e) (evlis (cdr e) a)) a))))))
 
 
@@ -326,7 +387,7 @@
     (lambda (x y)
       (if (null? y)
 	  nil
-	  (if (equals? (caar y) x)
+	  (if (equal? (caar y) x)
 	      (cadar y)
 	      (assoc x (cdr y))))))
 
@@ -365,6 +426,18 @@
     (lambda (x)
       (caddr (car x))))
 
+(defun nth (list pos)
+  (cond
+    ((null? list) ())
+    ((zero? pos) (car list))
+    (#t (nth (cdr list) (dec pos)))))
+
+(defun last (list)
+  (cond
+    ((null? list) ())
+    ((= (length list) 1) (car list))
+    (#t (last (cdr list)))))
+
 ;; (defun last (list)
 ;;   ((Y
 ;;     (lambda (f)
@@ -373,14 +446,3 @@
 ;; 	    (car x)
 ;; 	    (f (cdr x))))))
 ;;    list))
-;; (defun nth (list pos)
-;;   (let (num pos)
-;;     ((Y
-;;       (lambda (f)
-;; 	(lambda (x)
-;; 	  (if (= 0 num)
-;; 	      (car x)
-;; 	      (begin
-;; 	       (set! num (dec num))
-;; 	       (f (cdr x)))))))
-;;      list)))

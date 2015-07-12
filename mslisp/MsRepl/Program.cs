@@ -35,6 +35,8 @@ namespace MsRepl
             lex = new Lexer(File.ReadAllText("test.lisp"));
             Evaluator.Eval(parser.Parse(lex.Tokenize()));
 
+            Evaluator.environment.Add("*prompt*", new Atom("mslisp"));
+
             // repl
             while (true)
             {
